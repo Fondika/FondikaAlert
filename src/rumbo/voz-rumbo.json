@@ -1,0 +1,74 @@
+{
+  "_fuente": "Brand_kit_Fondika/04-personaje/assets/voz-rumbo.html — 33 líneas, copiadas verbatim.",
+  "_reglas": "Máximo 2 líneas, nunca 'yo' en operaciones, el sistema se hace responsable, sin humor con dinero de por medio, cero promesa/urgencia.",
+  "estados": {
+    "reposo": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "primera-vez", "texto": "Soy Rumbo. Te acompaño mientras decides." },
+        { "id": "regreso", "texto": "Qué bueno verte. ¿Por dónde seguimos?" },
+        { "id": "nada-pendiente", "texto": "Todo en orden por hoy." },
+        { "id": "estado-vacio", "texto": "Aquí van a aparecer tus movimientos. Todavía no hay ninguno." }
+      ]
+    },
+    "escuchando": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "chat-abierto", "texto": "Te escucho." },
+        { "id": "grabando-nota", "texto": "Grabando. Habla con calma." },
+        { "id": "esperando-dato", "texto": "Cuando quieras." }
+      ]
+    },
+    "pensando": {
+      "ciclo": true,
+      "lineas": [
+        { "id": "consulta-corta", "texto": "Déjame ver…", "esperaMs": 0 },
+        { "id": "busqueda", "texto": "Estoy buscando eso en tu contrato.", "esperaMs": 4000 },
+        { "id": "calculo", "texto": "Un momento, estoy haciendo la cuenta.", "esperaMs": 10000 }
+      ]
+    },
+    "cargando": {
+      "ciclo": true,
+      "lineas": [
+        { "id": "normal", "texto": "Estamos procesando tu solicitud.", "esperaMs": 0 },
+        { "id": "lento", "texto": "Esto toma unos segundos más de lo normal.", "esperaMs": 4000 },
+        { "id": "muy-largo", "texto": "Sigue en proceso. Puedes cerrar la app: te avisamos cuando termine.", "esperaMs": 10000 }
+      ]
+    },
+    "exito": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "operacion", "texto": "Listo. Tu depósito quedó registrado." },
+        { "id": "tramite", "texto": "Quedó. Un asesor te contacta hoy." },
+        { "id": "perfilamiento", "texto": "Terminaste tu perfil. Ya podemos ver opciones juntos." },
+        { "id": "meta-alcanzada", "texto": "Llegaste a lo que te propusiste." }
+      ]
+    },
+    "error": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "dato-invalido", "texto": "Revisa la CLABE: debe tener 18 dígitos." },
+        { "id": "falla-nuestra", "texto": "Algo falló de nuestro lado. Inténtalo otra vez en un minuto." },
+        { "id": "sesion-vencida", "texto": "Tu sesión se cerró por seguridad. Entra otra vez." },
+        { "id": "sin-resultados", "texto": "No encontré nada con eso. Prueba con el número de contrato." }
+      ]
+    },
+    "alerta": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "antes-de-firmar", "texto": "Antes de continuar: el retiro anticipado tiene una comisión desde 1.8 %." },
+        { "id": "irreversible", "texto": "Esta operación no se puede deshacer." },
+        { "id": "documento-pendiente", "texto": "Falta tu comprobante de domicilio para activar la cuenta." },
+        { "id": "plazo", "texto": "Tu constancia fiscal vence este mes." }
+      ]
+    },
+    "sin-conexion": {
+      "ciclo": false,
+      "lineas": [
+        { "id": "se-cayo-la-red", "texto": "Sin conexión. Guardé lo que llevabas." },
+        { "id": "modo-lectura", "texto": "No hay red. Puedes ver tus datos, pero no operar." },
+        { "id": "vuelve", "texto": "Ya hay conexión. Seguimos donde estabas." }
+      ]
+    }
+  }
+}

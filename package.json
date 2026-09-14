@@ -1,0 +1,28 @@
+{
+  "name": "@fondika/alert",
+  "version": "0.1.0",
+  "description": "Librería de alertas, toasts y modales de FÓNDIKA con el personaje Rumbo. Vanilla, sin dependencias en runtime.",
+  "type": "module",
+  "sideEffects": ["*.css"],
+  "files": ["dist"],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "tsup": "^8.3.0"
+  },
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./alert": { "types": "./dist/alert.d.ts", "import": "./dist/alert.js" },
+    "./toast": { "types": "./dist/toast.d.ts", "import": "./dist/toast.js" },
+    "./modal": { "types": "./dist/modal.d.ts", "import": "./dist/modal.js" },
+    "./loader": { "types": "./dist/loader.d.ts", "import": "./dist/loader.js" },
+    "./attach": { "types": "./dist/attach.d.ts", "import": "./dist/attach.js" },
+    "./mascota": { "types": "./dist/mascota.d.ts", "import": "./dist/mascota.js" },
+    "./rumbo": { "types": "./dist/rumbo.d.ts", "import": "./dist/rumbo.js" },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit"
+  }
+}

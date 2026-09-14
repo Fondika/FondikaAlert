@@ -1,0 +1,53 @@
+.fdk-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: var(--fdk-z, 9000);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--fdk-sp-3);
+  background: rgb(255 255 255 / 85%);
+}
+.fdk-overlay--pantalla { position: fixed; }
+
+.fdk-overlay__media {
+  /*
+   * `display:flex` real, no `text-align:center`: Rumbo (el SVG) es `display:block`, y
+   * text-align sólo centra contenido inline — sobre un hijo de bloque no hace nada. Sin esto,
+   * si el texto de abajo es más ancho, este div se estira a su ancho (los bloques ocupan el
+   * 100% disponible por defecto) y el SVG, pegado a la izquierda dentro de él, queda
+   * visualmente descentrado aunque el propio div sí esté centrado en el overlay.
+   */
+  display: flex;
+  justify-content: center;
+}
+
+.fdk-overlay__texto {
+  font-family: var(--fdk-font);
+  font-size: 14px;
+  color: var(--fdk-ink);
+  text-align: center;
+  max-width: 32ch;
+  margin: 0;
+}
+
+@keyframes fdk-overlay-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fdk-overlay-out { from { opacity: 1; } to { opacity: 0; } }
+.fdk-overlay.fdk-anim-in { animation: fdk-overlay-in var(--fdk-duration-base) var(--fdk-ease-out); }
+.fdk-overlay.fdk-anim-out { animation: fdk-overlay-out var(--fdk-duration-base) var(--fdk-ease-out) forwards; }
+
+/* Loader.button: Rumbo (cargando) inline, centrado dentro del botón. */
+.fdk-loader-boton__rumbo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  vertical-align: middle;
+}
+.fdk-loader-boton__rumbo .fdk-rumbo { width: 100%; height: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fdk-overlay.fdk-anim-in, .fdk-overlay.fdk-anim-out { animation: none; }
+}

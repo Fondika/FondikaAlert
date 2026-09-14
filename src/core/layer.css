@@ -1,0 +1,30 @@
+.fdk-layer {
+  position: fixed;
+  z-index: var(--fdk-z, 9100);
+  display: flex;
+  flex-direction: column;
+  gap: var(--fdk-sp-3);
+  padding: var(--fdk-sp-4);
+  pointer-events: none; /* la capa no bloquea clics… */
+  /*
+   * Sin max-width aquí a propósito: en las variantes `-center` esta capa fija
+   * `inset-inline: 0` (left:0 y right:0 a la vez). Si además hay un max-width, el ancho
+   * queda sobre-restringido y el navegador "gana" por el lado inicial (izquierda en LTR),
+   * recalculando `right` en vez de centrar — la capa termina anclada igual que `-start`.
+   * El límite de ancho responsivo vive en el propio toast (ver src/toast/toast.css).
+   */
+}
+.fdk-layer > * { pointer-events: auto; } /* …pero sus hijos sí */
+
+.fdk-layer--scoped { position: absolute; inset: 0; }
+.fdk-layer--top-start    { inset-block-start: 0; inset-inline-start: 0; align-items: flex-start; }
+.fdk-layer--top-center   { inset-block-start: 0; inset-inline: 0; align-items: center; }
+.fdk-layer--top-end      { inset-block-start: 0; inset-inline-end: 0; align-items: flex-end; }
+.fdk-layer--bottom-start { inset-block-end: 0; inset-inline-start: 0; align-items: flex-start; flex-direction: column-reverse; }
+.fdk-layer--bottom-center{ inset-block-end: 0; inset-inline: 0; align-items: center; flex-direction: column-reverse; }
+.fdk-layer--bottom-end   { inset-block-end: 0; inset-inline-end: 0; align-items: flex-end; flex-direction: column-reverse; }
+
+/* Fila `middle` — costados verticales centrados + centro exacto (ADR-003, nota de implementación). */
+.fdk-layer--middle-start  { inset-block: 0; inset-inline-start: 0; align-items: flex-start; justify-content: center; }
+.fdk-layer--middle-center { inset: 0; align-items: center; justify-content: center; }
+.fdk-layer--middle-end    { inset-block: 0; inset-inline-end: 0; align-items: flex-end; justify-content: center; }

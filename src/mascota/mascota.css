@@ -1,0 +1,90 @@
+.fdk-mascota {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--fdk-sp-2);
+  font-family: var(--fdk-font);
+}
+
+/* Espejado cuando la mascota vive en el lado izquierdo: la burbuja se dibuja del otro lado */
+.fdk-layer--bottom-start .fdk-mascota,
+.fdk-layer--top-start .fdk-mascota,
+.fdk-layer--middle-start .fdk-mascota {
+  flex-direction: row-reverse;
+}
+
+.fdk-mascota__personaje {
+  flex: 0 0 auto;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+  filter: drop-shadow(0 6px 16px rgba(83, 86, 89, .22));
+}
+.fdk-mascota__personaje .fdk-rumbo { width: 100%; height: 100%; }
+/* Sin hover: es un personaje flotante, no un botón de acción — nada de fondo al pasar el mouse
+   (importante también porque anula cualquier `button:hover` genérico del proyecto anfitrión). */
+.fdk-mascota__personaje:hover { background: transparent; }
+.fdk-mascota__personaje:focus-visible { outline: none; filter: drop-shadow(0 0 0 3px rgba(0,146,166,.4)) drop-shadow(0 6px 16px rgba(83,86,89,.22)); }
+
+.fdk-mascota__burbuja {
+  position: relative;
+  background: var(--fdk-surface);
+  color: var(--fdk-ink);
+  border-radius: var(--fdk-radius-md);
+  box-shadow: 0 6px 16px rgba(83, 86, 89, .14), 0 2px 4px rgba(83, 86, 89, .06);
+  padding: var(--fdk-sp-3) var(--fdk-sp-4);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 220px;
+  margin-bottom: var(--fdk-sp-2); /* alinea la burbuja con la cabeza de Rumbo, no con sus pies */
+}
+
+/*
+ * Triángulo apuntando hacia Rumbo — de dónde "sale" el diálogo. La mascota es una fila
+ * (burbuja + personaje), así que el triángulo apunta horizontalmente hacia el lado donde
+ * está el personaje, no hacia abajo. Por defecto (posiciones "end"): burbuja a la izquierda,
+ * Rumbo a la derecha → el triángulo sale del borde derecho de la burbuja.
+ *
+ * `filter: drop-shadow` en vez de `box-shadow`: un triángulo hecho con el truco del borde no
+ * tiene una caja rectangular que "shadowear" — box-shadow dibujaría un rectángulo detrás del
+ * triángulo. drop-shadow sigue la silueta real. Sin esto, un triángulo blanco sobre un fondo
+ * de página también blanco es literalmente invisible; con la sombra se lee como una pieza física
+ * de la burbuja, igual que la burbuja misma. El ancho (`--fdk-sp-2`, el mismo que el `gap` de la
+ * fila) hace que la punta llegue exactamente hasta el personaje, sin quedar corta.
+ */
+.fdk-mascota__burbuja::after {
+  content: "";
+  position: absolute;
+  bottom: 22px;
+  width: 0;
+  height: 0;
+  border: var(--fdk-sp-2) solid transparent;
+  right: calc(var(--fdk-sp-2) * -1);
+  border-left-color: var(--fdk-surface);
+  filter: drop-shadow(2px 2px 2px rgba(83, 86, 89, .18));
+}
+
+/* Posiciones "start": Rumbo queda a la izquierda, la burbuja a la derecha → triángulo al revés */
+.fdk-layer--bottom-start .fdk-mascota__burbuja::after,
+.fdk-layer--top-start .fdk-mascota__burbuja::after,
+.fdk-layer--middle-start .fdk-mascota__burbuja::after {
+  right: auto;
+  left: calc(var(--fdk-sp-2) * -1);
+  border-left-color: transparent;
+  border-right-color: var(--fdk-surface);
+  filter: drop-shadow(-2px 2px 2px rgba(83, 86, 89, .18));
+}
+
+@keyframes fdk-mascota-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+@keyframes fdk-mascota-out { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(.85); } }
+.fdk-mascota.fdk-anim-in { animation: fdk-mascota-in var(--fdk-duration-base) var(--fdk-ease-out); }
+.fdk-mascota.fdk-anim-out { animation: fdk-mascota-out var(--fdk-duration-base) var(--fdk-ease-out) forwards; }
+
+@keyframes fdk-burbuja-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.fdk-mascota__burbuja.fdk-anim-in { animation: fdk-burbuja-in var(--fdk-duration-base) var(--fdk-ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fdk-mascota.fdk-anim-in, .fdk-mascota.fdk-anim-out, .fdk-mascota__burbuja.fdk-anim-in { animation: none; }
+}

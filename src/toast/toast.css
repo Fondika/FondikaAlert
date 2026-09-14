@@ -1,0 +1,33 @@
+/**
+ * Toast reutiliza `.fdk-alert` + `.fdk-alert--flotante` (ancho y sombra, ver alert.css) pero
+ * NUNCA agrega `.fdk-alert--barra`: la línea izquierda de 4px es una marca exclusiva de Alert.
+ */
+.fdk-toast {
+  position: relative;
+  /* SIN overflow:hidden a propósito: recortaba las animaciones de Rumbo (salta, flota, sube)
+     cada vez que se movían fuera de su propia caja — se veía cortado por arriba. */
+}
+
+.fdk-toast__cerrar {
+  /* margin-left:auto lo empuja al extremo derecho; el resto queda centrado por .fdk-alert */
+  margin: 0 var(--fdk-sp-2) 0 auto;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+  opacity: .6;
+  padding: 2px;
+  flex: 0 0 auto;
+}
+.fdk-toast__cerrar:hover { opacity: 1; }
+
+@keyframes fdk-toast-in { from { opacity: 0; transform: translateY(-8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes fdk-toast-out { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-8px) scale(.98); } }
+.fdk-toast.fdk-anim-in { animation: fdk-toast-in var(--fdk-duration-base, 250ms) var(--fdk-ease-out, ease); }
+.fdk-toast.fdk-anim-out { animation: fdk-toast-out var(--fdk-duration-base, 250ms) var(--fdk-ease-out, ease) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fdk-toast.fdk-anim-in, .fdk-toast.fdk-anim-out { animation: none; }
+}

@@ -1,0 +1,15 @@
+.fdk-attach { display: inline-block; }
+
+@keyframes fdk-attach-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fdk-attach-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes fdk-attach-slide-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fdk-attach-slide-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(6px); } }
+
+.fdk-attach--fade.fdk-anim-in { animation: fdk-attach-fade-in var(--fdk-duration-base) var(--fdk-ease-out); }
+.fdk-attach--fade.fdk-anim-out { animation: fdk-attach-fade-out var(--fdk-duration-base) var(--fdk-ease-out) forwards; }
+.fdk-attach--slide.fdk-anim-in { animation: fdk-attach-slide-in var(--fdk-duration-base) var(--fdk-ease-out); }
+.fdk-attach--slide.fdk-anim-out { animation: fdk-attach-slide-out var(--fdk-duration-base) var(--fdk-ease-out) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fdk-attach.fdk-anim-in, .fdk-attach.fdk-anim-out { animation: none; }
+}

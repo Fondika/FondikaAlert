@@ -1,0 +1,111 @@
+/**
+ * FÓNDIKA · tokens de color
+ * Fuente única: Brand_kit_Fondika/02-color-y-tipografia (sección "2. Paleta").
+ * Exactamente 18 colores. No se agregan naranjas "deep" ni el degradado de marca:
+ * esos viven en la sección 4 del brandkit y quedan fuera de esta librería por decisión de producto.
+ */
+:root {
+  /* Naranja */
+  --fdk-naranja-900: #ff9f19; /* primario */
+  --fdk-naranja-700: #ffb04d;
+  --fdk-naranja-500: #ffbe6f;
+  --fdk-naranja-300: #ffc884;
+  --fdk-naranja-100: #ffd29b;
+
+  /* Turquesa */
+  --fdk-turquesa-900: #0092a6; /* primario */
+  --fdk-turquesa-700: #02aab7;
+  --fdk-turquesa-500: #1ecad3;
+  --fdk-turquesa-300: #98d7dd;
+  --fdk-turquesa-100: #afe2e3;
+
+  /* Gris — negro solo */
+  --fdk-gris-900: #535659; /* primario · único color válido para cuerpo de texto */
+  --fdk-gris-700: #a7a8a9;
+  --fdk-gris-500: #b1b1b1;
+  --fdk-gris-300: #b9b9ba;
+  --fdk-gris-100: #dddddd;
+
+  /* Rojo de sistema — no es color de marca, es color de estado */
+  --fdk-rojo-900: #ad332b; /* error, borde, botón destructivo */
+  --fdk-rojo-700: #c64a40;
+  --fdk-rojo-100: #ffeae6; /* fondo de alerta */
+
+  /* Alias semánticos */
+  --fdk-brand: var(--fdk-naranja-900);
+  --fdk-ink: var(--fdk-gris-900);
+  --fdk-surface: #ffffff;
+  --fdk-border: var(--fdk-gris-300);
+  --fdk-danger: var(--fdk-rojo-900);
+
+  /*
+   * Niveles de Alert — copiados literal de Brand_kit_Fondika/03-design-system/assets/
+   * componentes.html (§ALERTAS: .a-info/.a-exito/.a-alerta/.a-error). Alert usa SIEMPRE estos
+   * colores fijos (no son personalizables desde la API, a diferencia de Toast).
+   *
+   * Clasificación de estados de Rumbo → nivel (ver alert/nivel.ts):
+   *   Información  → reposo, escuchando, pensando, cargando
+   *   Listo        → exito
+   *   Alerta ("Ten en cuenta") → alerta
+   *   Error ("No se pudo completar") → error
+   *   (sin-conexion usa el tratamiento neutro por defecto, fuera de componentes.html)
+   */
+  --fdk-alert-info-bg: var(--fdk-turquesa-100);
+  --fdk-alert-info-border: var(--fdk-turquesa-900);
+  --fdk-alert-exito-bg: var(--fdk-turquesa-100);
+  --fdk-alert-exito-border: var(--fdk-turquesa-900);
+  --fdk-alert-alerta-bg: var(--fdk-naranja-100);
+  /*
+   * Excepción documentada: componentes.html usa `--deep-700 #ca5610` (naranja profundo) como
+   * borde de `.a-alerta`, un tono que vive en la sección 4 (degradado) del brandkit y por eso
+   * normalmente queda fuera de esta librería (ver cabecera de este archivo). Se reproduce aquí,
+   * literal, sólo para que Alert sea fiel 1:1 al componente de referencia — no se usa en
+   * ningún otro lugar de la librería.
+   */
+  --fdk-alert-alerta-border: #ca5610;
+  --fdk-alert-error-bg: var(--fdk-rojo-100);
+  --fdk-alert-error-border: var(--fdk-rojo-900);
+
+  /* Espaciado (subset de la escala del brandkit, base 4px) */
+  --fdk-sp-1: 4px;
+  --fdk-sp-2: 8px;
+  --fdk-sp-3: 12px;
+  --fdk-sp-4: 16px;
+  --fdk-sp-5: 24px;
+  --fdk-sp-6: 32px;
+
+  /* Forma y movimiento */
+  --fdk-radius-sm: 4px;
+  --fdk-radius-md: 8px;
+  --fdk-radius-lg: 16px;
+  --fdk-duration-base: 250ms;
+  --fdk-ease-out: cubic-bezier(.16,1,.3,1);
+
+  /* Sombras y foco — de Brand_kit_Fondika/03-design-system/assets/fondika-design-tokens.json */
+  --fdk-shadow-4: 0 16px 40px rgba(83,86,89,.18), 0 4px 8px rgba(83,86,89,.08);
+  --fdk-backdrop: rgb(0 0 0 / 45%);
+  --fdk-foco: 0 0 0 3px rgba(0,146,166,.40);
+
+  /*
+   * Botones de Modal — regla de estado de componentes.html: la superficie se desplaza hacia su
+   * propia tinta, 8% en hover y 12% al presionar; el color de la etiqueta nunca cambia.
+   */
+  --fdk-btn-primario-bg: var(--fdk-naranja-900);
+  --fdk-btn-primario-hover: #eb9217;
+  --fdk-btn-primario-activo: #e08c16;
+  --fdk-btn-secundario-hover: #f1f1f2;
+  --fdk-btn-secundario-activo: #eaebeb;
+  --fdk-btn-destructivo-bg: var(--fdk-rojo-900);
+  --fdk-btn-destructivo-hover: #b4433c;
+  --fdk-btn-destructivo-activo: #b74b44;
+
+  /* z-index — única fuente, offsets fijos por capa */
+  --fdk-z-base: 9000;
+
+  --fdk-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --fdk-font-display: "Outfit", "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --fdk-duration-base: 0ms; }
+}

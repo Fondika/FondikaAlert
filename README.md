@@ -10,7 +10,7 @@ de producto de FÓNDIKA, en vez de iconos genéricos. Vanilla TS, cero dependenc
 ## Instalación
 
 ```bash
-npm install "@fondika/alert@git+https://github.com/tu-org/fondika-alert.git#semver:^0.1.0"
+npm install "@fondika/alert@git+https://github.com/tu-org/fondika-alert.git#semver:^1.0"
 ```
 
 No hay que importar ningún CSS aparte: cada función inyecta sus propios estilos en el

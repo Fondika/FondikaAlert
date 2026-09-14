@@ -116,8 +116,54 @@ redibujar a Rumbo ni reinventar el color cada vez.
     del borde CSS es blanco (igual que la burbuja) — sobre una página con fondo también blanco es
     literalmente invisible sin una sombra propia que lo separe visualmente. `box-shadow` no sirve
     aquí porque sigue la caja rectangular del elemento, no la silueta triangular; `drop-shadow` sí
-    seguía la forma real. El ancho del triángulo es `--fdk-sp-2` (el mismo valor que el `gap` de
-    la fila), para que la punta llegue exactamente hasta el personaje sin quedar corta.
+    seguía la forma real.
+
+    **El triángulo tiene que sobresalir de la burbuja, no quedar a ras.** Con una caja 0×0 y
+    borde de `--fdk-sp-2` (8px) a los 4 lados, el color puesto sólo en `border-left-color` (o
+    `border-right-color`, espejado) dibuja un triángulo cuya base vive en el CENTRO de esa caja
+    y cuya punta llega al borde opuesto — así que un offset de `right: calc(--fdk-sp-2 * -1)`
+    deja la base escondida por dentro de la burbuja y la punta apenas tocando su borde (nada se
+    ve sobresaliendo). El offset correcto es el doble: `right: calc(--fdk-sp-2 * -2)` (y su
+    espejo `left: calc(--fdk-sp-2 * -2)` en posiciones "start") — recorre la caja completa un
+    `sp-2` más, de modo que la BASE queda a ras del borde de la burbuja y la PUNTA sobresale
+    `sp-2` (8px) hacia afuera, hacia el personaje. Así se lee como una pieza física que de verdad
+    sale de la burbuja, en vez de un borde decorativo pegado a ella.
+19. **Rumbo en Alert/Toast: 46.2px (44px + 5%), con 8.5px de respiro arriba/abajo.** El `padding-
+    block` de `.fdk-alert` (antes `0`, sólo llevaba `padding-inline-start`) es un valor fijo en px
+    — no `%` real — porque `.fdk-alert` vive dentro de `.fdk-layer`, cuyo ancho es auto/shrink-to-
+    fit: un padding porcentual ahí resuelve contra un ancho indefinido y colapsa el layout (bug
+    real, encontrado al probarlo). 8.5px es igualmente "2.5% de los 340px de `.fdk-alert--
+    flotante`", sólo que precalculado a mano.
+20. **`.fdk-alert--sombra`: fondo blanco + sombra de color, en vez de relleno plano.** Cuando Rumbo
+    reemplaza al icono, un fondo tintado detrás de Rumbo compite visualmente con el propio
+    personaje — se quita el tinte, queda `--fdk-surface` (blanco) y el color del nivel pasa a vivir
+    como `box-shadow` (vía `color-mix()` contra `--fdk-alert-border`). El texto no cambia: sigue en
+    `--fdk-ink` (gris-900), que ya era el color por defecto de `.fdk-alert`. Dos usos:
+    - **Alert**: sólo cuando `personaje: true` (regla 2) — sin Rumbo, el icono sigue sobre el
+      fondo tintado normal.
+    - **Toast**: es el fondo **por defecto** (sin `background` explícito), reemplazando el tinte
+      plano del nivel que tenía antes. Única excepción: `sin-conexion` conserva su fondo gris de
+      siempre — no tiene nivel de color propio que mostrar como sombra.
+
+    Consecuencia directa sobre la regla 7: `background` en Toast ahora sólo admite los 8 tonos
+    900/700 (sólidos/oscuros) de la paleta de 18 — los tonos claros no se ofrecen porque no dan
+    contraste suficiente contra el texto blanco que activan. Además, en los estados donde Vida (y,
+    en `escuchando`/`pensando`/`cargando`, también sus acentos) son turquesa —
+    `reposo`/`escuchando`/`pensando`/`cargando`/`exito` — `turquesa-900`/`turquesa-700` quedan
+    excluidos del todo: una parte de Rumbo se pierde visualmente contra ese fondo. `sin-conexion`
+    no tiene esta restricción (no usa Rumbo en su forma habitual, y conserva su propio fondo).
+21. **El Modal NO tiene una forma base cuadrada — el objetivo siempre fue reducir el espacio en
+    blanco, no forzar una proporción.** Una iteración anterior fijó `min-height: 420px` (= `width`)
+    para lograr esa reducción, pero el efecto fue el contrario en contenido corto: agrandaba la
+    tarjeta con alto artificial en vez de recortar el que ya sobraba. Se revirtió: `.fdk-modal` ya
+    no tiene `min-height` ni `justify-content: center` — el alto es sólo el que pide el contenido
+    real. El espacio en blanco se reduce directamente bajando el padding, de
+    `var(--fdk-sp-6) var(--fdk-sp-5) var(--fdk-sp-5)` (32px/24px/24px) a
+    `var(--fdk-sp-5) var(--fdk-sp-4) var(--fdk-sp-4)` (24px/16px/16px). Rumbo mantiene el 96px →
+    110px (+15%) de la iteración anterior, que sigue vigente.
+22. **El gap entre botones de `.fdk-modal__acciones` sube un 10%** (`var(--fdk-sp-3)` = 12px →
+    13.2px, valor fijo en vez de token). Sólo se nota visualmente en `confirmar()` — `notificar()`
+    tiene un único botón, así que el gap no tiene con qué separar nada ahí.
 
 ## Estructura
 

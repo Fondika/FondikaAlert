@@ -114,7 +114,7 @@ function montar(options: ModalOptions, onCerrado: (r: ModalResultado) => void): 
   if (options.estado) {
     const media = document.createElement("div");
     media.className = "fdk-modal__media";
-    media.innerHTML = rumboSvg({ estado: options.estado, size: 96 });
+    media.innerHTML = rumboSvg({ estado: options.estado, size: 110 }); // 96px + 15%
     modal.appendChild(media);
   }
 

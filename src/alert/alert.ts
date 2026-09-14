@@ -56,13 +56,14 @@ export function crearAlert(options: AlertOptions): AlertHandle {
 
   const el = document.createElement("div");
   el.className = `fdk-alert fdk-alert--${nivel} fdk-alert--barra fdk-alert--flotante`;
+  if (options.personaje) el.classList.add("fdk-alert--sombra");
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
   el.setAttribute("aria-live", nivel === "error" ? "assertive" : "polite");
 
   const media = document.createElement("div");
   if (options.personaje) {
     media.className = "fdk-alert__rumbo";
-    media.innerHTML = rumboSvg({ estado: options.estado, size: 44 });
+    media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 }); // 44px + 5%
   } else {
     media.className = "fdk-alert__icono";
     media.innerHTML = iconoDeNivel(nivel);

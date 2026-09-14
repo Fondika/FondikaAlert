@@ -7,7 +7,29 @@ algo sube el número mayor (`MAJOR`), nunca un `minor` ni un `patch`.
 
 ## [Unreleased]
 
-Nada todavía — la próxima entrada empieza aquí.
+### Changed
+
+- **Alert** — con `personaje: true`, el fondo tintado plano del nivel se reemplaza por fondo
+  blanco (`--fdk-surface`) + una sombra de color derivada del nivel (`.fdk-alert--sombra`); el
+  texto se queda en `--fdk-ink` (gris-900), sin cambios.
+- **Toast** — el fondo por defecto (sin `background` explícito) pasa de ser el tinte plano del
+  nivel a blanco + sombra de color, igual que Alert con `personaje`. Única excepción:
+  `sin-conexion`, que conserva su fondo gris de siempre. `background` ahora sólo admite los 8
+  tonos 900/700 (sólidos/oscuros) de la paleta — los tonos claros ya no se recomiendan por
+  contraste. Además, en los estados `reposo`/`escuchando`/`pensando`/`cargando`/`exito`,
+  `turquesa-900`/`turquesa-700` quedan excluidos: Vida (y otros acentos turquesa de Rumbo en esos
+  estados) se pierden contra ese fondo.
+- **Alert / Toast** — Rumbo (y el icono) crecen un 5% más (44px → 46.2px), y `.fdk-alert` gana
+  8.5px de padding arriba/abajo (antes 0) para que ya no toque el borde de la tarjeta.
+- **Modal** — la tarjeta pasa de un alto libre a una forma base cuadrada (420×420), y sólo crece
+  verticalmente cuando el contenido lo exige (`min-height`, nunca `width`). Rumbo dentro del
+  modal crece un 15% (96px → 110px) para compensar la tarjeta más grande.
+- **Modal (ajuste posterior)** — se revierte la forma cuadrada: forzar `min-height` agrandaba la
+  tarjeta con contenido corto en vez de reducir su espacio en blanco, que era el objetivo real.
+  El alto ahora es sólo el que pide el contenido; el padding baja de 32px/24px/24px a
+  24px/16px/16px, y el gap entre los dos botones de `confirmar()` sube un 10% (12px → 13.2px).
+- **Mascota** — el triángulo de la burbuja de diálogo ahora sobresale de la burbuja hacia Rumbo
+  (8px), en vez de quedar con la punta a ras del borde y la base escondida por dentro.
 
 ## [0.1.0] — 2026-09-14
 

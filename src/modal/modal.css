@@ -8,18 +8,27 @@
   padding: var(--fdk-sp-4);
 }
 
+/*
+ * El objetivo de la iteración anterior (`min-height` = `width`, forma cuadrada) era reducir el
+ * espacio en blanco — pero forzar un piso de alto en contenido corto termina haciendo lo
+ * contrario: agranda la tarjeta artificialmente. Se quita: el alto ahora es sólo el que pide el
+ * contenido real, y el padding se reduce para que ese espacio en blanco baje directamente en
+ * vez de disimularse detrás de una forma cuadrada.
+ */
 .fdk-modal {
   background: var(--fdk-surface);
   color: var(--fdk-ink);
   font-family: var(--fdk-font);
   border-radius: var(--fdk-radius-lg);
   box-shadow: var(--fdk-shadow-4);
-  width: 420px;
+  width: 370px;
   max-width: 100%;
   max-height: calc(100vh - 2 * var(--fdk-sp-4));
   overflow-y: auto;
-  padding: var(--fdk-sp-6) var(--fdk-sp-5) var(--fdk-sp-5);
+  padding: var(--fdk-sp-5) var(--fdk-sp-4) var(--fdk-sp-4);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 .fdk-modal--wide { width: 640px; }
 
@@ -39,7 +48,7 @@
 .fdk-modal__cerrar:focus-visible { outline: none; box-shadow: var(--fdk-foco); border-radius: var(--fdk-radius-sm); }
 
 .fdk-modal__media { display: flex; justify-content: center; margin-bottom: var(--fdk-sp-4); }
-.fdk-modal__media .fdk-rumbo { width: 96px; height: 96px; }
+.fdk-modal__media .fdk-rumbo { width: 110px; height: 110px; } /* 96px + 15% */
 
 .fdk-modal__titulo {
   font-family: var(--fdk-font-display);
@@ -59,7 +68,7 @@
 .fdk-modal__acciones {
   display: flex;
   justify-content: center;
-  gap: var(--fdk-sp-3);
+  gap: 18%;
   margin-top: var(--fdk-sp-5);
   flex-wrap: wrap;
 }

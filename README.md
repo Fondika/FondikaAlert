@@ -10,7 +10,7 @@ de producto de FÓNDIKA, en vez de iconos genéricos. Vanilla TS, cero dependenc
 ## Instalación
 
 ```bash
-npm install "@fondika/alert@git+https://github.com/tu-org/fondika-alert.git#semver:^1.0"
+npm install "@fondika/alert@git+https://github.com/Fondika/FondikaAlert.git#semver:^1.1"
 ```
 
 No hay que importar ningún CSS aparte: cada función inyecta sus propios estilos en el
@@ -56,8 +56,12 @@ handle.cerrar();
 
 ## Toast
 
-Efímero: se autocierra con timer, se pausa al pasar el mouse. A diferencia de Alert, sí admite
-`background` para teñirse de cualquier color de la paleta.
+Efímero: se autocierra con timer, se pausa al pasar el mouse. Por defecto es blanco con una
+sombra del color del nivel (`info`/`exito`/`alerta`/`error`) — excepto `sin-conexion`, que
+conserva su fondo gris. A diferencia de Alert, sí admite `background` para forzar un color propio,
+pero sólo entre los 8 tonos 900/700 (sólidos/oscuros) de la paleta; en `reposo`, `escuchando`,
+`pensando`, `cargando` y `exito` evita `turquesa-900`/`turquesa-700` — Vida (y sus acentos) son
+turquesa y se pierden contra ese fondo.
 
 ```ts
 import { fireToast } from "@fondika/alert";
@@ -78,7 +82,7 @@ timer o porque lo cerraron a mano) — útil para encadenar algo después.
 | `estado` | `RumboEstado` | — (obligatorio) |
 | `titulo` / `texto` / `vozId` | `string` | — |
 | `personaje` | `boolean` | `true` |
-| `background` | `RumboSuperficie` | color del nivel |
+| `background` | `RumboSuperficie` | blanco + sombra del nivel (gris por defecto en `sin-conexion`) |
 | `posicion` | `Position` | `"top-end"` |
 | `timer` | `number` (ms) | `4000` |
 

@@ -11,6 +11,11 @@
   gap: var(--fdk-sp-3);
   padding: 0;
   padding-inline-start: var(--fdk-sp-3);
+  /* 2.5% de los 340px de `.fdk-alert--flotante` = 8.5px de respiro arriba/abajo para Rumbo, que
+     ya no toca el borde superior/inferior de la tarjeta tras crecer un 5%. Valor fijo en vez de
+     `%` real: `.fdk-alert` vive dentro de `.fdk-layer` (ancho auto/shrink-to-fit), así que un
+     padding porcentual ahí resuelve contra un ancho indefinido y rompe el layout. */
+  padding-block: 2px;
   border-radius: var(--fdk-radius-md);
   font-size: 14px;
   font-family: var(--fdk-font);
@@ -34,14 +39,15 @@
 }
 
 /*
- * Icono y Rumbo ocupan la MISMA huella (44px, "avatar de chat" del brandkit) — así el alto de
- * la fila no cambia según cuál de los dos se muestre, y ambos quedan centrados dentro de ella.
+ * Icono y Rumbo ocupan la MISMA huella (46.2px = 44px + 5%, "avatar de chat" del brandkit
+ * agrandado) — así el alto de la fila no cambia según cuál de los dos se muestre, y ambos
+ * quedan centrados dentro de ella.
  */
 .fdk-alert__icono,
 .fdk-alert__rumbo {
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 46.2px;
+  height: 46.2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,3 +79,21 @@
 .fdk-alert--alerta  { background: var(--fdk-alert-alerta-bg); --fdk-alert-border: var(--fdk-alert-alerta-border); }
 .fdk-alert--error   { background: var(--fdk-alert-error-bg);  --fdk-alert-border: var(--fdk-alert-error-border); }
 .fdk-alert--neutro  { background: var(--fdk-gris-100);        --fdk-alert-border: var(--fdk-gris-700); }
+
+/*
+ * El fondo tintado desaparece: queda blanco y el color del nivel pasa a vivir como sombra de
+ * color en vez de relleno — el texto sigue en gris-900 (--fdk-ink), color por defecto de
+ * .fdk-alert, así que no hace falta tocarlo. Va DESPUÉS de las reglas de nivel a propósito:
+ * misma especificidad, gana por orden de cascada.
+ *
+ * La usa Alert cuando `personaje: true` (Rumbo en vez del icono), y Toast como su fondo POR
+ * DEFECTO (cuando no se pasa `background` explícito) — ver alert.ts y toast.ts.
+ */
+.fdk-alert--sombra {
+  background: var(--fdk-surface);
+}
+.fdk-alert--sombra.fdk-alert--flotante {
+  box-shadow:
+    0 8px 20px color-mix(in srgb, var(--fdk-alert-border, transparent) 35%, transparent),
+    0 2px 6px rgba(83, 86, 89, .08);
+}

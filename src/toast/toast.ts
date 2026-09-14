@@ -22,10 +22,17 @@ export interface ToastOptions {
   /** Por defecto `true`: un toast sin Rumbo es sólo un aviso genérico, y aquí sí hay espacio y tiempo para animarlo. */
   personaje?: boolean;
   /**
-   * Color de fondo del propio toast (uno de los 18 tokens de la paleta). Por defecto usa el
-   * tinte del nivel (`info`/`exito`/`alerta`/`error`/`neutro`), igual que Alert. Si el tono es
-   * oscuro/saturado (900/700), el texto pasa a blanco y Rumbo cambia a su variante luminosa.
-   * Nunca tiñe nada fuera del propio toast — a diferencia de la superficie donde se monta.
+   * Color de fondo del propio toast. Por defecto es blanco con una sombra del color del nivel
+   * (`info`/`exito`/`alerta`/`error`) en vez de un relleno plano — excepto en `sin-conexion`,
+   * que conserva su fondo gris de siempre. Si se da un token explícito de tono oscuro/saturado
+   * (900/700), el texto pasa a blanco y Rumbo cambia a su variante luminosa. Nunca tiñe nada
+   * fuera del propio toast — a diferencia de la superficie donde se monta.
+   *
+   * Sólo se recomiendan los tonos 900/700 (sólidos/oscuros) de cada color — los tonos claros
+   * (500/300/100) no dan suficiente contraste con el texto blanco. En los estados `reposo`,
+   * `escuchando`, `pensando`, `cargando` y `exito`, evita `turquesa-900`/`turquesa-700`: Vida (y
+   * en `escuchando`/`pensando`/`cargando` también sus acentos) son turquesa y se pierden contra
+   * ese fondo.
    */
   background?: RumboSuperficie;
   /** Posición en la grilla 3×3 (ADR-003). Por defecto `top-end`. */
@@ -60,12 +67,16 @@ export function fireToast(options: ToastOptions): Promise<void> {
   if (fondo) {
     el.style.background = fondo;
     if (esTonoOscuro(options.background)) el.style.color = "#fff";
+  } else if (options.estado !== "sin-conexion") {
+    // Sin `background` explícito, el toast es blanco + sombra de color del nivel — no el
+    // relleno plano. `sin-conexion` es la única excepción: conserva su fondo gris por defecto.
+    el.classList.add("fdk-alert--sombra");
   }
 
   const media = document.createElement("div");
   if (personaje) {
     media.className = "fdk-alert__rumbo";
-    media.innerHTML = rumboSvg({ estado: options.estado, superficie: options.background, size: 44 });
+    media.innerHTML = rumboSvg({ estado: options.estado, superficie: options.background, size: 46.2 }); // 44px + 5%
   } else {
     media.className = "fdk-alert__icono";
     media.innerHTML = iconoDeNivel(nivel);

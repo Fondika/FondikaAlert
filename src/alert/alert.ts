@@ -85,14 +85,15 @@ export function crearAlert(options: AlertOptions): AlertHandle {
   body.appendChild(p);
   el.appendChild(body);
 
-  const esCiclico = options.estado === "pensando" || options.estado === "cargando";
+  const estado = options.estado;
+  const esCiclico = estado === "pensando" || estado === "cargando";
   const sinTextoExplicito = !options.texto && !options.vozId;
 
   let detenerCiclo: () => void = () => {};
 
   if (esCiclico && sinTextoExplicito) {
     p.style.display = ""; // hay copy: lo pone el ciclo
-    detenerCiclo = iniciarCicloVoz(options.estado, (texto) => {
+    detenerCiclo = iniciarCicloVoz(estado, (texto) => {
       p.textContent = texto;
     });
   } else {

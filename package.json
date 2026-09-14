@@ -18,8 +18,7 @@
     "./loader": { "types": "./dist/loader.d.ts", "import": "./dist/loader.js" },
     "./attach": { "types": "./dist/attach.d.ts", "import": "./dist/attach.js" },
     "./mascota": { "types": "./dist/mascota.d.ts", "import": "./dist/mascota.js" },
-    "./rumbo": { "types": "./dist/rumbo.d.ts", "import": "./dist/rumbo.js" },
-    "./styles.css": "./dist/styles.css"
+    "./rumbo": { "types": "./dist/rumbo.d.ts", "import": "./dist/rumbo.js" }
   },
   "scripts": {
     "build": "tsup",

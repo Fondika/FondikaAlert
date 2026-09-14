@@ -131,12 +131,13 @@ function montar(options: ModalOptions, onCerrado: (r: ModalResultado) => void): 
   modal.appendChild(p);
 
   if (options.estado) {
-    const esCiclico = options.estado === "pensando" || options.estado === "cargando";
+    const estado = options.estado;
+    const esCiclico = estado === "pensando" || estado === "cargando";
     const sinTextoExplicito = !options.texto && !options.vozId;
     if (esCiclico && sinTextoExplicito) {
-      detenerCiclo = iniciarCicloVoz(options.estado, (texto) => (p.textContent = texto));
+      detenerCiclo = iniciarCicloVoz(estado, (texto) => (p.textContent = texto));
     } else {
-      const texto = resolverVozRumbo({ estado: options.estado, texto: options.texto, vozId: options.vozId });
+      const texto = resolverVozRumbo({ estado, texto: options.texto, vozId: options.vozId });
       if (texto === null) p.remove();
       else p.textContent = texto;
     }

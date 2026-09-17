@@ -1,6 +1,6 @@
 import {
   mostrarMascota
-} from "./chunk-FINTHRLA.js";
+} from "./chunk-MDVO3PEP.js";
 import "./chunk-NTR55A6C.js";
 import "./chunk-FU44WMPZ.js";
 import "./chunk-IMEHW66V.js";

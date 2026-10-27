@@ -1,7 +1,15 @@
-import { a as RumboOptions, b as RumboSuperficie, c as RumboVariante, R as RumboEstado } from './types-BYWgq4YE.js';
+import { b as RumboOptions, c as RumboSuperficie, d as RumboVariante, R as RumboEstadoExtendido } from './estados-Disuf6Zh.js';
+export { B as BASE_DE_ESCENA, E as EscenaEstado, a as RumboEstado, e as baseDe, f as escenaDe } from './estados-Disuf6Zh.js';
 
 /** Genera el SVG inline de Rumbo para un estado y una superficie dados. */
 declare function rumboSvg(options: RumboOptions): string;
+
+/**
+ * Hace que los ojos de los Rumbo que haya dentro de `raiz` sigan al puntero. Devuelve la función que lo detiene
+ * (y devuelve los ojos a su sitio): llámala al cerrar el componente, o el seguidor se queda vivo.
+ * No hace nada (y devuelve una función vacía) sin DOM o si el sistema pide movimiento reducido.
+ */
+declare function seguirMirada(raiz: Element): () => void;
 
 /**
  * "Rumbo luminoso": sobre los dos primeros tonos (900/700 — los más oscuros y de mayor
@@ -16,7 +24,7 @@ declare function rumboSvg(options: RumboOptions): string;
 declare function resolveRumboVariante(superficie?: RumboSuperficie): RumboVariante;
 
 interface RumboVozOptions {
-    estado: RumboEstado;
+    estado: RumboEstadoExtendido;
     /** Texto libre. Si se define, siempre gana sobre `vozId` (regla de prioridad). */
     texto?: string;
     /** Id de una línea de la biblioteca (ver voz-rumbo.json). Ignorado si `texto` está definido. */
@@ -42,4 +50,4 @@ declare function resolverVozRumbo(opts: RumboVozOptions & {
  */
 declare function iniciarCicloVoz(estado: "pensando" | "cargando", onCambio: (texto: string) => void): () => void;
 
-export { RumboEstado, RumboOptions, RumboSuperficie, RumboVariante, type RumboVozOptions, iniciarCicloVoz, resolveRumboVariante, resolverVozRumbo, rumboSvg };
+export { RumboEstadoExtendido, RumboOptions, RumboSuperficie, RumboVariante, type RumboVozOptions, iniciarCicloVoz, resolveRumboVariante, resolverVozRumbo, rumboSvg, seguirMirada };

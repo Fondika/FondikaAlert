@@ -1,8 +1,10 @@
-import { R as RumboEstado } from './types-BYWgq4YE.js';
+import { R as RumboEstadoExtendido, g as EstadoSiempreLuminoso } from './estados-Disuf6Zh.js';
+import { SonidoClave } from './sonido.js';
 
 interface AlertOptions {
-    /** Estado de Rumbo. Obligatorio: define la postura visual aunque no haya texto (regla del brief). */
-    estado: RumboEstado;
+    /** Estado de Rumbo. Obligatorio: define la postura visual aunque no haya texto (regla del brief).
+     * Sin `saludo` ni `onboarding`: son siempre Rumbo luminoso y necesitan un fondo de color, y Alert no tiene `background` configurable. */
+    estado: Exclude<RumboEstadoExtendido, EstadoSiempreLuminoso>;
     /** Título en bold. Opcional. */
     titulo?: string;
     /** Texto libre. Tiene prioridad sobre `vozId`. */
@@ -15,6 +17,12 @@ interface AlertOptions {
      */
     personaje?: boolean;
     host?: HTMLElement;
+    /**
+     * Sonido + háptica (brandkit sonido-haptica.json). `true` = el que le toca al `estado`
+     * (exito, error, alerta; reposo/escuchando = aviso; el resto no suena). Una clave
+     * (`"deposito"`, `"retiro"`…) fuerza ese sonido. Por defecto no suena.
+     */
+    sonido?: boolean | SonidoClave;
 }
 interface AlertHandle {
     el: HTMLElement;

@@ -1,9 +1,10 @@
 import { P as Position } from './layer-CjjTmQWt.js';
-import { R as RumboEstado, b as RumboSuperficie } from './types-BYWgq4YE.js';
+import { R as RumboEstadoExtendido, c as RumboSuperficie } from './estados-Disuf6Zh.js';
+import { SonidoClave } from './sonido.js';
 
 interface MascotaOptions {
     /** Estado de Rumbo. Por defecto `"reposo"` — la mascota no está atada a ningún aviso en curso. */
-    estado?: RumboEstado;
+    estado?: RumboEstadoExtendido;
     /** Texto de la burbuja. Tiene prioridad sobre `vozId`. Si no hay ninguno, no hay burbuja. */
     texto?: string;
     /** Id de una línea de la biblioteca de voz de Rumbo para el estado usado. */
@@ -16,6 +17,17 @@ interface MascotaOptions {
     /** Handler de click sobre el propio personaje (ej. abrir un chat). Opcional. */
     onClick?: () => void;
     host?: HTMLElement;
+    /**
+     * Sonido + háptica (brandkit sonido-haptica.json). `true` = el que le toca al `estado`
+     * (exito, error, alerta; reposo/escuchando = aviso; el resto no suena). Una clave
+     * (`"deposito"`, `"retiro"`…) fuerza ese sonido. Por defecto no suena.
+     */
+    sonido?: boolean | SonidoClave;
+    /**
+     * Los ojos de Rumbo siguen al puntero (como en `rumbo-en-movimiento.html`: hasta 3.4 unidades, suave, sin girar la
+     * cabeza). Apagado por defecto; se desactiva solo con `prefers-reduced-motion`. No aplica a las escenas.
+     */
+    mirada?: boolean;
 }
 interface MascotaHandle {
     el: HTMLElement;

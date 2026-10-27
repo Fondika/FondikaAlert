@@ -1,24 +1,35 @@
 import {
+  colorTextoSobre,
   degradadoDeToken,
   esTonoOscuro
-} from "./chunk-GQCXWWGT.js";
+} from "./chunk-BQ5PS2RS.js";
 import {
   zIndex
-} from "./chunk-IMEHW66V.js";
+} from "./chunk-WBGATSQU.js";
+import {
+  exigirElemento
+} from "./chunk-TWOV343Q.js";
 import {
   animar
 } from "./chunk-DU34MBEM.js";
 import {
   ensureStyles,
   rumbo_default
-} from "./chunk-H7UDFJLK.js";
+} from "./chunk-ABG2US5U.js";
 import {
   iniciarCicloVoz,
   resolverVozRumbo
-} from "./chunk-R75R3BM7.js";
+} from "./chunk-HRROGUWK.js";
+import {
+  seguirMirada
+} from "./chunk-B3635KHF.js";
 import {
   rumboSvg
-} from "./chunk-J7ITZR5C.js";
+} from "./chunk-A6EV2SXJ.js";
+import {
+  superficiePorDefecto,
+  validarEstado
+} from "./chunk-DNUNKU7K.js";
 
 // src/core/overlay.ts
 var posicionPrevia = /* @__PURE__ */ new WeakMap();
@@ -37,11 +48,22 @@ function montarOverlay(host, contenido) {
     host.setAttribute("aria-busy", "true");
     host.setAttribute("inert", "");
   }
+  const inertados = [];
+  if (esPantalla) {
+    for (const hijo of Array.from(document.body.children)) {
+      if (/(^|\s)fdk-/.test(hijo.className) || hijo.hasAttribute("inert")) continue;
+      hijo.setAttribute("inert", "");
+      inertados.push(hijo);
+    }
+    const activo = document.activeElement;
+    if (activo && inertados.some((n) => n.contains(activo))) activo.blur();
+  }
   host.appendChild(overlay);
   return {
     el: overlay,
     close() {
       overlay.remove();
+      inertados.forEach((n) => n.removeAttribute("inert"));
       if (!esPantalla) {
         host.removeAttribute("aria-busy");
         host.removeAttribute("inert");
@@ -80,20 +102,28 @@ function construirContenido(options, size) {
     if (texto === null) p.remove();
     else p.textContent = texto;
   }
-  return { el, detenerCiclo };
+  const detenerMirada = options.mirada ? seguirMirada(el) : () => {
+  };
+  return { el, detenerCiclo: () => {
+    detenerCiclo();
+    detenerMirada();
+  } };
 }
 function te\u00F1irOverlay(overlayEl, superficie) {
   const degradado = degradadoDeToken(superficie);
   if (!degradado) return;
   overlayEl.style.background = degradado;
-  if (esTonoOscuro(superficie)) overlayEl.style.color = "#fff";
+  if (esTonoOscuro(superficie)) overlayEl.style.color = colorTextoSobre(superficie);
 }
 var refsPantalla = 0;
 var overlayPantalla = null;
 var detenerCicloPantalla = () => {
 };
+var cierrePantalla = 0;
 function loaderScreen(options = {}) {
-  ensureStyles(loader_default + rumbo_default);
+  validarEstado(options.estado, "loaderScreen", true);
+  ensureStyles(loader_default, rumbo_default);
+  options = { ...options, superficie: options.superficie ?? superficiePorDefecto(options.estado) };
   refsPantalla++;
   if (!overlayPantalla) {
     const { el, detenerCiclo } = construirContenido(options, 96);
@@ -101,15 +131,22 @@ function loaderScreen(options = {}) {
     overlayPantalla.el.classList.add("fdk-anim-in");
     te\u00F1irOverlay(overlayPantalla.el, options.superficie);
     detenerCicloPantalla = detenerCiclo;
+  } else if (refsPantalla === 1) {
+    overlayPantalla.el.classList.remove("fdk-anim-out");
+    cierrePantalla++;
   }
   const overlay = overlayPantalla;
+  let cerrado = false;
   return {
     el: overlay.el,
     async close() {
+      if (cerrado) return;
+      cerrado = true;
       if (--refsPantalla > 0) return;
-      refsPantalla = 0;
-      detenerCicloPantalla();
+      const marca = ++cierrePantalla;
       await animar(overlay.el, "fdk-anim-out", 250);
+      if (marca !== cierrePantalla) return;
+      detenerCicloPantalla();
       overlay.close();
       overlayPantalla = null;
     }
@@ -117,24 +154,35 @@ function loaderScreen(options = {}) {
 }
 var targets = /* @__PURE__ */ new WeakMap();
 function loaderTarget(host, options = {}) {
-  ensureStyles(loader_default + rumbo_default);
+  exigirElemento(host, "loaderTarget");
+  validarEstado(options.estado, "loaderTarget", true);
+  ensureStyles(loader_default, rumbo_default);
+  options = { ...options, superficie: options.superficie ?? superficiePorDefecto(options.estado) };
   let entrada = targets.get(host);
   if (!entrada) {
     const { el, detenerCiclo } = construirContenido(options, 44);
     const overlay = montarOverlay(host, el);
     overlay.el.classList.add("fdk-anim-in");
     te\u00F1irOverlay(overlay.el, options.superficie);
-    entrada = { refs: 0, overlay, detenerCiclo };
+    entrada = { refs: 0, cierre: 0, overlay, detenerCiclo };
     targets.set(host, entrada);
+  } else if (entrada.refs === 0) {
+    entrada.overlay.el.classList.remove("fdk-anim-out");
+    entrada.cierre++;
   }
   entrada.refs++;
   const actual = entrada;
+  let cerrado = false;
   return {
     el: actual.overlay.el,
     async close() {
+      if (cerrado) return;
+      cerrado = true;
       if (--actual.refs > 0) return;
-      actual.detenerCiclo();
+      const marca = ++actual.cierre;
       await animar(actual.overlay.el, "fdk-anim-out", 250);
+      if (marca !== actual.cierre) return;
+      actual.detenerCiclo();
       actual.overlay.close();
       targets.delete(host);
     }
@@ -142,21 +190,48 @@ function loaderTarget(host, options = {}) {
 }
 
 // src/loader/boton.ts
+var activos = /* @__PURE__ */ new WeakMap();
 function loaderBoton(boton, options = {}) {
-  ensureStyles(loader_default + rumbo_default);
-  const keepWidth = options.keepWidth ?? true;
-  const contenidoPrevio = boton.innerHTML;
-  const disabledPrevio = boton.disabled;
-  if (keepWidth) boton.style.width = `${boton.getBoundingClientRect().width}px`;
-  boton.disabled = true;
-  boton.setAttribute("aria-busy", "true");
-  boton.innerHTML = `<span class="fdk-loader-boton__rumbo" aria-hidden="true">${rumboSvg({ estado: "cargando", superficie: options.superficie, size: 28 })}</span>`;
+  exigirElemento(boton, "loaderBoton", "boton");
+  ensureStyles(loader_default, rumbo_default);
+  let entrada = activos.get(boton);
+  if (!entrada) {
+    const keepWidth = options.keepWidth ?? true;
+    const hijos = Array.from(boton.childNodes);
+    const disabledPrevio = boton.disabled;
+    const anchoPrevio = boton.style.width;
+    if (keepWidth) boton.style.width = `${boton.getBoundingClientRect().width}px`;
+    boton.disabled = true;
+    boton.setAttribute("aria-busy", "true");
+    const rumbo = document.createElement("span");
+    rumbo.className = "fdk-loader-boton__rumbo";
+    rumbo.setAttribute("aria-hidden", "true");
+    rumbo.innerHTML = rumboSvg({ estado: "cargando", superficie: options.superficie, size: 28 });
+    boton.replaceChildren(rumbo);
+    const detenerMirada = options.mirada ? seguirMirada(rumbo) : () => {
+    };
+    entrada = {
+      refs: 0,
+      restaurar() {
+        detenerMirada();
+        boton.replaceChildren(...hijos);
+        boton.disabled = disabledPrevio;
+        boton.removeAttribute("aria-busy");
+        if (keepWidth) boton.style.width = anchoPrevio;
+      }
+    };
+    activos.set(boton, entrada);
+  }
+  entrada.refs++;
+  const actual = entrada;
+  let cerrado = false;
   return {
     close() {
-      boton.innerHTML = contenidoPrevio;
-      boton.disabled = disabledPrevio;
-      boton.removeAttribute("aria-busy");
-      if (keepWidth) boton.style.width = "";
+      if (cerrado) return;
+      cerrado = true;
+      if (--actual.refs > 0) return;
+      actual.restaurar();
+      activos.delete(boton);
     }
   };
 }

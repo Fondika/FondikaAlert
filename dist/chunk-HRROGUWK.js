@@ -1,3 +1,7 @@
+import {
+  baseDe
+} from "./chunk-DNUNKU7K.js";
+
 // src/rumbo/voz-rumbo.json
 var voz_rumbo_default = {
   _fuente: "Brand_kit_Fondika/04-personaje/assets/voz-rumbo.html \u2014 33 l\xEDneas, copiadas verbatim.",
@@ -79,7 +83,7 @@ var ESTADOS = voz_rumbo_default.estados;
 function resolverVozRumbo(opts) {
   if (opts.texto) return opts.texto;
   if (!opts.vozId && !opts.mostrarPorDefecto) return null;
-  const bloque = ESTADOS[opts.estado];
+  const bloque = ESTADOS[baseDe(opts.estado)];
   if (!bloque) return null;
   if (opts.vozId) {
     const linea = bloque.lineas.find((l) => l.id === opts.vozId);

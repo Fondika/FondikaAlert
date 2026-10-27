@@ -1,3 +1,7 @@
+import {
+  baseDe
+} from "./chunk-DNUNKU7K.js";
+
 // src/rumbo/variante.ts
 function resolveRumboVariante(superficie = "blanco") {
   if (superficie === "blanco") return "color";
@@ -32,7 +36,7 @@ function cuerpoColor(variante) {
 }
 function ojos(cy, r, variante) {
   const color = variante === "luminoso" ? GRIS_OJOS : GRIS_OJOS;
-  return `<circle cx="72" cy="${cy}" r="${r}" fill="${color}"/><circle cx="95" cy="${cy}" r="${r}" fill="${color}"/>`;
+  return `<g class="fdk-rumbo__ojos"><circle cx="72" cy="${cy}" r="${r}" fill="${color}"/><circle cx="95" cy="${cy}" r="${r}" fill="${color}"/></g>`;
 }
 function svgWrap(size, inner, claseAnim) {
   return `<svg viewBox="0 0 120 120" width="${size}" height="${size}" class="fdk-rumbo ${claseAnim}" aria-hidden="true" focusable="false">${inner}</svg>`;
@@ -42,7 +46,7 @@ function rumboSvg(options) {
   const variante = resolveRumboVariante(options.superficie);
   const glow = variante === "luminoso" ? capasLuminoso() : "";
   const cuerpo = cuerpoColor(variante);
-  switch (estado) {
+  switch (baseDe(estado)) {
     case "reposo":
       return svgWrap(size, `${glow}
         <g class="fdk-rumbo__cuerpo fdk-rumbo__respira"><path d="${CUERPO_PATH}" fill="${cuerpo}"/>${ojos(62, 6.6, variante)}</g>
@@ -69,8 +73,9 @@ function rumboSvg(options) {
     case "exito":
       return svgWrap(size, `${glow}
         <g class="fdk-rumbo__cuerpo fdk-rumbo__salta"><path d="${CUERPO_PATH}" fill="${cuerpo}"/>
-          <path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/>
-          <path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="fdk-rumbo__ojos">
+            <path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/>
+            <path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/></g></g>
         <circle class="fdk-rumbo__vida fdk-rumbo__sube" cx="99" cy="11" r="11" fill="${TURQUESA}"/>`, "s-exito");
     case "error":
       return svgWrap(size, `${glow}
@@ -86,8 +91,9 @@ function rumboSvg(options) {
     case "sin-conexion":
       return svgWrap(size, `
         <g class="fdk-rumbo__cuerpo"><path d="${CUERPO_PATH}" fill="${GRIS_OFF}"/>
-          <path d="M65.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/>
-          <path d="M88.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="fdk-rumbo__ojos">
+            <path d="M65.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/>
+            <path d="M88.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/></g></g>
         <circle cx="99" cy="15" r="9.5" fill="none" stroke="${GRIS_OFF}" stroke-width="3" stroke-dasharray="4.5 4.5"/>`, "s-off");
   }
 }

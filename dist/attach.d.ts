@@ -1,14 +1,34 @@
-import { R as RumboEstado, b as RumboSuperficie } from './types-BYWgq4YE.js';
+import { R as RumboEstadoExtendido, c as RumboSuperficie } from './estados-Disuf6Zh.js';
+import { SonidoClave } from './sonido.js';
 
 interface AttachOptions {
-    /** Contenido libre a inyectar. Si se omite y se da `estado`, se usa Rumbo como contenido. */
+    /**
+     * Contenido libre a inyectar. Un string se inserta como TEXTO (seguro con datos de usuario); para markup
+     * pasa un `HTMLElement` o activa `html`. Si se omite y se da `estado`, se usa Rumbo como contenido.
+     */
     contenido?: HTMLElement | string;
     /** Atajo: monta a Rumbo directamente (icono de estado dentro de un botón, badge, etc.). */
-    estado?: RumboEstado;
+    estado?: RumboEstadoExtendido;
     superficie?: RumboSuperficie;
     /** Tamaño de Rumbo en px cuando se usa el atajo `estado`. Por defecto 24 (tamaño de icono). */
     size?: number;
     anim?: "fade" | "slide";
+    /**
+     * Sonido + háptica (brandkit sonido-haptica.json). `true` = el que le toca al `estado`
+     * (exito, error, alerta; reposo/escuchando = aviso; el resto no suena). Una clave
+     * (`"deposito"`, `"retiro"`…) fuerza ese sonido. Por defecto no suena.
+     */
+    sonido?: boolean | SonidoClave;
+    /**
+     * Interpreta `contenido` (string) como HTML. Úsalo sólo con markup propio o de confianza, p. ej. `rumboEscena(...)`:
+     * nunca con texto de usuario (XSS). Por defecto `false`.
+     */
+    html?: boolean;
+    /**
+     * Los ojos de Rumbo siguen al puntero (como en `rumbo-en-movimiento.html`: hasta 3.4 unidades, suave, sin girar la
+     * cabeza). Apagado por defecto; se desactiva solo con `prefers-reduced-motion`. No aplica a las escenas.
+     */
+    mirada?: boolean;
 }
 interface AttachHandle {
     el: HTMLElement;

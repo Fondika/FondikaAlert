@@ -2,39 +2,55 @@ import {
   alert_default,
   iconoDeNivel,
   nivelDeEstado
-} from "./chunk-MOZHLHQR.js";
+} from "./chunk-22HQHEYW.js";
 import {
   getLayer
-} from "./chunk-NTR55A6C.js";
+} from "./chunk-WZA7ARBF.js";
 import {
   layer_default
 } from "./chunk-FU44WMPZ.js";
 import {
+  pintarEscena
+} from "./chunk-4SL5GHEC.js";
+import {
+  sonarPara
+} from "./chunk-3RP4GPS2.js";
+import {
   ensureStyles,
   rumbo_default
-} from "./chunk-H7UDFJLK.js";
+} from "./chunk-ABG2US5U.js";
 import {
   iniciarCicloVoz,
   resolverVozRumbo
-} from "./chunk-R75R3BM7.js";
+} from "./chunk-HRROGUWK.js";
 import {
   rumboSvg
-} from "./chunk-J7ITZR5C.js";
+} from "./chunk-A6EV2SXJ.js";
+import {
+  escenaDe,
+  validarEstado
+} from "./chunk-DNUNKU7K.js";
 
 // src/alert/alert.ts
 function crearAlert(options) {
-  ensureStyles(layer_default + alert_default + rumbo_default);
+  validarEstado(options?.estado, "crearAlert");
+  ensureStyles(layer_default, alert_default, rumbo_default);
   const nivel = nivelDeEstado(options.estado);
   const layer = getLayer("top-end", options.host);
   const el = document.createElement("div");
   el.className = `fdk-alert fdk-alert--${nivel} fdk-alert--barra fdk-alert--flotante`;
-  if (options.personaje) el.classList.add("fdk-alert--sombra");
+  const escena = escenaDe(options.estado);
+  const conPersonaje = options.personaje || !!escena;
+  if (conPersonaje) el.classList.add("fdk-alert--sombra");
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
   el.setAttribute("aria-live", nivel === "error" ? "assertive" : "polite");
   const media = document.createElement("div");
-  if (options.personaje) {
+  if (conPersonaje) {
     media.className = "fdk-alert__rumbo";
-    media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 });
+    if (escena) {
+      media.classList.add("fdk-alert__rumbo--escena");
+      pintarEscena(media, escena, 80);
+    } else media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 });
   } else {
     media.className = "fdk-alert__icono";
     media.innerHTML = iconoDeNivel(nivel);
@@ -75,6 +91,7 @@ function crearAlert(options) {
     }
   }
   layer.appendChild(el);
+  sonarPara(options.sonido, options.estado);
   return {
     el,
     cerrar() {

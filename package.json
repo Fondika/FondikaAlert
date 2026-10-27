@@ -1,10 +1,28 @@
 {
   "name": "@fondika/alert",
-  "version": "0.1.0",
+  "version": "1.2.0",
   "description": "Librería de alertas, toasts y modales de FÓNDIKA con el personaje Rumbo. Vanilla, sin dependencias en runtime.",
   "type": "module",
   "sideEffects": ["*.css"],
-  "files": ["dist"],
+  "devEngines": { "runtime": { "name": "node", "version": ">=24.22.1 <25", "onFail": "error" } },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "alert": ["dist/alert.d.ts"],
+      "toast": ["dist/toast.d.ts"],
+      "modal": ["dist/modal.d.ts"],
+      "loader": ["dist/loader.d.ts"],
+      "attach": ["dist/attach.d.ts"],
+      "mascota": ["dist/mascota.d.ts"],
+      "rumbo": ["dist/rumbo.d.ts"],
+      "lluvia": ["dist/lluvia.d.ts"],
+      "escenas": ["dist/escenas.d.ts"],
+      "sonido": ["dist/sonido.d.ts"]
+    }
+  },
+  "files": ["dist", "sonidos"],
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.6.0",
@@ -18,10 +36,14 @@
     "./loader": { "types": "./dist/loader.d.ts", "import": "./dist/loader.js" },
     "./attach": { "types": "./dist/attach.d.ts", "import": "./dist/attach.js" },
     "./mascota": { "types": "./dist/mascota.d.ts", "import": "./dist/mascota.js" },
-    "./rumbo": { "types": "./dist/rumbo.d.ts", "import": "./dist/rumbo.js" }
+    "./rumbo": { "types": "./dist/rumbo.d.ts", "import": "./dist/rumbo.js" },
+    "./lluvia": { "types": "./dist/lluvia.d.ts", "import": "./dist/lluvia.js" },
+    "./escenas": { "types": "./dist/escenas.d.ts", "import": "./dist/escenas.js" },
+    "./sonido": { "types": "./dist/sonido.d.ts", "import": "./dist/sonido.js" }
   },
   "scripts": {
     "build": "tsup",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "tsup --config tsup.test.config.ts && node --test \"tests/*.test.mjs\""
   }
 }

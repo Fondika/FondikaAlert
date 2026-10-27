@@ -1,0 +1,100 @@
+/*
+ * Lluvia de personajes. La capa es `container-type: size`: las distancias de los @keyframes se miden
+ * en `cqw`/`cqh` (ancho/alto de la capa), así que la lluvia se adapta sola al redimensionar la ventana
+ * — o al caber dentro de un elemento (`host`). Sólo se animan `transform` y
+ * `opacity`; el tamaño de cada personaje sale de `scale()`, nunca de width/height.
+ */
+.fdk-lluvia {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none; /* nunca bloquea clics */
+  container-type: size;
+  z-index: var(--fdk-z, 9250);
+}
+.fdk-lluvia--pantalla { position: fixed; }
+.fdk-lluvia--contenida { position: absolute; z-index: auto; }
+
+.fdk-lluvia__p {
+  /* posición del centro: --xp (0..1) reparte a lo ancho; --k es la escala */
+  --x: calc(var(--k, 1) * 32px + var(--xp, .5) * (100cqw - 64px * var(--k, 1)) - 32px);
+  --y: calc(var(--yp, .5) * (100cqh - 64px * var(--k, 1)));
+  --g: calc(100cqh - 32px - 32px * var(--k, 1)); /* y del piso, para el rebote */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 64px;
+  opacity: var(--o, 1);
+  will-change: transform;
+  transform: translate3d(0, -200px, 0); /* hasta que arranca su animación, fuera de la vista */
+  animation-duration: var(--dur, 4s);
+  animation-delay: var(--delay, 0ms);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-fill-mode: backwards;
+}
+.fdk-lluvia__p--parada { display: none; }
+.fdk-lluvia__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ---- efectos base: la clase va en la capa; cada efecto elige el keyframe de la partícula y/o de la imagen ---- */
+.fdk-lluvia--recta .fdk-lluvia__p,
+.fdk-lluvia--balanceo .fdk-lluvia__p,
+.fdk-lluvia--giro .fdk-lluvia__p,
+.fdk-lluvia--nieve .fdk-lluvia__p { animation-name: fdk-lluvia-recta; }
+.fdk-lluvia--rebote .fdk-lluvia__p { animation-name: fdk-lluvia-rebote; }
+.fdk-lluvia--rafaga .fdk-lluvia__p { animation-name: fdk-lluvia-rafaga; }
+
+.fdk-lluvia--balanceo .fdk-lluvia__img,
+.fdk-lluvia--nieve .fdk-lluvia__img {
+  animation: fdk-lluvia-balanceo var(--per, 2.4s) ease-in-out calc(var(--per, 2.4s) * var(--fase, 0) * -1) infinite alternate;
+}
+.fdk-lluvia--giro .fdk-lluvia__img {
+  animation: fdk-lluvia-giro var(--per, 2s) linear calc(var(--per, 2s) * var(--fase, 0) * -1) infinite;
+}
+
+@keyframes fdk-lluvia-recta {
+  from { transform: translate3d(var(--x), -110px, 0) scale(var(--k, 1)); }
+  to { transform: translate3d(var(--x), calc(100cqh + 110px), 0) scale(var(--k, 1)); }
+}
+@keyframes fdk-lluvia-balanceo {
+  from { transform: translateX(calc(var(--amp, 30px) * -1)) rotate(calc(var(--rot, 14deg) * -1)); }
+  to { transform: translateX(var(--amp, 30px)) rotate(var(--rot, 14deg)); }
+}
+@keyframes fdk-lluvia-giro {
+  to { transform: rotate(calc(360deg * var(--dir, 1))); }
+}
+@keyframes fdk-lluvia-rafaga {
+  from { transform: translate3d(var(--x), -110px, 0) rotate(calc(var(--ang, 20deg) * -1)) scale(var(--k, 1)); }
+  to { transform: translate3d(calc(var(--x) + var(--dx, 30cqw)), calc(100cqh + 110px), 0) rotate(calc(var(--ang, 20deg) * -1)) scale(var(--k, 1)); }
+}
+@keyframes fdk-lluvia-rebote {
+  0% { transform: translate3d(var(--x), -110px, 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  55% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(0, .55, .45, 1); }
+  70% { transform: translate3d(var(--x), calc(var(--g) - var(--rb, 24) * 1cqh), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  82% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(0, .55, .45, 1); }
+  90% { transform: translate3d(var(--x), calc(var(--g) - var(--rb, 24) * .35cqh), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  96% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); opacity: var(--o, 1); }
+  100% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); opacity: 0; }
+}
+
+/* detener(): la capa se desvanece con el mismo `animar()` que usan los demás componentes */
+.fdk-lluvia.fdk-anim-out { animation: fdk-lluvia-salida 250ms ease-out forwards; }
+@keyframes fdk-lluvia-salida { to { opacity: 0; } }
+
+/*
+ * prefers-reduced-motion: no cae nada. Unos pocos personajes aparecen quietos, con un fundido, en
+ * posiciones al azar (el motor pone --xp/--yp/--k). Se quedan hasta que termina la duración o se detiene.
+ */
+.fdk-lluvia--quieta .fdk-lluvia__p {
+  transform: translate3d(var(--x), var(--y), 0) scale(var(--k, 1));
+  animation: fdk-lluvia-fundido 500ms ease-out var(--delay, 0ms) 1 backwards !important;
+}
+.fdk-lluvia--quieta .fdk-lluvia__img { animation: none !important; }
+@keyframes fdk-lluvia-fundido { from { opacity: 0; } }

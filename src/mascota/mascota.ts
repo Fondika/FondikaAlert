@@ -5,14 +5,22 @@ import { zIndex } from "../core/zstack";
 import { animar } from "../core/anim";
 import { rumboSvg } from "../rumbo/rumbo";
 import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
-import type { RumboEstado, RumboSuperficie } from "../rumbo/types";
+import type { RumboSuperficie } from "../rumbo/types";
+import type { RumboEstadoExtendido } from "../rumbo/estados";
+
+import { escenaDe, validarEstado } from "../rumbo/estados";
+import { validarPosicion } from "../core/validar";
+import { seguirMirada } from "../rumbo/mirada";
+import { pintarEscena } from "../escenas/pintar";
+import { sonarPara } from "../sonido/sonido";
+import type { SonidoClave } from "../sonido/sonido";
 import mascotaCss from "./mascota.css";
 import rumboCss from "../rumbo/rumbo.css";
 import layerCss from "../core/layer.css";
 
 export interface MascotaOptions {
   /** Estado de Rumbo. Por defecto `"reposo"` — la mascota no está atada a ningún aviso en curso. */
-  estado?: RumboEstado;
+  estado?: RumboEstadoExtendido;
   /** Texto de la burbuja. Tiene prioridad sobre `vozId`. Si no hay ninguno, no hay burbuja. */
   texto?: string;
   /** Id de una línea de la biblioteca de voz de Rumbo para el estado usado. */
@@ -25,6 +33,17 @@ export interface MascotaOptions {
   /** Handler de click sobre el propio personaje (ej. abrir un chat). Opcional. */
   onClick?: () => void;
   host?: HTMLElement;
+  /**
+   * Sonido + háptica (brandkit sonido-haptica.json). `true` = el que le toca al `estado`
+   * (exito, error, alerta; reposo/escuchando = aviso; el resto no suena). Una clave
+   * (`"deposito"`, `"retiro"`…) fuerza ese sonido. Por defecto no suena.
+   */
+  sonido?: boolean | SonidoClave;
+  /**
+   * Los ojos de Rumbo siguen al puntero (como en `rumbo-en-movimiento.html`: hasta 3.4 unidades, suave, sin girar la
+   * cabeza). Apagado por defecto; se desactiva solo con `prefers-reduced-motion`. No aplica a las escenas.
+   */
+  mirada?: boolean;
 }
 
 export interface MascotaHandle {
@@ -43,6 +62,8 @@ interface Instancia {
   personaje: HTMLElement;
   burbuja: HTMLElement | null;
   detenerCiclo: () => void;
+  /** Seguidor de la mirada, mientras `mirada` esté activa. */
+  detenerMirada: (() => void) | null;
   opciones: MascotaOptions;
 }
 
@@ -60,7 +81,7 @@ function construirBurbuja(el: HTMLElement, texto: string | null): HTMLElement | 
 }
 
 function resolverTexto(
-  estado: RumboEstado,
+  estado: RumboEstadoExtendido,
   options: Pick<MascotaOptions, "texto" | "vozId">,
   onTextoCiclo: (t: string) => void
 ): () => void {
@@ -86,7 +107,9 @@ function resolverTexto(
  * de apilar una segunda. Persistente (ADR-006): devuelve un `Handle`, nunca se cierra sola.
  */
 export function mostrarMascota(options: MascotaOptions = {}): MascotaHandle {
-  ensureStyles(layerCss + mascotaCss + rumboCss);
+  validarEstado(options.estado, "mostrarMascota", true);
+  validarPosicion(options.posicion, "mostrarMascota");
+  ensureStyles(layerCss, mascotaCss, rumboCss);
 
   const host = options.host ?? document.body;
   const posicion = options.posicion ?? "bottom-end";
@@ -108,7 +131,7 @@ export function mostrarMascota(options: MascotaOptions = {}): MascotaHandle {
     el.appendChild(personaje);
 
     layer.appendChild(el);
-    instancia = { el, personaje, burbuja: null, detenerCiclo: () => {}, opciones: {} };
+    instancia = { el, personaje, burbuja: null, detenerCiclo: () => {}, detenerMirada: null, opciones: {} };
     porHost.set(posicion, instancia);
   }
 
@@ -119,10 +142,22 @@ export function mostrarMascota(options: MascotaOptions = {}): MascotaHandle {
 function aplicar(instancia: Instancia, options: MascotaOptions): void {
   instancia.detenerCiclo();
   instancia.opciones = { ...instancia.opciones, ...options };
-  const { estado = "reposo", superficie, size = 80, onClick } = instancia.opciones;
+  const { estado = "reposo", superficie, onClick } = instancia.opciones;
+  const escena = escenaDe(estado);
+  const size = instancia.opciones.size ?? (escena ? 120 : 80);
 
-  instancia.personaje.innerHTML = rumboSvg({ estado, superficie, size });
+  const caja = instancia.personaje;
+  caja.style.width = caja.style.height = escena ? `${size}px` : "";
+  if (escena) pintarEscena(caja, escena, size);
+  else {
+    delete caja.dataset.escena;
+    caja.innerHTML = rumboSvg({ estado, superficie, size });
+  }
+  sonarPara(options.sonido, estado);
   instancia.personaje.onclick = onClick ?? null;
+  // un solo seguidor por mascota: busca los ojos cada cuadro, así que sobrevive a que `actualizar` cambie el SVG
+  if (instancia.opciones.mirada && !instancia.detenerMirada) instancia.detenerMirada = seguirMirada(instancia.personaje);
+  else if (!instancia.opciones.mirada && instancia.detenerMirada) { instancia.detenerMirada(); instancia.detenerMirada = null; }
 
   instancia.detenerCiclo = resolverTexto(estado, instancia.opciones, (texto) => {
     instancia.burbuja = construirBurbuja(instancia.el, texto === "__ninguno__" ? null : texto);
@@ -150,6 +185,7 @@ function construirHandle(
     },
     async cerrar() {
       instancia.detenerCiclo();
+      instancia.detenerMirada?.();
       await animar(instancia.el, "fdk-anim-out", 250);
       instancia.el.remove();
       porHost.delete(posicion);

@@ -17,6 +17,18 @@ export function esTonoOscuro(token?: RumboSuperficie): boolean {
   return tono === "900" || tono === "700";
 }
 
+/** Tonos 900/700 donde el blanco NO llega a 4.5:1 (WCAG AA): naranja 2.05/1.82, turquesa-700 2.82, gris-700 2.38. */
+const TONOS_CLAROS_PARA_TEXTO = ["naranja-900", "naranja-700", "turquesa-700", "gris-700"];
+
+/**
+ * Color de texto sobre un fondo 900/700: blanco, salvo en los tonos de arriba, que llevan tinta casi negra (>= 5.8:1).
+ * Turquesa-900 se queda en blanco (3.71:1: cumple sólo para texto grande); gris-900 y rojo, con 6.4–7.4:1 y 4.7–6.4:1, también.
+ * El cuerpo de Rumbo luminoso sigue siendo blanco: esto sólo cambia el texto.
+ */
+export function colorTextoSobre(token?: RumboSuperficie): string {
+  return token && TONOS_CLAROS_PARA_TEXTO.includes(token) ? "#1f2123" : "#ffffff";
+}
+
 /**
  * Fondo con un halo de luz localizado alrededor de Rumbo: dos capas, no una.
  *

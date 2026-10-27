@@ -125,8 +125,8 @@ button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(0,146,166,.4)}
 .fdk-mascota__personaje .fdk-rumbo{width:100%;height:100%}
 .fdk-mascota__personaje:hover{background:transparent}
 .fdk-mascota__burbuja{position:relative;background:#fff;color:var(--fdk-ink);border-radius:8px;box-shadow:0 6px 16px rgba(83,86,89,.14),0 2px 4px rgba(83,86,89,.06);padding:12px 16px;font-size:14px;line-height:1.5;max-width:220px;margin-bottom:8px}
-.fdk-mascota__burbuja::after{content:"";position:absolute;bottom:22px;width:0;height:0;border:8px solid transparent;right:-8px;border-left-color:#fff;filter:drop-shadow(2px 2px 2px rgba(83,86,89,.18))}
-.fdk-layer--bottom-start .fdk-mascota__burbuja::after,.fdk-layer--top-start .fdk-mascota__burbuja::after,.fdk-layer--middle-start .fdk-mascota__burbuja::after{right:auto;left:-8px;border-left-color:transparent;border-right-color:#fff;filter:drop-shadow(-2px 2px 2px rgba(83,86,89,.18))}
+.fdk-mascota__burbuja::after{content:"";position:absolute;bottom:22px;width:0;height:0;border:8px solid transparent;right:-16px;border-left-color:#fff;filter:drop-shadow(2px 2px 2px rgba(83,86,89,.18))}
+.fdk-layer--bottom-start .fdk-mascota__burbuja::after,.fdk-layer--top-start .fdk-mascota__burbuja::after,.fdk-layer--middle-start .fdk-mascota__burbuja::after{right:auto;left:-16px;border-left-color:transparent;border-right-color:#fff;filter:drop-shadow(-2px 2px 2px rgba(83,86,89,.18))}
 @keyframes fdk-mascota-in{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
 @keyframes fdk-mascota-out{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.85)}}
 .fdk-mascota.fdk-anim-in{animation:fdk-mascota-in 250ms ease}
@@ -146,12 +146,13 @@ footer a{color:var(--fdk-turquesa-900)}
    Nada aquí es cromía de página: son los tokens y clases reales de Alert,
    Toast, Modal, Loader y Attach tal como los define la librería.
    ===================================================================== */
-.fdk-alert{display:flex;gap:12px;padding:0;padding-inline-start:12px;border-radius:8px;font-size:14px;font-family:var(--fdk-font);color:var(--fdk-ink);line-height:1.5;align-items:center}
+.fdk-alert{display:flex;gap:12px;padding:0;padding-inline-start:12px;padding-block:2px;border-radius:8px;font-size:14px;font-family:var(--fdk-font);color:var(--fdk-ink);line-height:1.5;align-items:center}
 .fdk-alert--barra{border-radius:4px;border-left:4px solid var(--fdk-alert-border,transparent);padding-inline-start:8px}
 .fdk-alert--flotante{width:340px;max-width:calc(100vw - 32px);box-shadow:0 6px 16px rgba(83,86,89,.14),0 2px 4px rgba(83,86,89,.06)}
-.fdk-alert__icono,.fdk-alert__rumbo{flex:0 0 auto;width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.fdk-alert__icono,.fdk-alert__rumbo{flex:0 0 auto;width:46.2px;height:46.2px;display:flex;align-items:center;justify-content:center}
 .fdk-alert__icono svg{width:20px;height:20px;display:block}
 .fdk-alert__rumbo svg{width:100%;height:100%;overflow:visible;display:block}
+.fdk-alert__rumbo--escena{width:80px;height:78px}.fdk-alert__rumbo--escena img{width:100%;height:auto;display:block}
 .fdk-alert__titulo{display:block;margin-bottom:2px;font-weight:700}
 .fdk-alert__cuerpo{flex:1;margin:0;padding:12px 12px 12px 4px}
 .fdk-alert--info{background:var(--fdk-alert-info-bg);--fdk-alert-border:var(--fdk-alert-info-border)}
@@ -159,13 +160,16 @@ footer a{color:var(--fdk-turquesa-900)}
 .fdk-alert--alerta{background:var(--fdk-alert-alerta-bg);--fdk-alert-border:var(--fdk-alert-alerta-border)}
 .fdk-alert--error{background:var(--fdk-alert-error-bg);--fdk-alert-border:var(--fdk-alert-error-border)}
 .fdk-alert--neutro{background:var(--fdk-gris-100);--fdk-alert-border:var(--fdk-gris-700)}
+/* Blanco + sombra de color del nivel en vez de relleno plano. Alert: cuando personaje=true. Toast: por defecto (salvo sin-conexion). */
+.fdk-alert--sombra{background:var(--fdk-surface,#fff)}
+.fdk-alert--sombra.fdk-alert--flotante{box-shadow:0 8px 20px color-mix(in srgb,var(--fdk-alert-border,transparent) 35%,transparent),0 2px 6px rgba(83,86,89,.08)}
 
 /* Rumbo siempre pinta por encima de su contenedor: sus animaciones mueven partes fuera de su propia caja */
 .fdk-rumbo{display:block;overflow:visible;position:relative;z-index:1}
 
 @keyframes fdk-respira{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-2.5px) scaleY(1.02)}}
 @keyframes fdk-flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@keyframes fdk-onda{0%{r:10;opacity:.55}100%{r:30;opacity:0}}
+@keyframes fdk-onda{0%{transform:scale(.625);opacity:.55}100%{transform:scale(1.875);opacity:0}}
 @keyframes fdk-piensa{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 @keyframes fdk-sube-punto{0%{opacity:.15;transform:translateY(6px)}50%{opacity:1;transform:translateY(0)}100%{opacity:.15;transform:translateY(-4px)}}
 @keyframes fdk-salta{0%,100%{transform:translateY(0) scale(1,1)}22%{transform:translateY(0) scale(1.08,.9)}45%{transform:translateY(-14px) scale(.96,1.06)}70%{transform:translateY(0) scale(1.05,.95)}}
@@ -175,7 +179,7 @@ footer a{color:var(--fdk-turquesa-900)}
 @keyframes fdk-pulso{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .fdk-rumbo__respira{animation:fdk-respira 3.4s ease-in-out infinite;transform-origin:60px 98px}
 .fdk-rumbo__flota{animation:fdk-flota 3.4s ease-in-out infinite}
-.fdk-rumbo__onda{animation:fdk-onda 2.2s ease-out infinite}
+.fdk-rumbo__onda{animation:fdk-onda 2.2s ease-out infinite;transform-box:fill-box;transform-origin:center;vector-effect:non-scaling-stroke}
 .fdk-rumbo__o2{animation-delay:1.1s}
 .fdk-rumbo__p{animation:fdk-piensa 1.5s ease-in-out infinite}
 .fdk-rumbo__p2{animation-delay:.2s}.fdk-rumbo__p3{animation-delay:.4s}
@@ -210,23 +214,32 @@ footer a{color:var(--fdk-turquesa-900)}
 @media (prefers-reduced-motion:reduce){.fdk-toast.fdk-anim-in,.fdk-toast.fdk-anim-out{animation:none}}
 
 /* ---- Modal (presentador Popup: centrado, backdrop, focus trap, cola) ---- */
-.fdk-backdrop{position:fixed;inset:0;background:rgb(0 0 0 / 45%);display:flex;align-items:center;justify-content:center;padding:16px;z-index:9200}
-.fdk-modal{background:#fff;color:var(--fdk-ink);font-family:var(--fdk-font);border-radius:16px;box-shadow:0 16px 40px rgba(83,86,89,.18),0 4px 8px rgba(83,86,89,.08);width:420px;max-width:100%;max-height:calc(100vh - 32px);overflow-y:auto;padding:32px 24px 24px;position:relative}
-.fdk-modal--wide{width:640px}
+.fdk-backdrop{position:fixed;inset:0;background:rgb(0 0 0 / 45%);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9200}
+.fdk-modal{background:#fff;color:var(--fdk-ink);font-family:var(--fdk-font);border-radius:16px;box-shadow:0 30px 70px -20px #000000a6;box-sizing:border-box;width:min(100%,440px);max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow-y:auto;--fdk-modal-pad-x:24px;--fdk-modal-btn-inset:16px;padding:24px;position:relative;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.fdk-modal--wide{width:min(100%,640px)}
+@media (min-width:600px){.fdk-modal{--fdk-modal-btn-inset:22px}.fdk-modal--wide{--fdk-modal-btn-inset:28px}}
 .fdk-modal__cerrar{position:absolute;top:12px;right:12px;background:transparent;border:none;font-size:20px;line-height:1;cursor:pointer;color:var(--fdk-gris-700);padding:8px}
 .fdk-modal__cerrar:hover{color:var(--fdk-ink)}
-.fdk-modal__media{display:flex;justify-content:center;margin-bottom:16px}
-.fdk-modal__media .fdk-rumbo{width:96px;height:96px}
-.fdk-modal__titulo{font-family:"Outfit","Futura",sans-serif;font-size:22px;font-weight:700;margin:0 0 8px;text-align:center}
-.fdk-modal__texto{font-size:15px;line-height:1.55;color:var(--fdk-ink);margin:0;text-align:center}
-.fdk-modal__acciones{display:flex;justify-content:center;gap:12px;margin-top:24px;flex-wrap:wrap}
-.fdk-modal__btn{font:inherit;font-weight:700;font-size:15px;height:44px;padding:0 24px;border-radius:8px;border:1.5px solid transparent;cursor:pointer;transition:background-color 160ms}
+.fdk-modal__media{display:flex;justify-content:center}
+.fdk-modal__media .fdk-rumbo{width:78px;height:78px}
+.fdk-modal__titulo{font-family:"Outfit","Futura",sans-serif;font-size:20px;font-weight:700;margin:0;text-align:center;align-self:stretch}
+.fdk-modal__texto{font-size:15px;line-height:1.75;color:var(--fdk-ink);margin:0;text-align:center;align-self:stretch}
+@media (min-width:600px){.fdk-modal__titulo{font-size:22px}.fdk-modal__texto{font-size:16px}}
+.fdk-modal__acciones{display:flex;flex-direction:column-reverse;gap:12px;align-self:stretch;margin:0 calc(var(--fdk-modal-btn-inset) - var(--fdk-modal-pad-x))}
+.fdk-modal__btn{width:100%;font:inherit;font-weight:700;font-size:15px;height:44px;padding:0 24px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:background-color 160ms}
 .fdk-modal__btn--primario{background:#ff9f19;color:#000}
 .fdk-modal__btn--primario:hover{background:#eb9217}
-.fdk-modal__btn--secundario{background:#fff;color:var(--fdk-ink);border-color:var(--fdk-ink)}
-.fdk-modal__btn--secundario:hover{background:#f1f1f2}
+.fdk-modal__btn--secundario{background:#f4f5f6;color:var(--fdk-ink);border-color:#dcdee1}
+.fdk-modal__btn--secundario:hover{background:#eceef0}
 .fdk-modal__btn--destructivo{background:#ad332b;color:#fff}
 .fdk-modal__btn--destructivo:hover{background:#b4433c}
+.fdk-modal--oscuro{background:#1b1f22;color:#fff}
+.fdk-modal--oscuro .fdk-modal__titulo{color:#fff}
+.fdk-modal--oscuro .fdk-modal__texto{color:#b8babd}
+.fdk-modal--oscuro .fdk-modal__cerrar{color:#8a8d91}
+.fdk-modal--oscuro .fdk-modal__cerrar:hover{color:#fff}
+.fdk-modal--oscuro .fdk-modal__btn--secundario{background:#21262a;color:#fff;border-color:#373c41}
+.fdk-modal--oscuro .fdk-modal__btn--secundario:hover{background:#292e32}
 @keyframes fdk-backdrop-in{from{opacity:0}to{opacity:1}}
 @keyframes fdk-backdrop-out{from{opacity:1}to{opacity:0}}
 @keyframes fdk-modal-in{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -296,13 +309,14 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito">éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Título (opcional)</label><input id="titulo" placeholder="opcional"></div>
       <div class="campo"><label>Texto libre (prioridad máxima)</label><input id="texto" placeholder="opcional"></div>
       <div class="campo"><label>vozId (si no hay texto libre)</label><input id="vozId" placeholder="p.ej. calculo"></div>
       <div class="campo check"><input type="checkbox" id="personaje"><label>Usar Rumbo en vez del icono</label></div>
+      <div class="campo check"><input type="checkbox" id="al-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
       <button id="agregar">Agregar alerta</button>
     </div>
 
@@ -324,7 +338,7 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito" selected>éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Texto libre</label><input id="t-texto" placeholder="opcional"></div>
@@ -345,6 +359,8 @@ footer a{color:var(--fdk-turquesa-900)}
       <div class="campo"><label>Background (color del propio Toast)</label>
         <select id="t-background"></select>
       </div>
+      <div class="campo check"><input type="checkbox" id="t-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
+      <div class="campo check"><input type="checkbox" id="t-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
       <button id="t-lanzar">Lanzar toast</button>
     </div>
   </section>
@@ -365,7 +381,7 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito">éxito</option>
           <option value="error">error</option>
           <option value="alerta" selected>alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Título</label><input id="m-titulo" value="Antes de continuar"></div>
@@ -373,7 +389,10 @@ footer a{color:var(--fdk-turquesa-900)}
       <div class="campo"><label>Texto de confirmar</label><input id="m-confirmar-texto" placeholder="Aceptar"></div>
       <div class="campo"><label>Texto de cancelar</label><input id="m-cancelar-texto" placeholder="Cancelar"></div>
       <div class="campo check"><input type="checkbox" id="m-danger"><label>Confirmar destructivo</label></div>
-      <button id="m-confirmar">confirmar()</button>
+      <div class="campo check"><input type="checkbox" id="m-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
+  <div class="campo"><label>Tema</label><select id="m-tema"><option value="auto">auto (el del sistema)</option><option value="claro">claro</option><option value="oscuro">oscuro</option></select></div>
+  <div class="campo check"><input type="checkbox" id="m-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
+        <button id="m-confirmar">confirmar()</button>
     </div>
     <div id="m-resultado" class="nota" style="display:none"></div>
 
@@ -388,13 +407,16 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito" selected>éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Título</label><input id="n-titulo" value="Listo"></div>
       <div class="campo"><label>Texto libre</label><input id="n-texto" placeholder="opcional"></div>
       <div class="campo"><label>Texto del botón</label><input id="n-ok-texto" placeholder="OK"></div>
-      <button id="n-lanzar">notificar()</button>
+      <div class="campo check"><input type="checkbox" id="n-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
+  <div class="campo"><label>Tema</label><select id="n-tema"><option value="auto">auto (el del sistema)</option><option value="claro">claro</option><option value="oscuro">oscuro</option></select></div>
+  <div class="campo check"><input type="checkbox" id="n-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
+        <button id="n-lanzar">notificar()</button>
     </div>
     <div id="n-resultado" class="nota" style="display:none"></div>
     <p class="nota">Confirmar y Notificación no tienen × ni se cierran con Esc o click fuera — la única salida es presionar uno de sus botones.</p>
@@ -403,7 +425,7 @@ footer a{color:var(--fdk-turquesa-900)}
   <section class="modulo" id="sec-loader">
     <p class="modulo__num">04 · Persistente · Overlay + Inline</p>
     <h2>Loader + Attach</h2>
-    <p class="lede">Persistentes: devuelven un <code>Handle</code>, quien los llama decide cuándo cerrarlos. <code>Loader.screen</code> usa contador de referencias: pídelo 3 veces y ciérralo 3 veces para verlo. El <code>Background</code> aplica a la próxima vez que abras/togglees: sobre un tono oscuro/saturado, Rumbo pasa a luminoso y el fondo se pinta con un degradado de ese color.</p>
+    <p class="lede">Persistentes: devuelven un <code>Handle</code>, quien los llama decide cuándo cerrarlos. <code>Loader.screen</code> usa contador de referencias: pídelo 3 veces y ciérralo 3 veces para verlo. El <code>Background</code> se actualiza en vivo (junto con el estado) mientras el Loader/Attach está activo: sobre un tono oscuro/saturado, Rumbo pasa a luminoso y el fondo se pinta con un degradado de ese color.</p>
 
     <div class="panel">
       <div class="campo"><label>Estado de Rumbo (Loader)</label>
@@ -415,7 +437,7 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito">éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Background (superficie del overlay)</label>
@@ -425,6 +447,7 @@ footer a{color:var(--fdk-turquesa-900)}
       <button id="l-pantalla-cerrar">Loader.screen close()</button>
       <button id="l-boton-toggle">Loader.button en este botón</button>
       <div class="campo check"><input type="checkbox" id="l-boton-luminoso" checked><label>Rumbo luminoso (el botón ya es fondo naranja-900)</label></div>
+      <div class="campo check"><input type="checkbox" id="l-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
     </div>
 
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
@@ -442,12 +465,14 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito" selected>éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Background (superficie del host)</label>
         <select id="a-background"></select>
       </div>
+  <div class="campo check"><input type="checkbox" id="a-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
+      <div class="campo check"><input type="checkbox" id="a-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
     </div>
     <div class="demo-card" id="l-attach-card" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;justify-items:stretch">
       <span>Attach — Rumbo fijado dentro de este div</span>
@@ -471,7 +496,7 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="exito">éxito</option>
           <option value="error">error</option>
           <option value="alerta">alerta</option>
-          <option value="sin-conexion">sin conexión</option>
+          <option value="sin-conexion">sin conexión</option><option value="saludo">saludo</option><option value="onboarding">onboarding</option><option value="adios">adios</option><option value="deposito">deposito</option><option value="retiro">retiro</option><option value="domiciliacion">domiciliacion</option><option value="rendimiento">rendimiento</option><option value="espera-larga">espera-larga</option><option value="orden-manana">orden-manana</option><option value="vacia">vacia</option><option value="biometria">biometria</option><option value="asesor">asesor</option><option value="buscando">buscando</option><option value="dormida">dormida</option><option value="mantenimiento">mantenimiento</option>
         </select>
       </div>
       <div class="campo"><label>Texto de burbuja</label><input id="mc-texto" placeholder="opcional"></div>
@@ -483,10 +508,31 @@ footer a{color:var(--fdk-turquesa-900)}
           <option value="top-start">top-start</option>
         </select>
       </div>
+      <div class="campo check"><input type="checkbox" id="mc-sonido"><label>Sonido + háptica (apagado por defecto)</label></div>
+      <div class="campo check"><input type="checkbox" id="mc-mirada"><label>Mirada: los ojos de Rumbo siguen al puntero (apagado por defecto)</label></div>
       <button id="mc-mostrar">mostrarMascota()</button>
       <button id="mc-actualizar">actualizar()</button>
       <button id="mc-ocultar">ocultar()</button>
       <button id="mc-cerrar">cerrar()</button>
+    </div>
+  </section>
+
+  <section class="modulo" id="sec-lluvia">
+    <p class="modulo__num">06 · Efímero · Overlay a pantalla completa</p>
+    <h2>Lluvia de personajes</h2>
+    <p class="lede">Los parámetros se eligen en listas desplegables y se pasan a <code>iniciarLluvia()</code>: es exactamente la llamada que se escribe en código. La librería no trae ningún panel visual; en la aplicación final la lluvia se invoca por código con sus parámetros. Cae sobre toda la ventana, por encima del contenido y sin bloquear clics. Usa el código real del módulo <code>lluvia/</code> (incrustado). El efecto «pulso» está registrado desde esta página para mostrar que agregar uno no toca la librería.</p>
+    <div class="panel">
+      <div class="campo"><label>personaje</label><select id="ll-personaje"></select></div>
+      <div class="campo"><label>efecto</label><select id="ll-efecto"></select></div>
+      <div class="campo"><label>cantidad</label><select id="ll-cantidad"></select></div>
+      <div class="campo"><label>duración</label><select id="ll-duracion"></select></div>
+      <div class="campo"><label>velocidad (px/s)</label><select id="ll-velocidad"></select></div>
+      <div class="campo"><label>tamaño (px)</label><select id="ll-tamano"></select></div>
+      <div class="campo"><label>retraso de aparición (ms)</label><select id="ll-retraso"></select></div>
+      <button id="ll-iniciar">iniciarLluvia(parámetros)</button>
+      <button id="ll-detener" disabled>detener()</button>
+      <pre id="ll-codigo" style="flex:0 0 100%;margin:12px 0 0;padding:12px 14px;background:#f3f1ec;border-radius:8px;font-size:12.5px;line-height:1.5;overflow:auto"></pre>
+      <p id="ll-estado" class="lede" style="flex:0 0 100%;margin:8px 0 0"></p>
     </div>
   </section>
 
@@ -502,6 +548,12 @@ footer a{color:var(--fdk-turquesa-900)}
 const CUERPO = "M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z";
 const TURQ = "#0092a6", NARANJA = "#ff9f19", DEEP = "#ca5610", ROJO = "#ad332b", OJOS = "#3f4245", OFF = "#b1b1b1", OFF_R = "#82858a";
 
+const BASE_DE_ESCENA = { saludo:"reposo", vacia:"reposo", adios:"reposo", rendimiento:"reposo", asesor:"reposo", biometria:"escuchando", buscando:"pensando", "espera-larga":"cargando", "orden-manana":"cargando", deposito:"exito", retiro:"exito", domiciliacion:"exito", onboarding:"exito", mantenimiento:"sin-conexion", dormida:"sin-conexion" };
+function escenaDe(e) { return e in BASE_DE_ESCENA; }
+function baseDe(e) { return BASE_DE_ESCENA[e] ?? e; }
+/* saludo y onboarding: siempre Rumbo luminoso → su fondo por defecto es un tono luminoso (mirror de rumbo/estados.ts). */
+function superficiePorDefecto(e) { return e === "saludo" || e === "onboarding" ? "naranja-900" : ""; }
+function superficieDe(estado, sup) { return sup || superficiePorDefecto(estado); }
 const NIVEL = { reposo:"info", escuchando:"info", pensando:"info", cargando:"info", exito:"exito", error:"error", alerta:"alerta", "sin-conexion":"neutro" };
 
 const ICONOS = {
@@ -526,7 +578,7 @@ const VOZ = {
 function resolverVoz({estado, texto, vozId}) {
   if (texto) return texto;
   if (!vozId) return null;
-  const bloque = VOZ[estado];
+  const bloque = VOZ[baseDe(estado)];
   const linea = bloque.lineas.find(l => l.id === vozId);
   return linea ? linea.texto : null;
 }
@@ -540,20 +592,55 @@ function iniciarCiclo(estado, onCambio) {
   return () => timers.forEach(clearTimeout);
 }
 
-function ojos(cy, r) { return `<circle cx="72" cy="${cy}" r="${r}" fill="${OJOS}"/><circle cx="95" cy="${cy}" r="${r}" fill="${OJOS}"/>`; }
+function ojos(cy, r) { return `<g class="fdk-rumbo__ojos"><circle cx="72" cy="${cy}" r="${r}" fill="${OJOS}"/><circle cx="95" cy="${cy}" r="${r}" fill="${OJOS}"/></g>`; }
+/* ---- Mirada (mirror de src/rumbo/mirada.ts): los ojos siguen al puntero, hasta 3.4 unidades, suave. Opt-in, apagada por defecto ---- */
+const _mirada = { seguidores: new Set(), puntero: null, cuadro: null };
+function _miradaApuntar(s) {
+  const svg = s.raiz.querySelector(".fdk-rumbo");
+  if (!_mirada.puntero || !svg) { s.objX = s.objY = 0; return; }
+  const r = svg.getBoundingClientRect();
+  const dx = _mirada.puntero.x - (r.left + r.width * 0.72), dy = _mirada.puntero.y - (r.top + r.height * 0.56);
+  const d = Math.hypot(dx, dy) || 1, f = Math.min(1, d / 220);
+  s.objX = (dx / d) * 3.4 * f; s.objY = (dy / d) * 3.4 * f;
+}
+function _miradaPaso() {
+  let activo = false;
+  for (const s of _mirada.seguidores) {
+    _miradaApuntar(s);
+    s.x += (s.objX - s.x) * 0.14; s.y += (s.objY - s.y) * 0.14;
+    const t = `translate(${s.x.toFixed(2)}px, ${s.y.toFixed(2)}px)`;
+    s.raiz.querySelectorAll(".fdk-rumbo__ojos").forEach((g) => (g.style.transform = t));
+    if (Math.abs(s.objX - s.x) > 0.05 || Math.abs(s.objY - s.y) > 0.05) activo = true;
+  }
+  _mirada.cuadro = activo ? requestAnimationFrame(_miradaPaso) : null;
+}
+function _miradaMover(ev) { _mirada.puntero = { x: ev.clientX, y: ev.clientY }; if (_mirada.cuadro === null) _mirada.cuadro = requestAnimationFrame(_miradaPaso); }
+function seguirMirada(raiz) {
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return () => {};
+  const s = { raiz, x: 0, y: 0, objX: 0, objY: 0 };
+  if (_mirada.seguidores.size === 0) window.addEventListener("pointermove", _miradaMover, { passive: true });
+  _mirada.seguidores.add(s);
+  return () => {
+    if (!_mirada.seguidores.delete(s)) return;
+    raiz.querySelectorAll(".fdk-rumbo__ojos").forEach((g) => (g.style.transform = ""));
+    if (_mirada.seguidores.size === 0) { window.removeEventListener("pointermove", _miradaMover); if (_mirada.cuadro !== null) cancelAnimationFrame(_mirada.cuadro); _mirada.cuadro = null; _mirada.puntero = null; }
+  };
+}
+const _mirando = (id) => document.getElementById(id)?.checked;
+
 
 function rumboSvg(estado, luminoso) {
   const cuerpo = luminoso ? "#ffffff" : NARANJA;
   const wrap = (inner, cls) => `<svg viewBox="0 0 120 120" class="fdk-rumbo ${cls}" aria-hidden="true">${inner}</svg>`;
-  switch (estado) {
+  switch (baseDe(estado)) {
     case "reposo": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo fdk-rumbo__respira"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(62,6.6)}</g><circle class="fdk-rumbo__vida fdk-rumbo__flota" cx="99" cy="15" r="9.5" fill="${TURQ}"/>`, "s-reposo");
     case "escuchando": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(62,8.4)}</g><circle class="fdk-rumbo__onda fdk-rumbo__o1" cx="99" cy="15" r="16" fill="none" stroke="${TURQ}" stroke-width="2.4"/><circle class="fdk-rumbo__onda fdk-rumbo__o2" cx="99" cy="15" r="16" fill="none" stroke="${TURQ}" stroke-width="2.4"/><circle cx="99" cy="15" r="9.5" fill="${TURQ}"/>`, "s-escuchando");
     case "pensando": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(59,6.6)}</g><circle class="fdk-rumbo__p fdk-rumbo__p1" cx="78" cy="14" r="4" fill="${TURQ}"/><circle class="fdk-rumbo__p fdk-rumbo__p2" cx="89" cy="11" r="5.6" fill="${TURQ}"/><circle class="fdk-rumbo__p fdk-rumbo__p3" cx="103" cy="16" r="9.5" fill="${TURQ}"/>`, "s-pensando");
     case "cargando": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(62,6.6)}</g><circle class="fdk-rumbo__c fdk-rumbo__c1" cx="40" cy="40" r="5" fill="${TURQ}"/><circle class="fdk-rumbo__c fdk-rumbo__c2" cx="63" cy="31" r="6.6" fill="${TURQ}"/><circle class="fdk-rumbo__c fdk-rumbo__c3" cx="86" cy="22" r="8" fill="${TURQ}"/><circle class="fdk-rumbo__c fdk-rumbo__c4" cx="108" cy="13" r="9.5" fill="${TURQ}"/>`, "s-cargando");
-    case "exito": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo fdk-rumbo__salta"><path d="${CUERPO}" fill="${cuerpo}"/><path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${OJOS}" stroke-width="5" stroke-linecap="round"/><path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${OJOS}" stroke-width="5" stroke-linecap="round"/></g><circle class="fdk-rumbo__vida fdk-rumbo__sube" cx="99" cy="11" r="11" fill="${TURQ}"/>`, "s-exito");
+    case "exito": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo fdk-rumbo__salta"><path d="${CUERPO}" fill="${cuerpo}"/><g class="fdk-rumbo__ojos"><path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${OJOS}" stroke-width="5" stroke-linecap="round"/><path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${OJOS}" stroke-width="5" stroke-linecap="round"/></g></g><circle class="fdk-rumbo__vida fdk-rumbo__sube" cx="99" cy="11" r="11" fill="${TURQ}"/>`, "s-exito");
     case "error": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo fdk-rumbo__cae"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(65,6.6)}</g><circle class="fdk-rumbo__vida fdk-rumbo__aleja" cx="110" cy="40" r="7.5" fill="${ROJO}"/>`, "s-error");
     case "alerta": return wrap(`${luminoso?glowSvg():""}<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${cuerpo}"/>${ojos(62,8.4)}</g><g class="fdk-rumbo__alerta-signo"><path d="M99 4 v13.5" stroke="${DEEP}" stroke-width="7.5" stroke-linecap="round"/><circle cx="99" cy="27" r="4" fill="${DEEP}"/></g>`, "s-alerta");
-    case "sin-conexion": return wrap(`<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${OFF}"/><path d="M65.4 62 h13.2" stroke="${OFF_R}" stroke-width="5" stroke-linecap="round"/><path d="M88.4 62 h13.2" stroke="${OFF_R}" stroke-width="5" stroke-linecap="round"/></g><circle cx="99" cy="15" r="9.5" fill="none" stroke="${OFF}" stroke-width="3" stroke-dasharray="4.5 4.5"/>`, "s-off");
+    case "sin-conexion": return wrap(`<g class="fdk-rumbo__cuerpo"><path d="${CUERPO}" fill="${OFF}"/><g class="fdk-rumbo__ojos"><path d="M65.4 62 h13.2" stroke="${OFF_R}" stroke-width="5" stroke-linecap="round"/><path d="M88.4 62 h13.2" stroke="${OFF_R}" stroke-width="5" stroke-linecap="round"/></g></g><circle cx="99" cy="15" r="9.5" fill="none" stroke="${OFF}" stroke-width="3" stroke-dasharray="4.5 4.5"/>`, "s-off");
   }
 }
 function glowSvg(){ const id="g"+Math.random().toString(36).slice(2); return `<defs><radialGradient id="${id}" cx="45%" cy="42%" r="65%"><stop offset="0%" stop-color="${NARANJA}" stop-opacity=".55"/><stop offset="55%" stop-color="${NARANJA}" stop-opacity=".22"/><stop offset="100%" stop-color="${NARANJA}" stop-opacity="0"/></radialGradient></defs><ellipse cx="58" cy="66" rx="72" ry="60" fill="url(#${id})"/>`; }
@@ -574,15 +661,45 @@ function esTonoOscuro(token) {
   const tono = token.split("-")[1];
   return tono === "900" || tono === "700";
 }
+// tonos donde el blanco no llega a 4.5:1 (WCAG AA): llevan tinta casi negra
+function colorTextoSobre(token) { return ["naranja-900", "naranja-700", "turquesa-700", "gris-700"].includes(token) ? "#1f2123" : "#fff"; }
 
-/** Llena un <select> con los 18 tokens de la paleta + una opción "por defecto" (nivel). Sólo Toast la usa. */
+/** Llena un <select> con los 18 tokens de la paleta + una opción "por defecto" (nivel). Loader/Attach. */
 function llenarSelectBackground(select) {
   select.innerHTML = `<option value="">(por defecto — color del nivel)</option>` +
     Object.keys(TOKENS).map(t => `<option value="${t}">${t}${esTonoOscuro(t) ? " (luminoso)" : ""}</option>`).join("");
 }
-llenarSelectBackground(document.getElementById("t-background"));
 llenarSelectBackground(document.getElementById("l-background"));
 llenarSelectBackground(document.getElementById("a-background"));
+
+/*
+ * Toast: sólo se recomiendan los tonos 900/700 (sólidos/oscuros) — el resto no da contraste
+ * suficiente con texto blanco. Además, en los estados donde Vida (y sus acentos) son turquesa
+ * (reposo/escuchando/pensando/cargando/exito), turquesa-900/700 se excluyen del todo: Rumbo se
+ * pierde contra ese fondo. Por defecto: blanco + sombra (ver fireToast). sin-conexion conserva
+ * su fondo gris por defecto y también puede usar cualquiera de estos tonos si se elige.
+ */
+const TOAST_TONOS = ["naranja-900", "naranja-700", "turquesa-900", "turquesa-700", "gris-900", "gris-700", "rojo-900", "rojo-700"];
+const ESTADOS_SIN_TURQUESA = ["reposo", "escuchando", "pensando", "cargando", "exito"];
+function llenarSelectBackgroundToast(select, estado) {
+  const valorPrevio = select.value;
+  const tonos = ESTADOS_SIN_TURQUESA.includes(baseDe(estado))
+    ? TOAST_TONOS.filter(t => !t.startsWith("turquesa-"))
+    : TOAST_TONOS;
+  select.innerHTML = `<option value="">(por defecto — blanco + sombra)</option>` +
+    tonos.map(t => `<option value="${t}">${t} (luminoso)</option>`).join("");
+  if (tonos.includes(valorPrevio)) select.value = valorPrevio;
+}
+const tBackgroundSelect = document.getElementById("t-background");
+const tEstadoSelect = document.getElementById("t-estado");
+llenarSelectBackgroundToast(tBackgroundSelect, tEstadoSelect.value);
+tEstadoSelect.addEventListener("change", () => llenarSelectBackgroundToast(tBackgroundSelect, tEstadoSelect.value));
+/* La primera opción de cada Background dice cuál es su valor por defecto real según el estado elegido. */
+[["t-estado", "t-background"], ["l-estado", "l-background"], ["a-estado", "a-background"]].forEach(([est, bg]) => {
+  const e = document.getElementById(est), sel = document.getElementById(bg), original = sel.options[0].textContent;
+  e.addEventListener("change", () => { sel.options[0].textContent = superficiePorDefecto(e.value) ? "(por defecto — naranja-900, luminoso)" : original; });
+});
+
 
 /**
  * Igual que core/color.ts degradadoDeToken(): dos capas. Encima, una ELIPSE horizontal (más
@@ -594,6 +711,23 @@ function degradadoDeToken(token) {
   if (!fondo) return null;
   return `radial-gradient(ellipse 68% 40% at 50% 38%, color-mix(in srgb, ${fondo} 80%, white) 0%, color-mix(in srgb, ${fondo} 40%, transparent) 55%, transparent 100%), ${fondo}`;
 }
+
+/* ---- Sonido + háptica (mirror de src/sonido/sonido.ts) — activo sólo con el checkbox de arriba ---- */
+const SONIDOS_URL = "sonidos/";
+const HAPTICA = { exito:[12,60,24], deposito:[10,40,20], retiro:[10,40,20], alerta:[24,70,12], error:[26,50,26], toque:[10] };
+const SONIDO_POR_ESTADO = { exito:"exito", error:"error", alerta:"alerta", reposo:"aviso", escuchando:"aviso" };
+function sonar(clave) {
+  new Audio(SONIDOS_URL + "fdk-" + clave + ".wav").play().catch(() => {});
+  if (HAPTICA[clave]) navigator.vibrate?.(HAPTICA[clave]);
+}
+function sonarPara(estado, activo) {
+  if (!activo || estado === "rendimiento") return; // brandkit: ningún sonido para el rendimiento
+  const clave = SONIDO_POR_ESTADO[baseDe(estado)];
+  if (clave) sonar(clave);
+}
+
+/* Escenas como estados (mirror de rumbo/estados.ts): se pintan con <img>, el resto del demo usa el estado base. */
+function escenaImg(k, w) { return `<img src="data:image/svg+xml;charset=utf-8,${encodeURIComponent(ESCENAS_SVG[k])}" width="${w}" height="${Math.round(w * 162 / 168)}" alt="Rumbo · ${k}">`; }
 
 /* ---- Capa flotante top-end, compartida por Alert y Toast ---- */
 const capas = new Map();
@@ -613,14 +747,20 @@ function getLayer(posicion) {
  * (Información/Listo/Alerta/Error), igual que componentes.html — a diferencia de Toast.
  */
 function crearAlert({estado, titulo, texto, vozId, personaje}) {
-  const nivel = NIVEL[estado];
+  personaje = personaje || escenaDe(estado); // un estado-escena siempre es Rumbo, nunca el icono
+  const nivel = NIVEL[baseDe(estado)];
   const layer = getLayer("top-end");
   const el = document.createElement("div");
   el.className = `fdk-alert fdk-alert--${nivel} fdk-alert--barra fdk-alert--flotante`;
+  if (personaje) el.classList.add("fdk-alert--sombra");
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
 
   const media = document.createElement("div");
-  if (personaje) { media.className = "fdk-alert__rumbo"; media.innerHTML = rumboSvg(estado, false); }
+  if (personaje) {
+    media.className = "fdk-alert__rumbo";
+    if (escenaDe(estado)) { media.classList.add("fdk-alert__rumbo--escena"); media.innerHTML = escenaImg(estado, 80); }
+    else media.innerHTML = rumboSvg(estado, false);
+  }
   else {
     media.className = "fdk-alert__icono"; media.innerHTML = ICONOS[nivel];
     if (titulo) media.style.alignSelf = "flex-start";
@@ -650,6 +790,7 @@ function crearAlert({estado, titulo, texto, vozId, personaje}) {
   }
   cerrarBtn.onclick = () => { detener(); el.remove(); };
   layer.appendChild(el);
+  sonarPara(estado, document.getElementById("al-sonido").checked);
   return { el, cerrar: () => { detener(); el.remove(); } };
 }
 
@@ -674,7 +815,8 @@ function animar(el, clase, ms) {
 }
 
 function fireToast({ estado, titulo, texto, vozId, timer = 4000, posicion = "top-end", background }) {
-  const nivel = NIVEL[estado];
+  background = superficieDe(estado, background);
+  const nivel = NIVEL[baseDe(estado)];
   const layer = getLayer(posicion);
 
   const el = document.createElement("div");
@@ -682,11 +824,13 @@ function fireToast({ estado, titulo, texto, vozId, timer = 4000, posicion = "top
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
 
   const fondo = fondoDeToken(background);
-  if (fondo) { el.style.background = fondo; if (esTonoOscuro(background)) el.style.color = "#fff"; }
+  if (fondo) { el.style.background = fondo; if (esTonoOscuro(background)) el.style.color = colorTextoSobre(background); }
+  else if (baseDe(estado) !== "sin-conexion") { el.classList.add("fdk-alert--sombra"); }
 
   const media = document.createElement("div");
   media.className = "fdk-alert__rumbo";
-  media.innerHTML = rumboSvg(estado, esTonoOscuro(background));
+  if (escenaDe(estado)) { media.classList.add("fdk-alert__rumbo--escena"); media.innerHTML = escenaImg(estado, 80); }
+  else media.innerHTML = rumboSvg(estado, esTonoOscuro(background));
   el.appendChild(media);
 
   const body = document.createElement("div");
@@ -712,23 +856,31 @@ function fireToast({ estado, titulo, texto, vozId, timer = 4000, posicion = "top
   }
 
   layer.appendChild(el);
+  sonarPara(estado, document.getElementById("t-sonido").checked);
+  const detenerMirada = _mirando("t-mirada") ? seguirMirada(el) : () => {};
 
   return new Promise((resolve) => {
     let cerrado = false, restante = timer, inicio = Date.now(), handle = null;
-    const armar = () => { if (restante > 0) { inicio = Date.now(); handle = setTimeout(cerrarToast, restante); } };
+    const armar = () => { if (!handle && restante > 0) { inicio = Date.now(); handle = setTimeout(cerrarToast, restante); } };
     const pausar = () => { if (handle) { clearTimeout(handle); handle = null; restante -= Date.now() - inicio; } };
     async function cerrarToast() {
       if (cerrado) return;
       cerrado = true;
       detener();
+      detenerMirada();
       if (handle) clearTimeout(handle);
       await animar(el, "fdk-anim-out", 250);
       el.remove();
       resolve();
     }
     cerrarBtn.addEventListener("click", cerrarToast);
-    el.addEventListener("mouseenter", pausar);
-    el.addEventListener("mouseleave", armar);
+    // pausa con el puntero O con el foco dentro (WCAG 2.2.1)
+    let sobre = false, foco = false;
+    const sincronizar = () => (sobre || foco ? pausar() : armar());
+    el.addEventListener("mouseenter", () => { sobre = true; sincronizar(); });
+    el.addEventListener("mouseleave", () => { sobre = false; sincronizar(); });
+    el.addEventListener("focusin", () => { foco = true; sincronizar(); });
+    el.addEventListener("focusout", (e) => { foco = el.contains(e.relatedTarget); sincronizar(); });
     if (timer > 0) armar();
   });
 }
@@ -781,14 +933,21 @@ function atraparFoco(contenedor) {
 
 const colaModal = [];
 let mostrandoModal = false;
+let modalActual = null;
+/** Cierra por código el modal visible (resuelve con accionId null y deja pasar al siguiente de la cola). */
+function cerrarModal() { modalActual?.cerrar(null); }
 function abrirModal(options) {
-  return new Promise((resolve) => { colaModal.push({ options, resolve }); procesarColaModal(); });
+  return new Promise((resolve) => {
+    // si la app quitó el modal del DOM por su cuenta, nadie puede pulsar sus botones: se cierra el huérfano
+    if (mostrandoModal && modalActual && !modalActual.backdrop.isConnected) modalActual.cerrar(null);
+    colaModal.push({ options, resolve }); procesarColaModal();
+  });
 }
 function procesarColaModal() {
   if (mostrandoModal || !colaModal.length) return;
   mostrandoModal = true;
   const { options, resolve } = colaModal.shift();
-  montarModal(options, (r) => { mostrandoModal = false; resolve(r); procesarColaModal(); });
+  modalActual = montarModal(options, (r) => { mostrandoModal = false; modalActual = null; resolve(r); procesarColaModal(); });
 }
 function montarModal(options, onCerrado) {
   bloquearScroll();
@@ -800,6 +959,16 @@ function montarModal(options, onCerrado) {
   modal.className = "fdk-modal fdk-anim-in" + (options.ancho === "wide" ? " fdk-modal--wide" : "");
   modal.setAttribute("role", "dialog");
   modal.setAttribute("aria-modal", "true");
+  if (options.titulo) modal.setAttribute("aria-labelledby", "fdk-modal-titulo");
+  else modal.setAttribute("aria-label", options.texto || "Aviso");
+
+  // tema: fijo si se pidió; si no, el del sistema (y lo sigue mientras esté abierto)
+  const tema = options.tema ?? "auto";
+  const sistema = tema === "auto" && typeof matchMedia === "function" ? matchMedia("(prefers-color-scheme: dark)") : null;
+  const aplicarTema = () => modal.classList.toggle("fdk-modal--oscuro", tema === "oscuro" || (sistema?.matches ?? false));
+  aplicarTema();
+  sistema?.addEventListener?.("change", aplicarTema);
+  const detenerMirada = options.mirada ? seguirMirada(modal) : () => {};
 
   let detenerCiclo = () => {}, cerrado = false, soltarFoco = () => {};
   async function cerrar(accionId) {
@@ -807,6 +976,8 @@ function montarModal(options, onCerrado) {
     cerrado = true;
     detenerCiclo();
     soltarFoco();
+    detenerMirada();
+    sistema?.removeEventListener?.("change", aplicarTema);
     document.removeEventListener("keydown", onKeydown);
     await Promise.all([animar(backdrop, "fdk-anim-out", 250), animar(modal, "fdk-anim-out", 250)]);
     backdrop.remove();
@@ -826,12 +997,13 @@ function montarModal(options, onCerrado) {
   if (options.estado) {
     const media = document.createElement("div");
     media.className = "fdk-modal__media";
-    media.innerHTML = rumboSvg(options.estado, false);
+    media.innerHTML = escenaDe(options.estado) ? escenaImg(options.estado, 106) : rumboSvg(options.estado, false);
     modal.appendChild(media);
   }
 
   if (options.titulo) {
     const h = document.createElement("h2");
+    h.id = "fdk-modal-titulo";
     h.className = "fdk-modal__titulo";
     h.textContent = options.titulo;
     modal.appendChild(h);
@@ -875,11 +1047,13 @@ function montarModal(options, onCerrado) {
   backdrop.appendChild(modal);
   document.body.appendChild(backdrop);
   soltarFoco = atraparFoco(modal);
+  sonarPara(options.estado, options.sonido);
+  return { backdrop, cerrar };
 }
 
 async function confirmar(options) {
   const r = await abrirModal({
-    estado: options.estado, titulo: options.titulo, texto: options.texto, vozId: options.vozId,
+    estado: options.estado, titulo: options.titulo, texto: options.texto, vozId: options.vozId, sonido: options.sonido, tema: options.tema, mirada: options.mirada,
     acciones: [
       { id: "cancelar", label: options.cancelarTexto ?? "Cancelar", variante: "secundario" },
       { id: "confirmar", label: options.confirmarTexto ?? "Aceptar", variante: options.danger ? "destructivo" : "primario" },
@@ -898,6 +1072,9 @@ async function notificar(options) {
     estado: options.estado,
     titulo: options.titulo,
     texto: options.texto,
+    sonido: options.sonido,
+    tema: options.tema,
+    mirada: options.mirada,
     acciones: [{ id: "ok", label: options.okTexto || "OK", variante: "primario" }],
     cerrable: false, // sin X, sin Esc, sin backdrop — sólo se sale con el botón
   });
@@ -917,6 +1094,9 @@ document.getElementById("m-confirmar").addEventListener("click", async () => {
     confirmarTexto: document.getElementById("m-confirmar-texto").value.trim() || undefined,
     cancelarTexto: document.getElementById("m-cancelar-texto").value.trim() || undefined,
     danger: document.getElementById("m-danger").checked,
+    sonido: document.getElementById("m-sonido").checked,
+    tema: document.getElementById("m-tema").value,
+    mirada: document.getElementById("m-mirada").checked,
   });
   mostrarResultado("m-resultado", "confirmar() → isConfirmed: " + r.isConfirmed);
 });
@@ -927,6 +1107,9 @@ document.getElementById("n-lanzar").addEventListener("click", async () => {
     titulo: document.getElementById("n-titulo").value.trim(),
     texto: document.getElementById("n-texto").value.trim(),
     okTexto: document.getElementById("n-ok-texto").value.trim() || undefined,
+    sonido: document.getElementById("n-sonido").checked,
+    tema: document.getElementById("n-tema").value,
+    mirada: document.getElementById("n-mirada").checked,
   });
   mostrarResultado("n-resultado", "notificar() → el usuario reconoció el aviso");
 });
@@ -943,11 +1126,22 @@ function montarOverlay(host, contenido) {
     host.setAttribute("aria-busy", "true");
     host.setAttribute("inert", "");
   }
+  // pantalla completa: se inerta el resto del <body> (menos lo de la librería) para que el teclado no llegue a la página
+  const inertados = [];
+  if (esPantalla) {
+    for (const hijo of Array.from(document.body.children)) {
+      if (/(^|\s)fdk-/.test(hijo.className) || hijo.hasAttribute("inert")) continue;
+      hijo.setAttribute("inert", ""); inertados.push(hijo);
+    }
+    const activo = document.activeElement;
+    if (activo && inertados.some((n) => n.contains(activo))) activo.blur();
+  }
   host.appendChild(overlay);
   return {
     el: overlay,
     close() {
       overlay.remove();
+      inertados.forEach((n) => n.removeAttribute("inert"));
       if (!esPantalla) { host.removeAttribute("aria-busy"); host.removeAttribute("inert"); }
     },
   };
@@ -957,7 +1151,7 @@ function teñirOverlay(overlayEl, superficie) {
   const degradado = degradadoDeToken(superficie);
   if (!degradado) return;
   overlayEl.style.background = degradado;
-  if (esTonoOscuro(superficie)) overlayEl.style.color = "#fff";
+  if (esTonoOscuro(superficie)) overlayEl.style.color = colorTextoSobre(superficie);
 }
 
 function construirContenidoLoader(options, size) {
@@ -979,11 +1173,12 @@ function construirContenidoLoader(options, size) {
     const t = resolverVoz({ estado, texto: options.texto, vozId: options.vozId });
     if (t === null) p.remove(); else p.textContent = t;
   }
-  return { el, detener };
+  const detenerVoz = detener, detenerMirada = options.mirada ? seguirMirada(el) : () => {};
+  return { el, detener: () => { detenerVoz(); detenerMirada(); } };
 }
 
 /* ---- Loader.screen — refcount: 3 llamadas paralelas → 1 sola pantalla ---- */
-let refsPantalla = 0, overlayPantalla = null, detenerPantalla = () => {};
+let refsPantalla = 0, overlayPantalla = null, detenerPantalla = () => {}, cierrePantalla = 0; // cierrePantalla: ver src/loader/loader.ts
 function loaderScreenAbrir(options = {}) {
   refsPantalla++;
   if (!overlayPantalla) {
@@ -991,23 +1186,25 @@ function loaderScreenAbrir(options = {}) {
     overlayPantalla = montarOverlay(document.body, el);
     teñirOverlay(overlayPantalla.el, options.superficie);
     detenerPantalla = detener;
-  }
+  } else if (refsPantalla === 1) { overlayPantalla.el.classList.remove("fdk-anim-out"); cierrePantalla++; } // reabierto durante el desvanecido: se revive el mismo overlay
   return refsPantalla;
 }
 async function loaderScreenCerrar() {
   if (refsPantalla <= 0) return refsPantalla;
   if (--refsPantalla > 0) return refsPantalla;
-  refsPantalla = 0;
+  const marca = ++cierrePantalla, overlay = overlayPantalla;
+  await animar(overlay.el, "fdk-anim-out", 250);
+  if (marca !== cierrePantalla) return refsPantalla; // lo reabrieron durante el desvanecido
   detenerPantalla();
-  await animar(overlayPantalla.el, "fdk-anim-out", 250);
-  overlayPantalla.close();
+  overlay.close();
   overlayPantalla = null;
   return 0;
 }
 document.getElementById("l-pantalla-abrir").addEventListener("click", () => {
   const refs = loaderScreenAbrir({
     estado: document.getElementById("l-estado").value,
-    superficie: document.getElementById("l-background").value,
+    superficie: superficieDe(document.getElementById("l-estado").value, document.getElementById("l-background").value),
+    mirada: _mirando("l-mirada"),
   });
   document.getElementById("l-pantalla-abrir").textContent = `Loader.screen abrir() · refs=${refs}`;
 });
@@ -1022,8 +1219,8 @@ document.getElementById("l-target-toggle").addEventListener("click", async () =>
   const host = document.getElementById("l-target-card");
   if (!targetEntrada) {
     const estado = document.getElementById("l-estado").value;
-    const superficie = document.getElementById("l-background").value;
-    const { el, detener } = construirContenidoLoader({ estado, superficie }, 32);
+    const superficie = superficieDe(estado, document.getElementById("l-background").value);
+    const { el, detener } = construirContenidoLoader({ estado, superficie, mirada: _mirando("l-mirada") }, 32);
     const overlay = montarOverlay(host, el);
     teñirOverlay(overlay.el, superficie);
     targetEntrada = { overlay, detener };
@@ -1034,6 +1231,23 @@ document.getElementById("l-target-toggle").addEventListener("click", async () =>
     targetEntrada = null;
   }
 });
+
+/** Rehace el contenido de un overlay ya abierto con el estado/background actuales (sin cerrarlo ni animarlo). */
+function repintarOverlay(overlay, detenerViejo, options, size) {
+  detenerViejo();
+  const { el, detener } = construirContenidoLoader(options, size);
+  overlay.el.replaceChildren(el);
+  overlay.el.style.background = "";
+  overlay.el.style.color = "";
+  teñirOverlay(overlay.el, options.superficie);
+  return detener;
+}
+/* Cambiar estado o background con un Loader abierto lo actualiza en vivo (screen y target). */
+["l-estado", "l-background", "l-mirada"].forEach((id) => document.getElementById(id).addEventListener("change", () => {
+  const opciones = { estado: document.getElementById("l-estado").value, superficie: superficieDe(document.getElementById("l-estado").value, document.getElementById("l-background").value), mirada: _mirando("l-mirada") };
+  if (overlayPantalla) detenerPantalla = repintarOverlay(overlayPantalla, detenerPantalla, opciones, 96);
+  if (targetEntrada) targetEntrada.detener = repintarOverlay(targetEntrada.overlay, targetEntrada.detener, opciones, 32);
+}));
 
 /* ---- Loader.button — presentador Inline: dentro del propio botón ---- */
 let botonEstado = null;
@@ -1047,7 +1261,9 @@ document.getElementById("l-boton-toggle").addEventListener("click", (e) => {
     const luminoso = document.getElementById("l-boton-luminoso").checked;
     boton.innerHTML = `<span class="fdk-loader-boton__rumbo" aria-hidden="true">${rumboSvg("cargando", luminoso)}</span>`;
     botonEstado = previo;
+    const detenerMirada = _mirando("l-mirada") ? seguirMirada(boton.querySelector(".fdk-loader-boton__rumbo")) : () => {};
     setTimeout(() => { // simula que la operación terminó sola, para que se vea sin un segundo click
+      detenerMirada();
       boton.innerHTML = botonEstado;
       boton.disabled = false;
       boton.removeAttribute("aria-busy");
@@ -1068,25 +1284,52 @@ document.getElementById("l-attach-toggle").addEventListener("click", async () =>
   const host = document.getElementById("l-attach-card");
   if (!attachHandle) {
     const estado = document.getElementById("a-estado").value;
-    const superficie = document.getElementById("a-background").value;
+    const superficie = superficieDe(estado, document.getElementById("a-background").value);
 
     attachHostFondoPrevio = { background: host.style.background, color: host.style.color };
-    const degradado = degradadoDeToken(superficie);
-    if (degradado) { host.style.background = degradado; if (esTonoOscuro(superficie)) host.style.color = "#fff"; }
+    teñirHostAttach(host, superficie);
 
     const wrap = document.createElement("span");
     wrap.className = "fdk-attach fdk-anim-in";
-    wrap.innerHTML = rumboSvg(estado, esTonoOscuro(superficie));
-    wrap.querySelector("svg").style.cssText = "width:28px;height:28px;display:block";
+    pintarAttach(wrap, estado, superficie);
     document.getElementById("l-attach-slot").appendChild(wrap); // columna central del grid: Rumbo queda centrado de verdad
     attachHandle = wrap;
+    sonarPara(estado, document.getElementById("a-sonido").checked);
+    detenerMiradaAttach = _mirando("a-mirada") ? seguirMirada(wrap) : null;
   } else {
+    detenerMiradaAttach?.(); detenerMiradaAttach = null;
     await animar(attachHandle, "fdk-anim-out", 250);
     attachHandle.remove();
     attachHandle = null;
     if (attachHostFondoPrevio) { host.style.background = attachHostFondoPrevio.background; host.style.color = attachHostFondoPrevio.color; attachHostFondoPrevio = null; }
   }
 });
+
+/** Pinta (o repinta) Rumbo/escena dentro del wrap de Attach — la usan el toggle y el refresco en vivo. */
+let detenerMiradaAttach = null;
+function pintarAttach(wrap, estado, superficie) {
+  if (escenaDe(estado)) wrap.innerHTML = escenaImg(estado, 120);
+  else {
+    wrap.innerHTML = rumboSvg(estado, esTonoOscuro(superficie));
+    wrap.querySelector("svg").style.cssText = "width:28px;height:28px;display:block";
+  }
+}
+function teñirHostAttach(host, superficie) {
+  const degradado = degradadoDeToken(superficie);
+  if (degradado) { host.style.background = degradado; if (esTonoOscuro(superficie)) host.style.color = colorTextoSobre(superficie); }
+}
+/* Al cambiar estado o background con el Attach ya puesto, se actualiza solo: no hace falta togglear de nuevo. */
+function refrescarAttach() {
+  if (!attachHandle) return;
+  const host = document.getElementById("l-attach-card");
+  host.style.background = attachHostFondoPrevio?.background ?? "";
+  host.style.color = attachHostFondoPrevio?.color ?? "";
+  const estado = document.getElementById("a-estado").value;
+  const superficie = superficieDe(estado, document.getElementById("a-background").value);
+  teñirHostAttach(host, superficie);
+  pintarAttach(attachHandle, estado, superficie);
+}
+["a-estado", "a-background"].forEach((id) => document.getElementById(id).addEventListener("change", refrescarAttach));
 
 /**
  * Mascota — Floating persistente, FUERA de cualquier aviso. Comparte el sistema de posiciones
@@ -1110,7 +1353,12 @@ function aplicarMascota(instancia, opciones) {
   instancia.opciones = { ...instancia.opciones, ...opciones };
   const { estado = "reposo", texto, vozId } = instancia.opciones;
 
-  instancia.personaje.innerHTML = rumboSvg(estado, false);
+  const caja = instancia.personaje;
+  caja.style.width = caja.style.height = escenaDe(estado) ? "120px" : "";
+  sonarPara(estado, opciones.sonido);
+  caja.innerHTML = escenaDe(estado) ? escenaImg(estado, 120) : rumboSvg(estado, false);
+  if (instancia.opciones.mirada && !instancia.detenerMirada) instancia.detenerMirada = seguirMirada(instancia.personaje);
+  else if (!instancia.opciones.mirada && instancia.detenerMirada) { instancia.detenerMirada(); instancia.detenerMirada = null; }
 
   const esCiclico = estado === "pensando" || estado === "cargando";
   if (esCiclico && !texto && !vozId) {
@@ -1150,7 +1398,7 @@ function mostrarMascota(options) {
 document.getElementById("mc-mostrar").addEventListener("click", () => {
   mostrarMascota({
     estado: document.getElementById("mc-estado").value,
-    texto: document.getElementById("mc-texto").value.trim(),
+    texto: document.getElementById("mc-texto").value.trim(), sonido: document.getElementById("mc-sonido").checked, mirada: document.getElementById("mc-mirada").checked,
     posicion: document.getElementById("mc-posicion").value,
   });
 });
@@ -1158,10 +1406,10 @@ document.getElementById("mc-mostrar").addEventListener("click", () => {
 document.getElementById("mc-actualizar").addEventListener("click", () => {
   const posicion = document.getElementById("mc-posicion").value;
   const instancia = instanciasMascota.get(posicion);
-  if (!instancia) { mostrarMascota({ estado: document.getElementById("mc-estado").value, texto: document.getElementById("mc-texto").value.trim(), posicion }); return; }
+  if (!instancia) { mostrarMascota({ estado: document.getElementById("mc-estado").value, texto: document.getElementById("mc-texto").value.trim(), sonido: document.getElementById("mc-sonido").checked, mirada: document.getElementById("mc-mirada").checked, posicion }); return; }
   aplicarMascota(instancia, {
     estado: document.getElementById("mc-estado").value,
-    texto: document.getElementById("mc-texto").value.trim(),
+    texto: document.getElementById("mc-texto").value.trim(), sonido: document.getElementById("mc-sonido").checked, mirada: document.getElementById("mc-mirada").checked,
   });
 });
 
@@ -1178,6 +1426,7 @@ document.getElementById("mc-cerrar").addEventListener("click", async () => {
   const instancia = instanciasMascota.get(posicion);
   if (!instancia) return;
   instancia.detener?.();
+  instancia.detenerMirada?.();
   await animar(instancia.el, "fdk-anim-out", 250);
   instancia.el.remove();
   instanciasMascota.delete(posicion);
@@ -1194,4 +1443,352 @@ function actualizarNavActiva() {
 }
 document.addEventListener("scroll", actualizarNavActiva, { passive: true });
 actualizarNavActiva();
+
+/* SVG de las escenas incrustados (mirror de src/escenas/datos.ts): sin rutas relativas que se rompan en el Artifact. */
+const ESCENAS_SVG = {"saludo": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Saludo al entrar\" data-fondika=\"rumbo-saludo\"><title>Rumbo · Saludo al entrar</title><desc>Se inclina y vuelve, como quien asoma la cabeza. Ciclo de 8300 ms.</desc><defs><radialGradient id=\"g\" cx=\"45%\" cy=\"42%\" r=\"65%\"><stop offset=\"0%\" stop-color=\"#ff9f19\" stop-opacity=\".55\"/><stop offset=\"55%\" stop-color=\"#ff9f19\" stop-opacity=\".22\"/><stop offset=\"100%\" stop-color=\"#ff9f19\" stop-opacity=\"0\"/></radialGradient></defs><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo-x\"]{animation:saludo-cuerpox 8300ms linear infinite}\n [data-p=\"vida\"]{animation:saludo-vida 8300ms linear infinite}\n [data-p=\"ojos-abiertos\"]{animation:saludo-ojosabiertos 8300ms linear infinite}\n [data-p=\"ojos-arco\"]{animation:saludo-ojosarco 8300ms linear infinite}\n [data-p=\"cuerpo\"]{animation:saludo-cuerpo 8300ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes saludo-cuerpox{\n  0.0%{transform:translateY(24px);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  6.265%{transform:translateY(0);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  6.275%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes saludo-vida{\n  0.0%{transform:translateY(-14px) scale(.6);opacity:0}\n  1.446%{transform:translateY(-14px) scale(.6);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  6.988%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  6.998%{transform:none;opacity:1}\n  7.47%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.759%{transform:translate(-14px,-9px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  12.048%{transform:translate(-22px,4px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  14.337%{transform:translate(-10px,-4px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  16.627%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  16.637%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes saludo-ojosabiertos{\n  0.0%{opacity:1}\n  6.747%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.193%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  16.867%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  18.795%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:1}\n}\n @keyframes saludo-ojosarco{\n  0.0%{opacity:0}\n  6.747%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.193%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  16.867%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  18.795%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0}\n}\n @keyframes saludo-cuerpo{\n  0.0%{transform:rotate(0deg)}\n  7.229%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.518%{transform:rotate(-6deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  11.807%{transform:rotate(5deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  14.096%{transform:rotate(-2deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  16.386%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  16.396%{transform:none;opacity:1}\n  18.072%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  38.554%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  59.036%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  79.518%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><ellipse cx=\"58\" cy=\"66\" rx=\"72\" ry=\"60\" fill=\"url(#g)\"/><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ffffff\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#535659\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#535659\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#535659\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#535659\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "onboarding": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Onboarding\" data-fondika=\"rumbo-onboarding\"><title>Rumbo · Onboarding</title><desc>Aparece, escucha, procesa y confirma. Ciclo de 7560 ms.</desc><defs><radialGradient id=\"g\" cx=\"45%\" cy=\"42%\" r=\"65%\"><stop offset=\"0%\" stop-color=\"#ff9f19\" stop-opacity=\".55\"/><stop offset=\"55%\" stop-color=\"#ff9f19\" stop-opacity=\".22\"/><stop offset=\"100%\" stop-color=\"#ff9f19\" stop-opacity=\"0\"/></radialGradient></defs><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo-x\"]{animation:onboarding-cuerpox 7560ms linear infinite}\n [data-p=\"vida\"]{animation:onboarding-vida 7560ms linear infinite}\n [data-p=\"cuerpo\"]{animation:onboarding-cuerpo 7560ms linear infinite}\n [data-p=\"ojoI\"]{animation:onboarding-ojoI 7560ms linear infinite}\n [data-p=\"ojoD\"]{animation:onboarding-ojoD 7560ms linear infinite}\n [data-p=\"onda1\"]{animation:onboarding-onda1 7560ms linear infinite}\n [data-p=\"onda2\"]{animation:onboarding-onda2 7560ms linear infinite}\n [data-p=\"pts1\"]{animation:onboarding-pts1 7560ms linear infinite}\n [data-p=\"pts2\"]{animation:onboarding-pts2 7560ms linear infinite}\n [data-p=\"ojos-abiertos\"]{animation:onboarding-ojosabiertos 7560ms linear infinite}\n [data-p=\"ojos-arco\"]{animation:onboarding-ojosarco 7560ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes onboarding-cuerpox{\n  0.0%{transform:translateY(28px);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.466%{transform:translateY(0);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.476%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes onboarding-vida{\n  0.0%{transform:translateY(-14px) scale(.6);opacity:0}\n  2.116%{transform:translateY(-14px) scale(.6);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.995%{transform:none;opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  9.005%{transform:none;opacity:1}\n  49.735%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  55.688%{transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  61.64%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  67.593%{transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  70.106%{transform:translateY(0) scale(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  73.545%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  73.555%{transform:none;opacity:1}\n  75.661%{transform:translateY(-10px) scale(1.15);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translateY(-10px) scale(1.15)}\n}\n @keyframes onboarding-cuerpo{\n  0.0%{transform:scaleY(1)}\n  10.053%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  32.54%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  55.026%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  68.783%{transform:scaleY(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  70.635%{transform:scaleY(.97);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  72.487%{transform:scaleY(1.03);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  74.339%{transform:scaleY(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  74.349%{transform:none;opacity:1}\n  77.513%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes onboarding-ojoI{\n  0.0%{r:6.6}\n  18.519%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  22.751%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  44.974%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  49.206%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{r:6.6}\n}\n @keyframes onboarding-ojoD{\n  0.0%{r:6.6}\n  18.519%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  22.751%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  44.974%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  49.206%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{r:6.6}\n}\n @keyframes onboarding-onda1{\n  0.0%{r:12;opacity:0.55}\n  18.519%{r:12;opacity:0.55;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  47.619%{r:30;opacity:0;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  47.629%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes onboarding-onda2{\n  0.0%{r:12;opacity:0.55}\n  27.778%{r:12;opacity:0.55;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  56.878%{r:30;opacity:0;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  56.888%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes onboarding-pts1{\n  0.0%{opacity:0;transform:translateY(0)}\n  44.974%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.926%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  56.878%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  62.831%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  68.783%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  74.735%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  80.688%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  80.698%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes onboarding-pts2{\n  0.0%{opacity:0;transform:translateY(0)}\n  47.354%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  53.307%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  59.259%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  65.212%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  71.164%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  77.116%{opacity:1;transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  83.069%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  83.079%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes onboarding-ojosabiertos{\n  0.0%{opacity:1}\n  69.577%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  71.164%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0}\n}\n @keyframes onboarding-ojosarco{\n  0.0%{opacity:0}\n  69.577%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  71.164%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:1}\n}\n </style><ellipse cx=\"58\" cy=\"66\" rx=\"72\" ry=\"60\" fill=\"url(#g)\"/><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ffffff\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#535659\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#535659\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#535659\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#535659\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "adios": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Hasta pronto\" data-fondika=\"rumbo-adios\"><title>Rumbo · Hasta pronto</title><desc>Se despide y baja. No desaparece de golpe. Ciclo de 1180 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo\"]{animation:adios-cuerpo 1180ms linear infinite}\n [data-p=\"cuerpo-x\"]{animation:adios-cuerpox 1180ms linear infinite}\n [data-p=\"vida\"]{animation:adios-vida 1180ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes adios-cuerpo{\n  0.0%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  23.729%{transform:rotate(-8deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  47.458%{transform:rotate(0deg);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  47.468%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes adios-cuerpox{\n  0.0%{transform:translateY(0);opacity:1}\n  47.458%{transform:translateY(0);opacity:1;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  91.525%{transform:translateY(42px);opacity:0;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  100.0%{transform:translateY(42px);opacity:0}\n}\n @keyframes adios-vida{\n  0.0%{opacity:1}\n  64.407%{opacity:1;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  100.0%{opacity:0;animation-timing-function:cubic-bezier(.3,0,1,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "deposito": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Depósito\" data-fondika=\"rumbo-deposito\"><title>Rumbo · Depósito</title><desc>Absorbe la entrada y Vida sube un escalón. Ciclo de 7920 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo\"]{animation:deposito-cuerpo 7920ms linear infinite}\n [data-p=\"moneda\"]{animation:deposito-moneda 7920ms linear infinite}\n [data-p=\"vida\"]{animation:deposito-vida 7920ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes deposito-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.3,0,1,1)}\n  1.768%{transform:scaleY(.98);animation-timing-function:cubic-bezier(.3,0,1,1)}\n  7.071%{transform:scaleY(.98);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  9.47%{transform:scaleY(1.015);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  11.869%{transform:scaleY(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  14.141%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  35.606%{transform:scaleY(1.025);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  57.071%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  78.535%{transform:scaleY(1.025);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes deposito-moneda{\n  0.0%{transform:translateY(0);opacity:0}\n  1.768%{transform:translateY(0);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  3.22%{transform:translateY(-18px);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  6.414%{transform:translateY(-62px);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  7.576%{transform:translateY(-70px);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  7.586%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes deposito-vida{\n  0.0%{transform:translateY(0)}\n  8.838%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  14.141%{transform:translateY(-12px);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translateY(-12px)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "retiro": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Retiro\" data-fondika=\"rumbo-retiro\"><title>Rumbo · Retiro</title><desc>Vida se aparta para dejar salir el dinero y vuelve. Ciclo de 6800 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo\"]{animation:retiro-cuerpo 6800ms linear infinite}\n [data-p=\"vida\"]{animation:retiro-vida 6800ms linear infinite}\n [data-p=\"cuerpo-x\"]{animation:retiro-cuerpox 6800ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes retiro-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  25.0%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  75.0%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes retiro-vida{\n  0.0%{transform:translate(0,0);opacity:1}\n  1.765%{transform:translate(0,0);opacity:1;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  7.941%{transform:translate(26px,8px);opacity:0;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  13.235%{transform:translate(26px,8px);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  20.882%{transform:translate(0,0);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translate(0,0);opacity:1}\n}\n @keyframes retiro-cuerpox{\n  0.0%{transform:translateX(0)}\n  1.765%{transform:translateX(0);animation-timing-function:cubic-bezier(.3,0,1,1)}\n  7.941%{transform:translateX(-4px);animation-timing-function:cubic-bezier(.3,0,1,1)}\n  13.235%{transform:translateX(-4px);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  20.882%{transform:translateX(0);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translateX(0)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "domiciliacion": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Domiciliación activada\" data-fondika=\"rumbo-domiciliacion\"><title>Rumbo · Domiciliación activada</title><desc>Vida sube y deja la huella del escalón anterior. Ciclo de 7500 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"fantasma\"]{animation:domiciliacion-fantasma 7500ms linear infinite}\n [data-p=\"vida\"]{animation:domiciliacion-vida 7500ms linear infinite}\n [data-p=\"cuerpo\"]{animation:domiciliacion-cuerpo 7500ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes domiciliacion-fantasma{\n  0.0%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  4.267%{opacity:0.28;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0.28}\n}\n @keyframes domiciliacion-vida{\n  0.0%{transform:translateY(0)}\n  2.667%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  8.8%{transform:translateY(-12px);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translateY(-12px)}\n}\n @keyframes domiciliacion-cuerpo{\n  0.0%{transform:scaleY(1)}\n  9.333%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  32.0%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  54.667%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  77.333%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "rendimiento": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Rendimiento a la baja\" data-fondika=\"rumbo-rendimiento\"><title>Rumbo · Rendimiento a la baja</title><desc>La quietud deliberada. No consuela ni cambia de color. Ciclo de 4200 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo\"]{animation:rendimiento-cuerpo 4200ms linear infinite}\n [data-p=\"vida\"]{animation:rendimiento-vida 4200ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes rendimiento-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:scaleY(1.015);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes rendimiento-vida{\n  0.0%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:translateY(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "espera-larga": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Esto tarda días\" data-fondika=\"rumbo-esperaLarga\"><title>Rumbo · Esto tarda días</title><desc>Se instala a esperar: respira más lento, sin barra que mienta. Ciclo de 5000 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo\"]{animation:esperaLarga-cuerpo 5000ms linear infinite}\n [data-p=\"vida\"]{animation:esperaLarga-vida 5000ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes esperaLarga-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:scaleY(1.018);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes esperaLarga-vida{\n  0.0%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:translate(-4px,-6px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "orden-manana": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Tu orden entra mañana\" data-fondika=\"rumbo-ordenManana\"><title>Rumbo · Tu orden entra mañana</title><desc>Fuera de horario. Vida espera en el borde, no se aleja. Ciclo de 3300 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"ojoI\"]{animation:ordenManana-ojoI 3300ms linear infinite}\n [data-p=\"ojoD\"]{animation:ordenManana-ojoD 3300ms linear infinite}\n [data-p=\"vida\"]{animation:ordenManana-vida 3300ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes ordenManana-ojoI{\n  0.0%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  9.697%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{r:8.4}\n}\n @keyframes ordenManana-ojoD{\n  0.0%{r:6.6;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  9.697%{r:8.4;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{r:8.4}\n}\n @keyframes ordenManana-vida{\n  0.0%{transform:translate(0,0)}\n  3.636%{transform:translate(0,0);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  19.394%{transform:translate(8px,6px);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  21.212%{opacity:1;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  60.606%{opacity:0.5;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{opacity:1;animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "vacia": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Aquí no hay nada aún\" data-fondika=\"rumbo-vacia\"><title>Rumbo · Aquí no hay nada aún</title><desc>La única pantalla donde Rumbo puede jugar. Ciclo de 7700 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo-x\"]{animation:vacia-cuerpox 7700ms linear infinite}\n [data-p=\"cuerpo\"]{animation:vacia-cuerpo 7700ms linear infinite}\n [data-p=\"vida\"]{animation:vacia-vida 7700ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes vacia-cuerpox{\n  0.0%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  4.675%{transform:translateY(-18px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.351%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.361%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes vacia-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  3.117%{transform:scaleY(.93);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  6.234%{transform:scaleY(1.06);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.351%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  9.361%{transform:none;opacity:1}\n  11.688%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  33.766%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  55.844%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  77.922%{transform:scaleY(1.02);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes vacia-vida{\n  0.0%{transform:translateY(0)}\n  1.558%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  6.494%{transform:translateY(-8px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  11.429%{transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  11.439%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "biometria": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Autorización biométrica\" data-fondika=\"rumbo-biometria\"><title>Rumbo · Autorización biométrica</title><desc>Un barrido de luz y confirmación sobria. Ciclo de 1720 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"barrido\"]{animation:biometria-barrido 1720ms linear infinite}\n [data-p=\"ojos-abiertos\"]{animation:biometria-ojosabiertos 1720ms linear infinite}\n [data-p=\"ojos-arco\"]{animation:biometria-ojosarco 1720ms linear infinite}\n [data-p=\"vida\"]{animation:biometria-vida 1720ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes biometria-barrido{\n  0.0%{opacity:0;transform:translateY(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  10.465%{opacity:0.6;transform:translateY(18px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  41.86%{opacity:0.6;transform:translateY(56px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  52.326%{opacity:0;transform:translateY(74px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  52.336%{transform:none;opacity:0}\n  100.0%{transform:none;opacity:0}\n}\n @keyframes biometria-ojosabiertos{\n  0.0%{opacity:1}\n  55.233%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  63.372%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  90.698%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n}\n @keyframes biometria-ojosarco{\n  0.0%{opacity:0}\n  55.233%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  63.372%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  90.698%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n}\n @keyframes biometria-vida{\n  0.0%{transform:scale(1)}\n  55.233%{transform:scale(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  70.349%{transform:scale(1.15);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  85.465%{transform:scale(1);animation-timing-function:cubic-bezier(.2,0,0,1)}\n  85.475%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "asesor": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Te paso con un asesor\" data-fondika=\"rumbo-asesor\"><title>Rumbo · Te paso con un asesor</title><desc>Se hace a un lado cuando entra una persona. Ciclo de 900 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"cuerpo-x\"]{animation:asesor-cuerpox 900ms linear infinite}\n [data-p=\"burbuja\"]{animation:asesor-burbuja 900ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes asesor-cuerpox{\n  0.0%{transform:translateX(0);opacity:1;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  53.333%{transform:translateX(-30px);opacity:0.45;animation-timing-function:cubic-bezier(.3,0,1,1)}\n  100.0%{transform:translateX(-30px);opacity:0.45}\n}\n @keyframes asesor-burbuja{\n  0.0%{transform:translateX(26px);opacity:0}\n  26.667%{transform:translateX(26px);opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  84.444%{transform:translateX(0);opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{transform:translateX(0);opacity:1}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "buscando": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · No encontramos eso\" data-fondika=\"rumbo-buscando\"><title>Rumbo · No encontramos eso</title><desc>Mira alrededor, no encuentra, se encoge apenas. Ciclo de 1920 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"ojos-abiertos\"]{animation:buscando-ojosabiertos 1920ms linear infinite}\n [data-p=\"cuerpo\"]{animation:buscando-cuerpo 1920ms linear infinite}\n [data-p=\"vida\"]{animation:buscando-vida 1920ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes buscando-ojosabiertos{\n  0.0%{transform:translateX(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  18.229%{transform:translateX(-3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  36.458%{transform:translateX(3px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  54.688%{transform:translateX(-2px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  72.917%{transform:translateX(0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  72.927%{transform:none;opacity:1}\n  100.0%{transform:none;opacity:1}\n}\n @keyframes buscando-cuerpo{\n  0.0%{transform:scaleY(1)}\n  72.917%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  86.458%{transform:scaleY(.96);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n @keyframes buscando-vida{\n  0.0%{transform:translate(0,0)}\n  72.917%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  86.458%{transform:translate(0,6px);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:translate(0,0);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "dormida": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Se durmió la sesión\" data-fondika=\"rumbo-dormida\"><title>Rumbo · Se durmió la sesión</title><desc>Dormido, no apagado: sigue naranja y Vida sigue ahí. Ciclo de 5200 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"ojos-abiertos\"]{animation:dormida-ojosabiertos 5200ms linear infinite}\n [data-p=\"ojos-cerrados\"]{animation:dormida-ojoscerrados 5200ms linear infinite}\n [data-p=\"vida\"]{animation:dormida-vida 5200ms linear infinite}\n [data-p=\"cuerpo\"]{animation:dormida-cuerpo 5200ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes dormida-ojosabiertos{\n  0.0%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  11.538%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0}\n}\n @keyframes dormida-ojoscerrados{\n  0.0%{opacity:0;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  11.538%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:1}\n}\n @keyframes dormida-vida{\n  0.0%{opacity:1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  15.385%{opacity:0.5;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{opacity:0.5}\n}\n @keyframes dormida-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:scaleY(1.015);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>", "mantenimiento": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"-24 -14 168 162\"\n     width=\"336\" height=\"324\"\n     role=\"img\" aria-label=\"Rumbo · Mantenimiento\" data-fondika=\"rumbo-mantenimiento\"><title>Rumbo · Mantenimiento</title><desc>Gris, pero con los ojos abiertos: avisado, no roto. Ciclo de 4200 ms.</desc><style>\n [data-p]{transform-box:fill-box;transform-origin:50% 50%}\n [data-p=\"cuerpo\"]{transform-origin:50% 100%}\n [data-p=\"ojos-abiertos\"]{opacity:1}\n [data-p=\"ojos-arco\"]{opacity:0}\n [data-p=\"ojos-cerrados\"]{opacity:0}\n [data-p=\"moneda\"]{opacity:0}\n [data-p=\"onda1\"]{opacity:0}\n [data-p=\"onda2\"]{opacity:0}\n [data-p=\"pts1\"]{opacity:0}\n [data-p=\"pts2\"]{opacity:0}\n [data-p=\"signo\"]{opacity:0}\n [data-p=\"burbuja\"]{opacity:0}\n [data-p=\"fantasma\"]{opacity:0}\n [data-p=\"barrido\"]{opacity:0}\n \n [data-p=\"forma\"]{animation:mantenimiento-forma 4200ms linear infinite}\n [data-p=\"cuerpo\"]{animation:mantenimiento-cuerpo 4200ms linear infinite}\n @media (prefers-reduced-motion:reduce){[data-p]{animation:none !important}}\n @keyframes mantenimiento-forma{\n  0.0%{fill:#ff9f19;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  10.0%{fill:#b1b1b1;animation-timing-function:cubic-bezier(.2,0,0,1)}\n  100.0%{fill:#b1b1b1}\n}\n @keyframes mantenimiento-cuerpo{\n  0.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  50.0%{transform:scaleY(1.015);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n  100.0%{transform:scaleY(1);animation-timing-function:cubic-bezier(.4,0,.2,1)}\n}\n </style><g data-p=\"cuerpo-x\"><circle data-p=\"moneda\" cx=\"60\" cy=\"130\" r=\"7\" fill=\"#0092a6\"/><circle data-p=\"fantasma\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><g data-p=\"cuerpo\"><path data-p=\"forma\" d=\"M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z\" fill=\"#ff9f19\"/><g data-p=\"ojos-abiertos\"><circle data-p=\"ojoI\" cx=\"72\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/><circle data-p=\"ojoD\" cx=\"95\" cy=\"62\" r=\"6.6\" fill=\"#3f4245\"/></g><g data-p=\"ojos-arco\"><path d=\"M65 64.5 A7 7 0 0 1 79 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88 64.5 A7 7 0 0 1 102 64.5\" fill=\"none\" stroke=\"#3f4245\" stroke-width=\"5\" stroke-linecap=\"round\"/></g><g data-p=\"ojos-cerrados\"><path d=\"M65.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M88.4 62 h13.2\" stroke=\"#82858a\" stroke-width=\"5\" stroke-linecap=\"round\"/></g></g><rect data-p=\"barrido\" x=\"8\" y=\"24\" width=\"104\" height=\"8\" rx=\"4\" fill=\"#ffffff\"/><circle data-p=\"onda1\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"onda2\" cx=\"99\" cy=\"15\" r=\"12\" fill=\"none\" stroke=\"#0092a6\" stroke-width=\"2.4\"/><circle data-p=\"vida\" cx=\"99\" cy=\"15\" r=\"9.5\" fill=\"#0092a6\"/><circle data-p=\"pts1\" cx=\"78\" cy=\"14\" r=\"4\" fill=\"#0092a6\"/><circle data-p=\"pts2\" cx=\"89\" cy=\"11\" r=\"5.6\" fill=\"#0092a6\"/><g data-p=\"signo\"><path d=\"M99 4 v13.5\" stroke=\"#ca5610\" stroke-width=\"7.5\" stroke-linecap=\"round\"/><circle cx=\"99\" cy=\"27\" r=\"4\" fill=\"#ca5610\"/></g></g><g data-p=\"burbuja\"><rect x=\"60\" y=\"40\" width=\"58\" height=\"34\" rx=\"12\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\"/><path d=\"M70 74 l0 10 l11 -10 Z\" fill=\"#ffffff\" stroke=\"#0092a6\" stroke-width=\"3\" stroke-linejoin=\"round\"/><circle cx=\"78\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"89\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/><circle cx=\"100\" cy=\"57\" r=\"3.4\" fill=\"#0092a6\"/></g></svg>"};
 </script>
+<script>
+/*lluvia:inicio*/"use strict";var FdkLluvia=(()=>{var A=Object.defineProperty;var me=Object.getOwnPropertyDescriptor;var pe=Object.getOwnPropertyNames;var ve=Object.prototype.hasOwnProperty;var ke=(e,a)=>{for(var r in a)A(e,r,{get:a[r],enumerable:!0})},be=(e,a,r,o)=>{if(a&&typeof a=="object"||typeof a=="function")for(let t of pe(a))!ve.call(e,t)&&t!==r&&A(e,t,{get:()=>a[t],enumerable:!(o=me(a,t))||o.enumerable});return e};var ge=e=>be(A({},"__esModule",{value:!0}),e);var Se={};ke(Se,{EFECTOS_BASE:()=>P,caidaBase:()=>m,crearRegistro:()=>R,crearRegistroEfectos:()=>q,iniciarLluvia:()=>de,registrarEfecto:()=>ie,registrarPersonaje:()=>ee,registroEfectos:()=>_,registroGlobal:()=>g});var I=`/**
+ * F\xD3NDIKA \xB7 tokens de color
+ * Fuente \xFAnica: Brand_kit_Fondika/02-color-y-tipografia (secci\xF3n "2. Paleta").
+ * Exactamente 18 colores. No se agregan naranjas "deep" ni el degradado de marca:
+ * esos viven en la secci\xF3n 4 del brandkit y quedan fuera de esta librer\xEDa por decisi\xF3n de producto.
+ */
+:root {
+  /* Naranja */
+  --fdk-naranja-900: #ff9f19; /* primario */
+  --fdk-naranja-700: #ffb04d;
+  --fdk-naranja-500: #ffbe6f;
+  --fdk-naranja-300: #ffc884;
+  --fdk-naranja-100: #ffd29b;
+
+  /* Turquesa */
+  --fdk-turquesa-900: #0092a6; /* primario */
+  --fdk-turquesa-700: #02aab7;
+  --fdk-turquesa-500: #1ecad3;
+  --fdk-turquesa-300: #98d7dd;
+  --fdk-turquesa-100: #afe2e3;
+
+  /* Gris \u2014 negro solo */
+  --fdk-gris-900: #535659; /* primario \xB7 \xFAnico color v\xE1lido para cuerpo de texto */
+  --fdk-gris-700: #a7a8a9;
+  --fdk-gris-500: #b1b1b1;
+  --fdk-gris-300: #b9b9ba;
+  --fdk-gris-100: #dddddd;
+
+  /* Rojo de sistema \u2014 no es color de marca, es color de estado */
+  --fdk-rojo-900: #ad332b; /* error, borde, bot\xF3n destructivo */
+  --fdk-rojo-700: #c64a40;
+  --fdk-rojo-100: #ffeae6; /* fondo de alerta */
+
+  /* Alias sem\xE1nticos */
+  --fdk-brand: var(--fdk-naranja-900);
+  --fdk-ink: var(--fdk-gris-900);
+  --fdk-surface: #ffffff;
+  --fdk-border: var(--fdk-gris-300);
+  --fdk-danger: var(--fdk-rojo-900);
+
+  /*
+   * Niveles de Alert \u2014 copiados literal de Brand_kit_Fondika/03-design-system/assets/
+   * componentes.html (\xA7ALERTAS: .a-info/.a-exito/.a-alerta/.a-error). Alert usa SIEMPRE estos
+   * colores fijos (no son personalizables desde la API, a diferencia de Toast).
+   *
+   * Clasificaci\xF3n de estados de Rumbo \u2192 nivel (ver alert/nivel.ts):
+   *   Informaci\xF3n  \u2192 reposo, escuchando, pensando, cargando
+   *   Listo        \u2192 exito
+   *   Alerta ("Ten en cuenta") \u2192 alerta
+   *   Error ("No se pudo completar") \u2192 error
+   *   (sin-conexion usa el tratamiento neutro por defecto, fuera de componentes.html)
+   */
+  --fdk-alert-info-bg: var(--fdk-turquesa-100);
+  --fdk-alert-info-border: var(--fdk-turquesa-900);
+  --fdk-alert-exito-bg: var(--fdk-turquesa-100);
+  --fdk-alert-exito-border: var(--fdk-turquesa-900);
+  --fdk-alert-alerta-bg: var(--fdk-naranja-100);
+  /*
+   * Excepci\xF3n documentada: componentes.html usa \`--deep-700 #ca5610\` (naranja profundo) como
+   * borde de \`.a-alerta\`, un tono que vive en la secci\xF3n 4 (degradado) del brandkit y por eso
+   * normalmente queda fuera de esta librer\xEDa (ver cabecera de este archivo). Se reproduce aqu\xED,
+   * literal, s\xF3lo para que Alert sea fiel 1:1 al componente de referencia \u2014 no se usa en
+   * ning\xFAn otro lugar de la librer\xEDa.
+   */
+  --fdk-alert-alerta-border: #ca5610;
+  --fdk-alert-error-bg: var(--fdk-rojo-100);
+  --fdk-alert-error-border: var(--fdk-rojo-900);
+
+  /* Espaciado (subset de la escala del brandkit, base 4px) */
+  --fdk-sp-1: 4px;
+  --fdk-sp-2: 8px;
+  --fdk-sp-3: 12px;
+  --fdk-sp-4: 16px;
+  --fdk-sp-5: 24px;
+  --fdk-sp-6: 32px;
+
+  /* Forma y movimiento */
+  --fdk-radius-sm: 4px;
+  --fdk-radius-md: 8px;
+  --fdk-radius-lg: 16px;
+  --fdk-duration-base: 250ms;
+  --fdk-ease-out: cubic-bezier(.16,1,.3,1);
+
+  /* Sombras y foco \u2014 de Brand_kit_Fondika/03-design-system/assets/fondika-design-tokens.json */
+  --fdk-shadow-4: 0 16px 40px rgba(83,86,89,.18), 0 4px 8px rgba(83,86,89,.08);
+  --fdk-backdrop: rgb(0 0 0 / 45%);
+  --fdk-foco: 0 0 0 3px rgba(0,146,166,.40);
+
+  /*
+   * Botones de Modal \u2014 regla de estado de componentes.html: la superficie se desplaza hacia su
+   * propia tinta, 8% en hover y 12% al presionar; el color de la etiqueta nunca cambia.
+   */
+  --fdk-btn-primario-bg: var(--fdk-naranja-900);
+  --fdk-btn-primario-hover: #eb9217;
+  --fdk-btn-primario-activo: #e08c16;
+  --fdk-btn-secundario-hover: #f1f1f2;
+  --fdk-btn-secundario-activo: #eaebeb;
+  --fdk-btn-destructivo-bg: var(--fdk-rojo-900);
+  --fdk-btn-destructivo-hover: #b4433c;
+  --fdk-btn-destructivo-activo: #b74b44;
+
+  /* z-index \u2014 \xFAnica fuente, offsets fijos por capa */
+  --fdk-z-base: 9000;
+
+  --fdk-font: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --fdk-font-display: "Outfit", "Futura", "Century Gothic", "Trebuchet MS", sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --fdk-duration-base: 0ms; }
+}
+`;var D=!1;function G(e=""){if(!(typeof document>"u")){if(!D){let a=document.createElement("style");a.setAttribute("data-fondika","tokens"),a.textContent=I,document.head.appendChild(a),D=!0}if(e&&!document.querySelector(`style[data-fondika-css="${e.length}"]`)){let a=document.createElement("style");a.setAttribute("data-fondika-css",String(e.length)),a.textContent=e,document.head.appendChild(a)}}}function H(e,a,r=400){return new Promise(o=>{let t=()=>{clearTimeout(i),e.removeEventListener("animationend",t),o()},i=setTimeout(t,r+50);e.addEventListener("animationend",t,{once:!0}),e.classList.add(a)})}function U(e="blanco"){if(e==="blanco")return"color";let a=e.split("-")[1];return a==="900"||a==="700"?"luminoso":"color"}var V={saludo:"reposo",vacia:"reposo",adios:"reposo",rendimiento:"reposo",asesor:"reposo",biometria:"escuchando",buscando:"pensando","espera-larga":"cargando","orden-manana":"cargando",deposito:"exito",retiro:"exito",domiciliacion:"exito",onboarding:"exito",mantenimiento:"sin-conexion",dormida:"sin-conexion"};function ye(e){return e!==void 0&&e in V?e:void 0}function X(e){let a=ye(e);return a?V[a]:e}var f="M32 98 A22 22 0 0 1 10 76 L10 68 A22 22 0 0 1 26.6 46.6 L82.6 26.2 A22 22 0 0 1 110 47.2 L110 76 A22 22 0 0 1 88 98 Z",d="#0092a6",$="#ff9f19",W="#ca5610",_e="#ad332b",j="#3f4245",J="#b1b1b1",K="#82858a";function Ee(){return`
+    <defs>
+      <radialGradient id="fdk-rumbo-glow" cx="45%" cy="42%" r="65%">
+        <stop offset="0%" stop-color="${$}" stop-opacity=".55"/>
+        <stop offset="55%" stop-color="${$}" stop-opacity=".22"/>
+        <stop offset="100%" stop-color="${$}" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="58" cy="66" rx="72" ry="60" fill="url(#fdk-rumbo-glow)"/>
+  `}function he(e){return e==="luminoso"?"#ffffff":$}function v(e,a,r){let o=j;return`<circle cx="72" cy="${e}" r="${a}" fill="${o}"/><circle cx="95" cy="${e}" r="${a}" fill="${o}"/>`}function u(e,a,r){return`<svg viewBox="0 0 120 120" width="${e}" height="${e}" class="fdk-rumbo ${r}" aria-hidden="true" focusable="false">${a}</svg>`}function Q(e){let{estado:a,size:r=44}=e,o=U(e.superficie),t=o==="luminoso"?Ee():"",i=he(o);switch(X(a)){case"reposo":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo fdk-rumbo__respira"><path d="${f}" fill="${i}"/>${v(62,6.6,o)}</g>
+        <circle class="fdk-rumbo__vida fdk-rumbo__flota" cx="99" cy="15" r="9.5" fill="${d}"/>`,"s-reposo");case"escuchando":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo"><path d="${f}" fill="${i}"/>${v(62,8.4,o)}</g>
+        <circle class="fdk-rumbo__onda fdk-rumbo__o1" cx="99" cy="15" r="16" fill="none" stroke="${d}" stroke-width="2.4"/>
+        <circle class="fdk-rumbo__onda fdk-rumbo__o2" cx="99" cy="15" r="16" fill="none" stroke="${d}" stroke-width="2.4"/>
+        <circle cx="99" cy="15" r="9.5" fill="${d}"/>`,"s-escuchando");case"pensando":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo"><path d="${f}" fill="${i}"/>${v(59,6.6,o)}</g>
+        <circle class="fdk-rumbo__p fdk-rumbo__p1" cx="78" cy="14" r="4" fill="${d}"/>
+        <circle class="fdk-rumbo__p fdk-rumbo__p2" cx="89" cy="11" r="5.6" fill="${d}"/>
+        <circle class="fdk-rumbo__p fdk-rumbo__p3" cx="103" cy="16" r="9.5" fill="${d}"/>`,"s-pensando");case"cargando":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo"><path d="${f}" fill="${i}"/>${v(62,6.6,o)}</g>
+        <circle class="fdk-rumbo__c fdk-rumbo__c1" cx="40" cy="40" r="5" fill="${d}"/>
+        <circle class="fdk-rumbo__c fdk-rumbo__c2" cx="63" cy="31" r="6.6" fill="${d}"/>
+        <circle class="fdk-rumbo__c fdk-rumbo__c3" cx="86" cy="22" r="8" fill="${d}"/>
+        <circle class="fdk-rumbo__c fdk-rumbo__c4" cx="108" cy="13" r="9.5" fill="${d}"/>`,"s-cargando");case"exito":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo fdk-rumbo__salta"><path d="${f}" fill="${i}"/>
+          <path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${j}" stroke-width="5" stroke-linecap="round"/>
+          <path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${j}" stroke-width="5" stroke-linecap="round"/></g>
+        <circle class="fdk-rumbo__vida fdk-rumbo__sube" cx="99" cy="11" r="11" fill="${d}"/>`,"s-exito");case"error":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo fdk-rumbo__cae"><path d="${f}" fill="${i}"/>${v(65,6.6,o)}</g>
+        <circle class="fdk-rumbo__vida fdk-rumbo__aleja" cx="110" cy="40" r="7.5" fill="${_e}"/>`,"s-error");case"alerta":return u(r,`${t}
+        <g class="fdk-rumbo__cuerpo"><path d="${f}" fill="${i}"/>${v(62,8.4,o)}</g>
+        <g class="fdk-rumbo__alerta-signo">
+          <path d="M99 4 v13.5" stroke="${W}" stroke-width="7.5" stroke-linecap="round"/>
+          <circle cx="99" cy="27" r="4" fill="${W}"/>
+        </g>`,"s-alerta");case"sin-conexion":return u(r,`
+        <g class="fdk-rumbo__cuerpo"><path d="${f}" fill="${J}"/>
+          <path d="M65.4 62 h13.2" stroke="${K}" stroke-width="5" stroke-linecap="round"/>
+          <path d="M88.4 62 h13.2" stroke="${K}" stroke-width="5" stroke-linecap="round"/></g>
+        <circle cx="99" cy="15" r="9.5" fill="none" stroke="${J}" stroke-width="3" stroke-dasharray="4.5 4.5"/>`,"s-off")}}var Z=`/**
+ * Animaciones de Rumbo \u2014 verbatim de Brand_kit_Fondika/04-personaje/assets/rumbo.html.
+ * Ning\xFAn estado se mueve m\xE1s r\xE1pido que 1.4s salvo \`cargando\`. Reposo respira a 3.4s.
+ */
+/*
+ * position + z-index: Rumbo siempre pinta por encima del resto del contenido de su contenedor
+ * (Alert, Toast, Modal, Overlay\u2026). Sus animaciones (salta, flota, sube, respira) mueven partes
+ * del personaje fuera de su propia caja con \`transform\` \u2014 sin esto, un hermano en el flujo
+ * normal puede quedar "encima" en el orden de pintado y tapar justo la parte que se mueve
+ * (t\xEDpicamente la de arriba: Vida, o la cabeza en el salto de \xE9xito).
+ */
+.fdk-rumbo { display: block; overflow: visible; position: relative; z-index: 1; }
+
+@keyframes fdk-respira { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-2.5px) scaleY(1.02); } }
+@keyframes fdk-flota { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+/* transform, no la propiedad r: r no se compone en GPU y obliga a recalcular geometría en cada cuadro. El círculo mide r=16: 10/16 → 30/16. */
+@keyframes fdk-onda { 0% { transform: scale(.625); opacity: .55; } 100% { transform: scale(1.875); opacity: 0; } }
+@keyframes fdk-piensa { 0%,100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
+@keyframes fdk-sube-punto { 0% { opacity: .15; transform: translateY(6px); } 50% { opacity: 1; transform: translateY(0); } 100% { opacity: .15; transform: translateY(-4px); } }
+@keyframes fdk-salta { 0%,100% { transform: translateY(0) scale(1,1); } 22% { transform: translateY(0) scale(1.08,.9); } 45% { transform: translateY(-14px) scale(.96,1.06); } 70% { transform: translateY(0) scale(1.05,.95); } }
+@keyframes fdk-sube-vida { 0%,100% { transform: translateY(0); } 45% { transform: translateY(-12px); } }
+@keyframes fdk-cae { 0%,100% { transform: rotate(-4deg) translateY(4px); } 50% { transform: rotate(-6deg) translateY(6px); } }
+@keyframes fdk-aleja { 0%,100% { transform: translate(0,0); opacity: 1; } 50% { transform: translate(5px,4px); opacity: .75; } }
+@keyframes fdk-pulso { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+.fdk-rumbo__respira { animation: fdk-respira 3.4s ease-in-out infinite; transform-origin: 60px 98px; }
+.fdk-rumbo__flota { animation: fdk-flota 3.4s ease-in-out infinite; }
+.fdk-rumbo__onda { animation: fdk-onda 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; vector-effect: non-scaling-stroke; }
+.fdk-rumbo__o2 { animation-delay: 1.1s; }
+.fdk-rumbo__p { animation: fdk-piensa 1.5s ease-in-out infinite; }
+.fdk-rumbo__p2 { animation-delay: .2s; }
+.fdk-rumbo__p3 { animation-delay: .4s; }
+.fdk-rumbo__c { animation: fdk-sube-punto 1.6s ease-in-out infinite; }
+.fdk-rumbo__c2 { animation-delay: .15s; }
+.fdk-rumbo__c3 { animation-delay: .3s; }
+.fdk-rumbo__c4 { animation-delay: .45s; }
+.fdk-rumbo__salta { animation: fdk-salta 1.8s cubic-bezier(.3,0,.3,1) infinite; transform-origin: 60px 98px; }
+.fdk-rumbo__sube { animation: fdk-sube-vida 1.8s cubic-bezier(.3,0,.3,1) infinite; }
+.fdk-rumbo__cae { animation: fdk-cae 2.6s ease-in-out infinite; transform-origin: 60px 98px; }
+.fdk-rumbo__aleja { animation: fdk-aleja 2.6s ease-in-out infinite; }
+.fdk-rumbo__alerta-signo { animation: fdk-pulso 1.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fdk-rumbo * { animation: none !important; }
+}
+`;function R(e=[]){let a=new Map;function r(o){for(let t of["id","nombre","src"])if(typeof o?.[t]!="string"||!o[t])throw new TypeError(`Personaje inv\xE1lido: falta "${t}"`);if(a.has(o.id))throw new Error(`Ya hay un personaje registrado con id "${o.id}"`);a.set(o.id,Object.freeze({...o}))}return e.forEach(r),{registrar:r,quitar:o=>a.delete(o),listar:()=>[...a.values()],obtener:o=>a.get(o)}}var je=["reposo","escuchando","pensando","cargando","exito","error","alerta","sin-conexion"];function Pe(e){let a=Q({estado:e,size:96}).replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" ').replace(/(<svg [^>]*>)/,`$1<style>${Z}</style>`);return"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(a)}var g=R(je.map(e=>({id:e,nombre:`Rumbo \xB7 ${e}`,src:Pe(e)})));function ee(e){g.registrar(e)}async function ae(e){await Promise.all(e.map(a=>new Promise((r,o)=>{let t=new Image;t.onload=()=>r(),t.onerror=()=>o(new Error(`No se pudo cargar la imagen del personaje "${a.id}"`)),t.src=a.src})))}var re={overlayScoped:9e3,floating:9100,mascot:9150,popup:9200,lluvia:9250,overlayPantalla:9300};function oe(e,a,r,o){let t=document.createElement("div"),i=e===document.body;t.className=`fdk-lluvia ${i?"fdk-lluvia--pantalla":"fdk-lluvia--contenida"} ${a.clase}`,t.setAttribute("aria-hidden","true"),t.style.setProperty("--fdk-z",String(re.lluvia));let k=()=>{};if(!i&&getComputedStyle(e).position==="static"){let l=e.style.position;e.style.position="relative",k=()=>{e.style.position=l}}let b=Array.from({length:r},()=>{let l=document.createElement("div");l.className="fdk-lluvia__p";let c=new Image;return c.className="fdk-lluvia__img",c.alt="",c.draggable=!1,c.src=o,l.appendChild(c),t.appendChild(l),{el:l,iniciada:!1,activa:!0,velocidad:0,tamano:0,duracionMs:0}});return e.appendChild(t),{el:t,particulas:b,restaurar:k}}function te(e){if(!e.css||document.querySelector(`style[data-fdk-efecto="${CSS.escape(e.id)}"]`))return;let a=document.createElement("style");a.setAttribute("data-fdk-efecto",e.id),a.textContent=e.css,document.head.appendChild(a)}var x={cantidad:40,duracionMs:6e3,velocidad:[220,520],tamano:[28,64],retrasoMs:[0,2500]},y=([e,a],r)=>e+(a-e)*r();function S(e,a,r,o,t){let i=a??r;if(!(Array.isArray(i)&&i.length===2&&i.every(Number.isFinite)&&i[0]<=i[1]&&(t?i[0]>o:i[0]>=o)))throw new RangeError(`${e} debe ser [m\xEDn, m\xE1x] con m\xEDn \u2264 m\xE1x y ${t?"m\xEDn > ":"m\xEDn \u2265 "}${o}`);return[i[0],i[1]]}function ne(e){let a=e.cantidad??x.cantidad;if(!Number.isInteger(a)||a<1||a>300)throw new RangeError("cantidad debe ser un entero entre 1 y 300");let r=e.duracionMs??x.duracionMs;if(!Number.isFinite(r)||r<0)throw new RangeError("duracionMs debe ser un n\xFAmero \u2265 0");return{cantidad:a,duracionMs:e.continuo||r===0?null:r,velocidad:S("velocidad",e.velocidad,x.velocidad,0,!0),tamano:S("tamano",e.tamano,x.tamano,0,!0),retrasoMs:S("retrasoMs",e.retrasoMs,x.retrasoMs,0,!1),random:e.random??Math.random}}var L=220;function m(e,a={},r=1){return{duracionMs:(e.alto+L)/(e.velocidad*r)*1e3,vars:{"--xp":e.rnd().toFixed(4),"--k":(e.tamano/64).toFixed(4),...a}}}var we=e=>{let[a,r]=e.rango.tamano;return r>a?(e.tamano-a)/(r-a):1},p=(e,a,r)=>a+(r-a)*e.rnd(),P=[{id:"recta",nombre:"Lluvia recta",clase:"fdk-lluvia--recta",particula:e=>m(e)},{id:"balanceo",nombre:"Balanceo",clase:"fdk-lluvia--balanceo",particula:e=>m(e,{"--amp":`${p(e,18,50).toFixed(1)}px`,"--per":`${Math.round(p(e,1800,3600))}ms`,"--fase":e.rnd().toFixed(3),"--rot":"14deg"},.8)},{id:"giro",nombre:"Giro",clase:"fdk-lluvia--giro",particula:e=>m(e,{"--per":`${Math.round(p(e,900,3100))}ms`,"--dir":e.rnd()<.5?1:-1,"--fase":e.rnd().toFixed(3)})},{id:"nieve",nombre:"Nieve",clase:"fdk-lluvia--nieve",particula:e=>{let a=we(e);return m(e,{"--o":(.35+.65*a).toFixed(3),"--amp":`${p(e,6,20).toFixed(1)}px`,"--per":`${Math.round(p(e,3200,5600))}ms`,"--fase":e.rnd().toFixed(3),"--rot":"4deg"},.45*(.6+.4*a))}},{id:"rebote",nombre:"Rebote",clase:"fdk-lluvia--rebote",particula:e=>{let a=m(e,{"--rb":p(e,16,32).toFixed(1)});return a.duracionMs=(e.alto+L/2)/e.velocidad*1e3/.55,a}},{id:"rafaga",nombre:"R\xE1faga",clase:"fdk-lluvia--rafaga",particula:e=>{let a=p(e,.2,.45),r=Math.atan(a*e.ancho/(e.alto+L))*180/Math.PI;return m(e,{"--xp":(e.rnd()*(1+a)-a).toFixed(4),"--dx":`${(a*100).toFixed(2)}cqw`,"--ang":`${r.toFixed(2)}deg`},2.3)}}];function q(e=[]){let a=new Map;function r(o){for(let t of["id","nombre","clase"])if(typeof o?.[t]!="string"||!o[t])throw new TypeError(`Efecto inv\xE1lido: falta "${t}"`);if(typeof o.particula!="function")throw new TypeError('Efecto inv\xE1lido: "particula" debe ser una funci\xF3n');if(a.has(o.id))throw new Error(`Ya hay un efecto registrado con id "${o.id}"`);a.set(o.id,o)}return e.forEach(r),{registrar:r,quitar:o=>a.delete(o),listar:()=>[...a.values()],obtener:o=>a.get(o)}}var _=q(P);function ie(e){_.registrar(e)}var se=`/*
+ * Lluvia de personajes. La capa es \`container-type: size\`: las distancias de los @keyframes se miden
+ * en \`cqw\`/\`cqh\` (ancho/alto de la capa), as\xED que la lluvia se adapta sola al redimensionar la ventana
+ * \u2014 o al caber dentro de un elemento (\`host\`). S\xF3lo se animan \`transform\` y
+ * \`opacity\`; el tama\xF1o de cada personaje sale de \`scale()\`, nunca de width/height.
+ */
+.fdk-lluvia {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none; /* nunca bloquea clics */
+  container-type: size;
+  z-index: var(--fdk-z, 9250);
+}
+.fdk-lluvia--pantalla { position: fixed; }
+.fdk-lluvia--contenida { position: absolute; z-index: auto; }
+
+.fdk-lluvia__p {
+  /* posici\xF3n del centro: --xp (0..1) reparte a lo ancho; --k es la escala */
+  --x: calc(var(--k, 1) * 32px + var(--xp, .5) * (100cqw - 64px * var(--k, 1)) - 32px);
+  --y: calc(var(--yp, .5) * (100cqh - 64px * var(--k, 1)));
+  --g: calc(100cqh - 32px - 32px * var(--k, 1)); /* y del piso, para el rebote */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 64px;
+  opacity: var(--o, 1);
+  will-change: transform;
+  transform: translate3d(0, -200px, 0); /* hasta que arranca su animaci\xF3n, fuera de la vista */
+  animation-duration: var(--dur, 4s);
+  animation-delay: var(--delay, 0ms);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-fill-mode: backwards;
+}
+.fdk-lluvia__p--parada { display: none; }
+.fdk-lluvia__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* ---- efectos base: la clase va en la capa; cada efecto elige el keyframe de la part\xEDcula y/o de la imagen ---- */
+.fdk-lluvia--recta .fdk-lluvia__p,
+.fdk-lluvia--balanceo .fdk-lluvia__p,
+.fdk-lluvia--giro .fdk-lluvia__p,
+.fdk-lluvia--nieve .fdk-lluvia__p { animation-name: fdk-lluvia-recta; }
+.fdk-lluvia--rebote .fdk-lluvia__p { animation-name: fdk-lluvia-rebote; }
+.fdk-lluvia--rafaga .fdk-lluvia__p { animation-name: fdk-lluvia-rafaga; }
+
+.fdk-lluvia--balanceo .fdk-lluvia__img,
+.fdk-lluvia--nieve .fdk-lluvia__img {
+  animation: fdk-lluvia-balanceo var(--per, 2.4s) ease-in-out calc(var(--per, 2.4s) * var(--fase, 0) * -1) infinite alternate;
+}
+.fdk-lluvia--giro .fdk-lluvia__img {
+  animation: fdk-lluvia-giro var(--per, 2s) linear calc(var(--per, 2s) * var(--fase, 0) * -1) infinite;
+}
+
+@keyframes fdk-lluvia-recta {
+  from { transform: translate3d(var(--x), -110px, 0) scale(var(--k, 1)); }
+  to { transform: translate3d(var(--x), calc(100cqh + 110px), 0) scale(var(--k, 1)); }
+}
+@keyframes fdk-lluvia-balanceo {
+  from { transform: translateX(calc(var(--amp, 30px) * -1)) rotate(calc(var(--rot, 14deg) * -1)); }
+  to { transform: translateX(var(--amp, 30px)) rotate(var(--rot, 14deg)); }
+}
+@keyframes fdk-lluvia-giro {
+  to { transform: rotate(calc(360deg * var(--dir, 1))); }
+}
+@keyframes fdk-lluvia-rafaga {
+  from { transform: translate3d(var(--x), -110px, 0) rotate(calc(var(--ang, 20deg) * -1)) scale(var(--k, 1)); }
+  to { transform: translate3d(calc(var(--x) + var(--dx, 30cqw)), calc(100cqh + 110px), 0) rotate(calc(var(--ang, 20deg) * -1)) scale(var(--k, 1)); }
+}
+@keyframes fdk-lluvia-rebote {
+  0% { transform: translate3d(var(--x), -110px, 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  55% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(0, .55, .45, 1); }
+  70% { transform: translate3d(var(--x), calc(var(--g) - var(--rb, 24) * 1cqh), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  82% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(0, .55, .45, 1); }
+  90% { transform: translate3d(var(--x), calc(var(--g) - var(--rb, 24) * .35cqh), 0) scale(var(--k, 1)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  96% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); opacity: var(--o, 1); }
+  100% { transform: translate3d(var(--x), var(--g), 0) scale(var(--k, 1)); opacity: 0; }
+}
+
+/* detener(): la capa se desvanece con el mismo \`animar()\` que usan los dem\xE1s componentes */
+.fdk-lluvia.fdk-anim-out { animation: fdk-lluvia-salida 250ms ease-out forwards; }
+@keyframes fdk-lluvia-salida { to { opacity: 0; } }
+
+/*
+ * prefers-reduced-motion: no cae nada. Unos pocos personajes aparecen quietos, con un fundido, en
+ * posiciones al azar (el motor pone --xp/--yp/--k). Se quedan hasta que termina la duraci\xF3n o se detiene.
+ */
+.fdk-lluvia--quieta .fdk-lluvia__p {
+  transform: translate3d(var(--x), var(--y), 0) scale(var(--k, 1));
+  animation: fdk-lluvia-fundido 500ms ease-out var(--delay, 0ms) 1 backwards !important;
+}
+.fdk-lluvia--quieta .fdk-lluvia__img { animation: none !important; }
+@keyframes fdk-lluvia-fundido { from { opacity: 0; } }
+`;function Ae(e,a){if(e&&typeof e=="object")return e;let r=e===void 0?a.listar()[0]:a.obtener(e);if(!r)throw new Error(e===void 0?"No hay personajes registrados":`El personaje "${e}" no est\xE1 registrado`);return r}function Re(e="recta"){let a=_.obtener(e);if(!a)throw new Error(`El efecto "${e}" no est\xE1 registrado`);return a}async function de(e={}){let a=ne(e),r=Ae(e.personaje,e.personajes??g),o=Re(e.efecto);await ae([r]),G(se),te(o);let{el:t,particulas:i,restaurar:k}=oe(e.host??document.body,o,a.cantidad,r.src),b=new Map(i.map(n=>[n.el,n])),l={ancho:t.clientWidth||innerWidth,alto:t.clientHeight||innerHeight},c=new ResizeObserver(([n])=>{l.ancho=n.contentRect.width,l.alto=n.contentRect.height});c.observe(t);let w=!1,F=!1,C=!1,le=i.length,E,T,ce=new Promise(n=>T=n);function z(n){w||(w=!0,clearTimeout(E),c.disconnect(),t.removeEventListener("animationstart",B),t.removeEventListener("animationiteration",Y),t.remove(),k(),b.clear(),i.length=0,T(n),e.onFin?.(n))}async function O(n,s=!1){F||w||(F=!0,clearTimeout(E),s||await H(t,"fdk-anim-out",250),z(n))}function M(n){n.activa&&(n.activa=!1,n.el.classList.add("fdk-lluvia__p--parada"),--le===0&&z("completa"))}let fe=n=>({ancho:l.ancho,alto:l.alto,tamano:n.tamano,velocidad:n.velocidad,rango:{tamano:a.tamano,velocidad:a.velocidad},rnd:a.random});function N(n){let s=o.particula(fe(n));for(let[h,ue]of Object.entries(s.vars))n.el.style.setProperty(h,String(ue));return n.el.style.setProperty("--dur",`${s.duracionMs}ms`),s.duracionMs}function B(n){let s=b.get(n.target);s&&(s.iniciada=!0)}function Y(n){let s=b.get(n.target);if(!s||!s.activa)return;if(C)return M(s);let h=N(s);Math.abs(h-s.duracionMs)>1&&(s.duracionMs=h,s.el.style.setProperty("--delay","0ms"),s.el.style.animationName="none",s.el.offsetWidth,s.el.style.animationName="")}if(matchMedia("(prefers-reduced-motion: reduce)").matches)t.classList.add("fdk-lluvia--quieta"),i.forEach((n,s)=>{if(s>=12)return M(n);n.el.style.setProperty("--xp",a.random().toFixed(4)),n.el.style.setProperty("--yp",a.random().toFixed(4)),n.el.style.setProperty("--k",(y(a.tamano,a.random)/64).toFixed(4)),n.el.style.setProperty("--delay",`${Math.round(a.random()*400)}ms`)}),a.duracionMs!==null&&(E=setTimeout(()=>{O("completa")},Math.min(a.duracionMs,2500)));else{for(let n of i)n.velocidad=y(a.velocidad,a.random),n.tamano=y(a.tamano,a.random),n.duracionMs=N(n),n.el.style.setProperty("--delay",`${Math.round(y(a.retrasoMs,a.random))}ms`);t.addEventListener("animationstart",B),t.addEventListener("animationiteration",Y),a.duracionMs!==null&&(E=setTimeout(()=>{C=!0;for(let n of[...i])n.iniciada||M(n)},a.duracionMs))}return e.onInicio?.(),{el:t,terminada:ce,detener:n=>O("detenida",n?.inmediato)}}return ge(Se);})();/*lluvia:fin*/
+
+/* demo: los 15 estados-escena de Rumbo como personajes (los 8 base ya vienen en el registro) + un efecto propio + listas desplegables que arman los parámetros de iniciarLluvia(). */
+(() => {
+  for (const k of Object.keys(ESCENAS_SVG))   // las 15 escenas, además de los 8 estados de Rumbo que ya trae el registro
+    FdkLluvia.registrarPersonaje({ id: k, nombre: k, src: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(ESCENAS_SVG[k]) });
+  FdkLluvia.registrarEfecto({
+    id: "pulso", nombre: "Pulso", clase: "fdk-lluvia--pulso",
+    css: ".fdk-lluvia--pulso .fdk-lluvia__p{animation-name:fdk-lluvia-recta}.fdk-lluvia--pulso .fdk-lluvia__img{animation:fdk-pulso 650ms ease-in-out infinite alternate}@keyframes fdk-pulso{from{transform:scale(.7)}to{transform:scale(1.3)}}",
+    particula: (c) => FdkLluvia.caidaBase(c),
+  });
+  const $ = (id) => document.getElementById(id);
+  const PRESETS = {
+    "ll-cantidad": [["10", 10], ["20", 20], ["40", 40], ["80", 80], ["150", 150], ["300", 300]],
+    "ll-duracion": [["2 s", 2000], ["4 s", 4000], ["6 s", 6000], ["10 s", 10000], ["continuo (hasta detener)", 0]],
+    "ll-velocidad": [["lenta [80, 180]", [80, 180]], ["media [220, 520]", [220, 520]], ["rápida [500, 900]", [500, 900]]],
+    "ll-tamano": [["pequeño [16, 32]", [16, 32]], ["mediano [28, 64]", [28, 64]], ["grande [48, 96]", [48, 96]]],
+    "ll-retraso": [["sin retraso [0, 0]", [0, 0]], ["corto [0, 800]", [0, 800]], ["largo [0, 2500]", [0, 2500]]],
+  };
+  const llenar = (id, items, inicial) => { $(id).innerHTML = items.map(([t, v], i) => `<option value="${i}"${i === inicial ? " selected" : ""}>${t}</option>`).join(""); };
+  llenar("ll-personaje", FdkLluvia.registroGlobal.listar().map((p) => [p.id, p.id]), 0);
+  llenar("ll-efecto", FdkLluvia.registroEfectos.listar().map((e) => [e.id, e.id]), 0);
+  llenar("ll-cantidad", PRESETS["ll-cantidad"], 2); llenar("ll-duracion", PRESETS["ll-duracion"], 2);
+  llenar("ll-velocidad", PRESETS["ll-velocidad"], 1); llenar("ll-tamano", PRESETS["ll-tamano"], 1); llenar("ll-retraso", PRESETS["ll-retraso"], 2);
+  const dato = (id) => PRESETS[id][+$(id).value][1];
+  const parametros = () => {
+    const ms = dato("ll-duracion");
+    return { personaje: FdkLluvia.registroGlobal.listar()[+$("ll-personaje").value].id, efecto: FdkLluvia.registroEfectos.listar()[+$("ll-efecto").value].id,
+      cantidad: dato("ll-cantidad"), ...(ms === 0 ? { continuo: true } : { duracionMs: ms }), velocidad: dato("ll-velocidad"), tamano: dato("ll-tamano"), retrasoMs: dato("ll-retraso") };
+  };
+  const codigo = () => { const p = parametros(); $("ll-codigo").textContent = "await iniciarLluvia({\n" + Object.entries(p).map(([k, v]) => "  " + k + ": " + JSON.stringify(v).replace(/,/g, ", ") + ",").join("\n") + "\n});"; };
+  for (const id of ["ll-personaje", "ll-efecto", ...Object.keys(PRESETS)]) $(id).addEventListener("change", codigo);
+  codigo();
+  let lluvia = null;
+  $("ll-iniciar").addEventListener("click", async () => {
+    lluvia?.detener({ inmediato: true });
+    try {
+      lluvia = await FdkLluvia.iniciarLluvia({ ...parametros(),
+        onInicio: () => { $("ll-estado").textContent = "onInicio → la lluvia empezó"; $("ll-detener").disabled = false; },
+        onFin: (m) => { $("ll-estado").textContent = "onFin(\"" + m + "\") → " + (m === "completa" ? "terminó sola" : "se detuvo") + "; ya no queda ningún nodo"; $("ll-detener").disabled = true; } });
+    } catch (e) { $("ll-estado").textContent = "No se pudo iniciar: " + e.message; }
+  });
+  $("ll-detener").addEventListener("click", () => lluvia?.detener());
+})();
+</script>
+
+
+
+

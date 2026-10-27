@@ -2,16 +2,21 @@ import { ensureStyles } from "../core/styles";
 import { getLayer } from "../core/layer";
 import { rumboSvg } from "../rumbo/rumbo";
 import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
-import type { RumboEstado } from "../rumbo/types";
+import type { RumboEstadoExtendido, EstadoSiempreLuminoso } from "../rumbo/estados";
+import { escenaDe, validarEstado } from "../rumbo/estados";
+import { pintarEscena } from "../escenas/pintar";
 import { nivelDeEstado } from "./nivel";
 import { iconoDeNivel } from "./iconos";
+import { sonarPara } from "../sonido/sonido";
+import type { SonidoClave } from "../sonido/sonido";
 import alertCss from "./alert.css";
 import rumboCss from "../rumbo/rumbo.css";
 import layerCss from "../core/layer.css";
 
 export interface AlertOptions {
-  /** Estado de Rumbo. Obligatorio: define la postura visual aunque no haya texto (regla del brief). */
-  estado: RumboEstado;
+  /** Estado de Rumbo. Obligatorio: define la postura visual aunque no haya texto (regla del brief).
+   * Sin `saludo` ni `onboarding`: son siempre Rumbo luminoso y necesitan un fondo de color, y Alert no tiene `background` configurable. */
+  estado: Exclude<RumboEstadoExtendido, EstadoSiempreLuminoso>;
   /** Título en bold. Opcional. */
   titulo?: string;
   /** Texto libre. Tiene prioridad sobre `vozId`. */
@@ -24,6 +29,12 @@ export interface AlertOptions {
    */
   personaje?: boolean;
   host?: HTMLElement;
+  /**
+   * Sonido + háptica (brandkit sonido-haptica.json). `true` = el que le toca al `estado`
+   * (exito, error, alerta; reposo/escuchando = aviso; el resto no suena). Una clave
+   * (`"deposito"`, `"retiro"`…) fuerza ese sonido. Por defecto no suena.
+   */
+  sonido?: boolean | SonidoClave;
 }
 
 export interface AlertHandle {
@@ -49,21 +60,27 @@ export interface AlertHandle {
  * `AlertHandle` con `cerrar()` en vez de ser un fire-and-forget.
  */
 export function crearAlert(options: AlertOptions): AlertHandle {
-  ensureStyles(layerCss + alertCss + rumboCss);
+  validarEstado(options?.estado, "crearAlert");
+  ensureStyles(layerCss, alertCss, rumboCss);
 
   const nivel = nivelDeEstado(options.estado);
   const layer = getLayer("top-end", options.host);
 
   const el = document.createElement("div");
   el.className = `fdk-alert fdk-alert--${nivel} fdk-alert--barra fdk-alert--flotante`;
-  if (options.personaje) el.classList.add("fdk-alert--sombra");
+  const escena = escenaDe(options.estado);
+  const conPersonaje = options.personaje || !!escena; // un estado-escena siempre es Rumbo, nunca el icono
+  if (conPersonaje) el.classList.add("fdk-alert--sombra");
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
   el.setAttribute("aria-live", nivel === "error" ? "assertive" : "polite");
 
   const media = document.createElement("div");
-  if (options.personaje) {
+  if (conPersonaje) {
     media.className = "fdk-alert__rumbo";
-    media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 }); // 44px + 5%
+    if (escena) {
+      media.classList.add("fdk-alert__rumbo--escena");
+      pintarEscena(media, escena, 80);
+    } else media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 }); // 44px + 5%
   } else {
     media.className = "fdk-alert__icono";
     media.innerHTML = iconoDeNivel(nivel);
@@ -111,6 +128,7 @@ export function crearAlert(options: AlertOptions): AlertHandle {
   }
 
   layer.appendChild(el);
+  sonarPara(options.sonido, options.estado);
 
   return {
     el,

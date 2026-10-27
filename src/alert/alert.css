@@ -57,6 +57,10 @@
 /* Rumbo sustituye al icono — nunca coexisten (recomendación de la crítica de diseño). */
 .fdk-alert__rumbo .fdk-rumbo { width: 100%; height: 100%; }
 
+/* Escena animada (saludo, deposito, dormida…): a 46px no se lee, así que tiene su propio tamaño (80px). */
+.fdk-alert__rumbo--escena { width: 80px; height: 78px; }
+.fdk-alert__rumbo--escena img { width: 100%; height: auto; display: block; }
+
 .fdk-alert__titulo { display: block; margin-bottom: 2px; font-weight: 700; }
 
 /*

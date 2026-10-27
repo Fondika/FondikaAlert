@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--fdk-sp-4);
+  padding: 20px; /* el margin: 20px de la referencia, como margen del fondo (así `width: 100%` no desborda) */
 }
 
 /*
@@ -20,17 +20,30 @@
   color: var(--fdk-ink);
   font-family: var(--fdk-font);
   border-radius: var(--fdk-radius-lg);
-  box-shadow: var(--fdk-shadow-4);
-  width: 370px;
-  max-width: 100%;
-  max-height: calc(100vh - 2 * var(--fdk-sp-4));
+  box-shadow: 0 30px 70px -20px #000000a6; /* sombra de la referencia, en ambos temas */
+  box-sizing: border-box; /* 440px es el ancho TOTAL, padding incluido */
+  width: min(100%, 440px);
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
   overflow-y: auto;
-  padding: var(--fdk-sp-5) var(--fdk-sp-4) var(--fdk-sp-4);
+  /* --pad-x: margen lateral del texto; --btn-inset: cuánto se separan los botones del borde (~5% de la tarjeta, como la referencia) */
+  --fdk-modal-pad-x: 24px;
+  --fdk-modal-btn-inset: 16px;
+  padding: 24px;
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 14px; /* el espacio entre bloques lo da el gap, no los márgenes de cada uno */
+  text-align: center;
 }
-.fdk-modal--wide { width: 640px; }
+.fdk-modal--wide { width: min(100%, 640px); }
+
+/* Web: el modal ya llega a su ancho (440/640); los botones se acercan a ~5% del borde, como la referencia. */
+@media (min-width: 600px) {
+  .fdk-modal { --fdk-modal-btn-inset: 22px; }
+  .fdk-modal--wide { --fdk-modal-btn-inset: 28px; }
+}
 
 .fdk-modal__cerrar {
   position: absolute;
@@ -47,40 +60,50 @@
 .fdk-modal__cerrar:hover { color: var(--fdk-ink); }
 .fdk-modal__cerrar:focus-visible { outline: none; box-shadow: var(--fdk-foco); border-radius: var(--fdk-radius-sm); }
 
-.fdk-modal__media { display: flex; justify-content: center; margin-bottom: var(--fdk-sp-4); }
-.fdk-modal__media .fdk-rumbo { width: 110px; height: 110px; } /* 96px + 15% */
+.fdk-modal__media { display: flex; justify-content: center; }
+.fdk-modal__media .fdk-rumbo { width: 78px; height: 78px; } /* proporción de la referencia (antes 110px) */
 
 .fdk-modal__titulo {
   font-family: var(--fdk-font-display);
-  font-size: 22px;
+  font-size: 20px; /* tipografía a la escala de la referencia: título más sobrio, descripción con más aire */
   font-weight: 700;
-  margin: 0 0 var(--fdk-sp-2);
+  margin: 0;
   text-align: center;
+  align-self: stretch;
 }
 .fdk-modal__texto {
   font-size: 15px;
-  line-height: 1.55;
+  line-height: 1.75;
   color: var(--fdk-ink);
   margin: 0;
   text-align: center;
+  align-self: stretch;
+}
+/* Después de las reglas base (misma especificidad: gana la última) */
+@media (min-width: 600px) {
+  .fdk-modal__titulo { font-size: 22px; }
+  .fdk-modal__texto { font-size: 16px; }
 }
 
+/* En columna y a todo el ancho (referencia de diseño). `column-reverse`: en el DOM va primero cancelar (el foco
+   inicial cae en la opción segura), pero la acción principal se ve arriba. */
 .fdk-modal__acciones {
   display: flex;
-  justify-content: center;
-  gap: 18%;
-  margin-top: var(--fdk-sp-5);
-  flex-wrap: wrap;
+  flex-direction: column-reverse;
+  gap: var(--fdk-sp-3);
+  align-self: stretch;
+  margin: 0 calc(var(--fdk-modal-btn-inset) - var(--fdk-modal-pad-x)); /* los botones se asoman al padding: ~90% del ancho */
 }
 
 .fdk-modal__btn {
+  width: 100%;
   font: inherit;
   font-weight: 700;
   font-size: 15px;
   height: 44px;
   padding: 0 var(--fdk-sp-5);
-  border-radius: var(--fdk-radius-md);
-  border: 1.5px solid transparent;
+  border-radius: 999px; /* píldora, como la referencia */
+  border: 1px solid transparent;
   cursor: pointer;
   transition: background-color var(--fdk-duration-base) var(--fdk-ease-out);
 }
@@ -90,13 +113,30 @@
 .fdk-modal__btn--primario:hover { background: var(--fdk-btn-primario-hover); }
 .fdk-modal__btn--primario:active { background: var(--fdk-btn-primario-activo); }
 
-.fdk-modal__btn--secundario { background: var(--fdk-surface); color: var(--fdk-ink); border-color: var(--fdk-ink); }
-.fdk-modal__btn--secundario:hover { background: var(--fdk-btn-secundario-hover); }
-.fdk-modal__btn--secundario:active { background: var(--fdk-btn-secundario-activo); }
+.fdk-modal__btn--secundario { background: #f4f5f6; color: var(--fdk-ink); border-color: #dcdee1; } /* relleno y borde suaves, como en el tema oscuro */
+.fdk-modal__btn--secundario:hover { background: #eceef0; }
+.fdk-modal__btn--secundario:active { background: #e4e6e9; }
 
 .fdk-modal__btn--destructivo { background: var(--fdk-btn-destructivo-bg); color: #fff; }
 .fdk-modal__btn--destructivo:hover { background: var(--fdk-btn-destructivo-hover); }
 .fdk-modal__btn--destructivo:active { background: var(--fdk-btn-destructivo-activo); }
+
+/*
+ * Tema oscuro (por defecto el del sistema; `tema` lo fuerza). Valores tomados de la imagen de referencia: fondo
+ * casi negro, título blanco, descripción gris claro, acción principal naranja y secundaria oscura con borde fino.
+ * Son tonos neutros fuera de la paleta de 18, sólo para este tema.
+ */
+.fdk-modal--oscuro {
+  background: #1b1f22;
+  color: #fff;
+}
+.fdk-modal--oscuro .fdk-modal__titulo { color: #fff; }
+.fdk-modal--oscuro .fdk-modal__texto { color: #b8babd; }
+.fdk-modal--oscuro .fdk-modal__cerrar { color: #8a8d91; }
+.fdk-modal--oscuro .fdk-modal__cerrar:hover { color: #fff; }
+.fdk-modal--oscuro .fdk-modal__btn--secundario { background: #21262a; color: #fff; border-color: #373c41; }
+.fdk-modal--oscuro .fdk-modal__btn--secundario:hover { background: #292e32; }
+.fdk-modal--oscuro .fdk-modal__btn--secundario:active { background: #30353a; }
 
 @keyframes fdk-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fdk-backdrop-out { from { opacity: 1; } to { opacity: 0; } }

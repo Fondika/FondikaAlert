@@ -1,3 +1,5 @@
+import type { RumboEstadoExtendido } from "./estados";
+
 /**
  * Los ocho estados de Rumbo. No se agregan estados nuevos sin documentarlos en
  * Brand_kit_Fondika/04-personaje/README.md (regla #8 de "Qué no hacer").
@@ -29,7 +31,7 @@ export type RumboSuperficie =
 export type RumboVariante = "color" | "luminoso";
 
 export interface RumboOptions {
-  estado: RumboEstado;
+  estado: RumboEstadoExtendido;
   /** Superficie donde se monta. Por defecto "blanco" → variante `color`. */
   superficie?: RumboSuperficie;
   /** Tamaño en px del lienzo (120×120 nativo). Mínimo recomendado 28px (Vida deja de leerse debajo). */

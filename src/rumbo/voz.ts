@@ -1,5 +1,6 @@
 import voz from "./voz-rumbo.json";
-import type { RumboEstado } from "./types";
+import type { RumboEstadoExtendido } from "./estados";
+import { baseDe } from "./estados";
 
 interface LineaVoz {
   id: string;
@@ -15,7 +16,7 @@ interface EstadoVoz {
 const ESTADOS = (voz as { estados: Record<string, EstadoVoz> }).estados;
 
 export interface RumboVozOptions {
-  estado: RumboEstado;
+  estado: RumboEstadoExtendido;
   /** Texto libre. Si se define, siempre gana sobre `vozId` (regla de prioridad). */
   texto?: string;
   /** Id de una línea de la biblioteca (ver voz-rumbo.json). Ignorado si `texto` está definido. */
@@ -33,7 +34,7 @@ export function resolverVozRumbo(opts: RumboVozOptions & { mostrarPorDefecto?: b
   if (opts.texto) return opts.texto;
   if (!opts.vozId && !opts.mostrarPorDefecto) return null;
 
-  const bloque = ESTADOS[opts.estado];
+  const bloque = ESTADOS[baseDe(opts.estado)];
   if (!bloque) return null;
 
   if (opts.vozId) {

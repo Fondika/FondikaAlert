@@ -5,3 +5,4 @@ playground/
 # en el commit de release que se etiqueta con un tag (ver DOCUMENTACION.md, ADR-007).
 dist/
 node_modules/
+tests/

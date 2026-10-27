@@ -1,4 +1,6 @@
 import type { RumboEstado } from "../rumbo/types";
+import { baseDe } from "../rumbo/estados";
+import type { RumboEstadoExtendido } from "../rumbo/estados";
 
 /** Los 4 niveles visuales definidos en Brand_kit_Fondika/03-design-system/assets/componentes.html. */
 export type AlertNivel = "info" | "exito" | "alerta" | "error" | "neutro";
@@ -25,6 +27,6 @@ export const NIVEL_POR_ESTADO: Record<RumboEstado, AlertNivel> = {
   "sin-conexion": "neutro",
 };
 
-export function nivelDeEstado(estado: RumboEstado): AlertNivel {
-  return NIVEL_POR_ESTADO[estado];
+export function nivelDeEstado(estado: RumboEstadoExtendido): AlertNivel {
+  return NIVEL_POR_ESTADO[baseDe(estado)];
 }

@@ -1,5 +1,6 @@
 import type { RumboOptions } from "./types";
 import { resolveRumboVariante } from "./variante";
+import { baseDe } from "./estados";
 
 /** Path del cuerpo, verbatim de Brand_kit_Fondika/04-personaje/assets/rumbo.html — nunca se re-dibuja a mano. */
 const CUERPO_PATH =
@@ -33,7 +34,7 @@ function cuerpoColor(variante: "color" | "luminoso"): string {
 
 function ojos(cy: number, r: number, variante: "color" | "luminoso"): string {
   const color = variante === "luminoso" ? GRIS_OJOS : GRIS_OJOS;
-  return `<circle cx="72" cy="${cy}" r="${r}" fill="${color}"/><circle cx="95" cy="${cy}" r="${r}" fill="${color}"/>`;
+  return `<g class="fdk-rumbo__ojos"><circle cx="72" cy="${cy}" r="${r}" fill="${color}"/><circle cx="95" cy="${cy}" r="${r}" fill="${color}"/></g>`;
 }
 
 function svgWrap(size: number, inner: string, claseAnim: string): string {
@@ -47,7 +48,7 @@ export function rumboSvg(options: RumboOptions): string {
   const glow = variante === "luminoso" ? capasLuminoso() : "";
   const cuerpo = cuerpoColor(variante);
 
-  switch (estado) {
+  switch (baseDe(estado)) {
     case "reposo":
       return svgWrap(size, `${glow}
         <g class="fdk-rumbo__cuerpo fdk-rumbo__respira"><path d="${CUERPO_PATH}" fill="${cuerpo}"/>${ojos(62, 6.6, variante)}</g>
@@ -78,8 +79,9 @@ export function rumboSvg(options: RumboOptions): string {
     case "exito":
       return svgWrap(size, `${glow}
         <g class="fdk-rumbo__cuerpo fdk-rumbo__salta"><path d="${CUERPO_PATH}" fill="${cuerpo}"/>
-          <path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/>
-          <path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="fdk-rumbo__ojos">
+            <path d="M65 64.5 A7 7 0 0 1 79 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/>
+            <path d="M88 64.5 A7 7 0 0 1 102 64.5" fill="none" stroke="${GRIS_OJOS}" stroke-width="5" stroke-linecap="round"/></g></g>
         <circle class="fdk-rumbo__vida fdk-rumbo__sube" cx="99" cy="11" r="11" fill="${TURQUESA}"/>`, "s-exito");
 
     case "error":
@@ -98,8 +100,9 @@ export function rumboSvg(options: RumboOptions): string {
     case "sin-conexion":
       return svgWrap(size, `
         <g class="fdk-rumbo__cuerpo"><path d="${CUERPO_PATH}" fill="${GRIS_OFF}"/>
-          <path d="M65.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/>
-          <path d="M88.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/></g>
+          <g class="fdk-rumbo__ojos">
+            <path d="M65.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/>
+            <path d="M88.4 62 h13.2" stroke="${GRIS_OFF_RASGO}" stroke-width="5" stroke-linecap="round"/></g></g>
         <circle cx="99" cy="15" r="9.5" fill="none" stroke="${GRIS_OFF}" stroke-width="3" stroke-dasharray="4.5 4.5"/>`, "s-off");
   }
 }

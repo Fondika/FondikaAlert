@@ -164,6 +164,110 @@ redibujar a Rumbo ni reinventar el color cada vez.
 22. **El gap entre botones de `.fdk-modal__acciones` sube un 10%** (`var(--fdk-sp-3)` = 12px →
     13.2px, valor fijo en vez de token). Sólo se nota visualmente en `confirmar()` — `notificar()`
     tiene un único botón, así que el gap no tiene con qué separar nada ahí.
+23. **Sonido: opt-in, sin audio empaquetado en JS, y sin sonido donde el brandkit lo prohíbe.**
+    Los 8 WAV (`sonidos/`, copia de `03-design-system/assets/sonido/`) no se incrustan en `dist/`
+    (~230 KB en base64): el consumidor los sirve y llama `configurarSonido({ baseUrl })`. Mapa
+    estado→sonido en `sonido/sonido.ts`: exito/error/alerta tienen el suyo, reposo/escuchando usan
+    `aviso`; `pensando`, `cargando` y `sin-conexion` no suenan (regla "nada en bucle"). `marca`,
+    `deposito`, `retiro` y `toque` no son de un estado, así que sólo salen por clave
+    (`sonido: "deposito"` o `sonar("toque")`). Háptica = patrones web de `sonido-haptica.json`,
+    siempre junto al sonido. El silencio del sistema lo respeta el propio `Audio` del navegador; un
+    autoplay bloqueado se ignora sin error.
+24. **Las escenas de Rumbo SON estados (`RumboEstadoExtendido`), sin duplicar los que ya existen.**
+    Decisión explícita del equipo, que se aparta de la regla 8 del brandkit ("no inventes estados
+    nuevos"). 15 escenas se suman a los 8 base; `error`, `offline`, `procesando`, `perfilamiento` y
+    `documento` se descartan porque repiten `error`, `sin-conexion`, `cargando`, `escuchando` y
+    `alerta` — **el nombre existente tiene prioridad**. Los nombres
+    compuestos pasan a kebab-case como `sin-conexion` (`esperaLarga` → `espera-larga`,
+    `ordenManana` → `orden-manana`); el archivo del brandkit conserva el suyo. Cada escena cuelga de
+    un estado base (`rumbo/estados.ts`, mapeo propio, no del brandkit) y de él hereda nivel de color
+    (`nivelDeEstado`), voz y sonido: `baseDe(estado)`. `rumboSvg` dibuja el Rumbo base; Modal,
+    Mascota, Attach, Alert y Toast dibujan la escena (`escenaDe(estado)`; en Alert/Toast a 80px con
+    `.fdk-alert__rumbo--escena`, porque a los 46px del Rumbo normal no se lee, y en Alert un
+    estado-escena implica `personaje`); Loader (28–96px) dibuja el Rumbo base. El ciclo
+    de voz mira el estado crudo, así que `espera-larga`/`orden-manana` NO rotan textos. `rendimiento`
+    nunca suena (brandkit). Se sirven como `<img src="data:image/svg+xml…">`, no SVG en línea: cada
+    escena trae un `<style>` global (`[data-p]`) y dos juntas se pisarían. `saludo` y
+    `onboarding` no existen en Alert (`AlertOptions.estado` los excluye con
+    `EstadoSiempreLuminoso`): necesitan un fondo de color y Alert no lo tiene configurable (regla 9).
+    Son siempre Rumbo luminoso (y su fondo por defecto, en Toast y Loader, es
+    `naranja-900` —un tono clasificado como luminoso— en vez del fondo del nivel; un `background`/
+    `superficie` explícito siempre gana): el brandkit los trae sobre un fondo degradado naranja a
+    pantalla completa; aquí se les quita ese fondo y se reemplaza por el halo naranja del luminoso
+    (mismos valores que `capasLuminoso`), porque con el cuerpo blanco y sin halo se perderían sobre
+    una superficie blanca. Datos en
+    `src/escenas/datos.ts`, generados con `scripts/gen-escenas.py` — no se editan a mano; su tipo
+    `Record<EscenaEstado, …>` obliga a que la lista de `estados.ts` y los datos coincidan.
+25. **Compatibilidad al actualizar: nada obligatorio, nada que cambie de significado.** `RumboEstado`
+    sigue siendo los 8 originales (quien tiene un `Record<RumboEstado, …>` no se rompe); las
+    opciones aceptan la unión ampliada `RumboEstadoExtendido`. `sonido` va AL FINAL de cada
+    interfaz de opciones y apagado por defecto. Las escenas se cargan con `import("./escenas")`
+    desde `escenas/pintar.ts` — no estático — para que los ~90 KB no entren al bundle de
+    Modal/Mascota/Attach de quien no las usa (verificado en `dist/`: `modal.js`, `attach.js` y
+    `mascota.js` pesan <400 B y no importan el chunk de escenas).
+    En el playground/Artifact no hay un apartado de escenas aparte: las 15 van dentro del select
+    "Estado de Rumbo" de cada sección (Alert, Toast, Confirmar, Notificar, Loader, Attach, Mascota),
+    como opciones planas (sin `<optgroup>`: todos son estados de Rumbo) debajo de los 8 de siempre,
+    que no se tocaron (ni valor ni texto). La etiqueta de cada nueva es solo su nombre en código
+    (`deposito`, `espera-larga`…), sin descripción.
+    En los demos de "togglear" (Loader.screen, Loader.target, Attach) cambiar el estado o el
+    background con el componente ya activo lo repinta en vivo; es solo del playground — los
+    `Handle` de la librería (`LoaderHandle`, `AttachHandle`) no tienen `actualizar()`: para cambiar
+    de estado se cierra y se vuelve a abrir.
+    Cada sección que implementa `sonido` (todas menos Loader) lo expone como un checkbox propio, el
+    último campo del formulario, apagado por defecto.
+26. **Lluvia de personajes: un módulo independiente cuyas piezas se reemplazan sin tocar a las demás.**
+    `src/lluvia/` no importa Alert, Toast, Modal, Loader, Attach ni Mascota (verificado con el metafile de
+    esbuild: solo arrastra `lluvia/`, `personajes/` y `core/` — estilos, `animar`, z-index — más el dibujo de
+    Rumbo para el personaje por defecto). Responsabilidades separadas: `opciones.ts` (defaults y validación),
+    `efectos.ts` (registro de efectos), `efectos-base.ts` (los 6 efectos), `capa.ts` (DOM) y `lluvia.ts`
+    (ciclo de vida). Cada efecto es una **estrategia** con el mismo
+    contrato (`EfectoLluvia`: `id`, `nombre`, `clase`, `css?`, `particula(ctx)`), así que agregar uno es
+    `registrarEfecto()`; el motor solo conoce esa interfaz. El **registro de personajes** vive en
+    `personajes/` (no dentro de la lluvia) para que lo reutilicen los demás componentes sin duplicarlo.
+
+    Decisiones de implementación (cada una con su porqué):
+    - **CSS, no JS por cuadro.** Cada partícula es un nodo con un `@keyframes` y variables CSS (`--xp`,
+      `--k`, `--dur`…) que sortea `particula()`. Solo se animan `transform` y `opacity`; el tamaño sale de
+      `scale(tamaño / 64)` (nunca de width/height) y la posición del centro se calcula en CSS. Lo que se
+      escribe por JS son solo variables CSS, y solo cuando una partícula reaparece fuera de la vista.
+    - **Unidades de contenedor (`cqw`/`cqh`).** La capa es `container-type: size`, así que los `@keyframes`
+      miden en "ancho/alto de la capa": la lluvia se adapta sola al redimensionar la ventana, y la misma
+      CSS sirve para la capa de pantalla completa y para la lluvia dentro de un `host` más chico.
+    - **Reciclado.** Los nodos se crean una vez; en `animationiteration` (la partícula está arriba, fuera de
+      la vista) se vuelven a sortear posición, fase y amplitud. **Tamaño y velocidad son la "identidad" de
+      cada personaje y no cambian:** cambiar la duración de una animación en marcha la re-ubicaría a medias.
+      Si la ventana cambió de alto y la duración debe cambiar, se reinicia la animación en ese momento
+      (la única lectura de layout, `offsetWidth`, ocurre solo ahí).
+    - **Duración finita.** `duracionMs` es el tiempo durante el que siguen apareciendo personajes: al
+      cumplirse, los que no habían arrancado se apagan y los que caen terminan su caída; al apagarse el
+      último, `terminada` resuelve `"completa"` y se libera todo. `detener()` desvanece la capa con el
+      `animar()` de la librería (250 ms; `{ inmediato: true }` la quita ya) y es idempotente.
+    - **Movimiento reducido.** Se lee en cada inicio (no se cachea). Sin caída: hasta 12 personajes quietos
+      con un fundido (`fdk-lluvia--quieta`), que duran como máximo 2,5 s o hasta `detener()` si es continua.
+    - **z-index.** `zIndex.lluvia` (9250): sobre el contenido y los popups, bajo el loader de pantalla.
+    - **Sin panel visual.** Los parámetros (personaje, efecto, cantidad, duración, rangos…) se pasan por código a
+      `iniciarLluvia()`: la librería no incluye ninguna interfaz para configurarlos, porque en la aplicación final
+      no se configura de forma visual en pantalla. Una versión anterior traía `abrirPanelLluvia()` (personaje y efecto
+      con vista previa); se eliminó. El playground arma la misma llamada con listas desplegables solo para probarla
+      (muestra el código resultante antes de invocarla).
+    - **Sin carrete.** Una versión anterior de esta tarea pidió un selector tipo tragamonedas
+      (carrete de personajes que frena en el elegido); se descartó al corregirse el pedido y su código no
+      está en el repo.
+    - **Pruebas.** El repo no tenía convención de pruebas (ni runner ni carpeta), así que se estableció una
+      mínima: `npm test` compila los módulos que prueba (ver `tsup.test.config.ts`) y corre `tests/*.test.mjs` con
+      `node --test` (sin dependencias nuevas). Cubren la lógica pura (registros, validación de opciones y el contrato de
+      cada efecto), los contadores de referencias del Loader, y —con un DOM falso mínimo en `tests/dom-falso.mjs`
+      (eventos, foco, selectores simples; no hay jsdom y no se agregó)— Toast (validación, tope con cola, pausa por
+      foco), Modal (cola, `cerrarModal`, huérfano, tope, nombre accesible), Attach (texto vs HTML), Alert (roles) y la
+      inyección de estilos. Si un test puede dejar un temporizador vivo al fallar, lo limpia en `finally`: si no, una
+      aserción fallida cuelga todo el proceso. El comportamiento con DOM (capa a pantalla completa, caída, reciclado,
+      detener, reduced-motion, redimensionado) se verificó en el navegador y **no está automatizado
+      en el repo**.
+    - **Demo.** En el playground/Artifact se incrusta el bundle real (`npx esbuild src/lluvia/index.ts
+      --bundle --minify --format=iife --global-name=FdkLluvia --loader:.css=text`) entre los marcadores
+      `/*lluvia:inicio*/` y `/*lluvia:fin*/`, en lugar de reimplementar la lógica: no hay dos copias que
+      se desincronicen. Si cambia `src/lluvia/`, hay que volver a incrustarlo.
 
 ## Estructura
 
@@ -187,30 +291,32 @@ src/
 │               cerrar() — Rumbo suelto en una esquina, fuera de cualquier aviso; burbuja de
 │               voz opcional)
 └── index.ts
-playground/
-└── index.html  demo funcional SIN build — ábrelo directo en el navegador (Alert, Toast,
-                 Modal, Loader, Attach y Mascota, con controles para probar cada uno)
+index.html      demo funcional SIN build — ábrelo directo en el navegador (Alert, Toast, Modal, Loader,
+                Attach, Mascota y Lluvia, con controles para probar cada uno). Es lo único que se sube.
+playground/     (en .gitignore) showcase.html: la copia de trabajo que se publica como Artifact
 ```
 
 ## Cómo probarlo hoy (sin Node instalado)
 
-Este entorno no tiene Node/npm. `playground/index.html` es una reimplementación en JS plano de
+Este entorno no tiene Node/npm. `index.html` (raíz) es una reimplementación en JS plano de
 la misma lógica de `src/`, pensada para verse funcionando sin paso de build. Ábrelo directo en
 el navegador.
 
 ## Cómo compilar la librería real
 
-Este entorno no tiene Node instalado, pero sí Docker — la fase 5 se validó corriendo Node 20
+Este entorno no tiene Node instalado, pero sí Docker — el proyecto se desarrolla y se valida
+con **Node.js 24.22.1** (LTS; la versión mínima, ya parcheada contra la vulnerabilidad del decodificador Brotli)
 dentro de un contenedor, sin tocar el sistema:
 
 ```bash
-docker run --rm -v "$(pwd)":/app -w /app node:20-alpine npm install
-docker run --rm -v "$(pwd)":/app -w /app node:20-alpine npm run typecheck
-docker run --rm -v "$(pwd)":/app -w /app node:20-alpine npm run build
+docker run --rm -v "$(pwd)":/app -w /app node:24.22.1-alpine npm install
+docker run --rm -v "$(pwd)":/app -w /app node:24.22.1-alpine npm run typecheck
+docker run --rm -v "$(pwd)":/app -w /app node:24.22.1-alpine npm test
+docker run --rm -v "$(pwd)":/app -w /app node:24.22.1-alpine npm run build
 ```
 
 (En Git Bash de Windows hace falta `MSYS_NO_PATHCONV=1` antes de `docker run`, si no, monta mal
-la ruta del volumen.) Con Node instalado directamente, es sólo `npm install && npm run build`.
+la ruta del volumen.) Con Node instalado directamente, es sólo `npm install && npm run build` (`.nvmrc` fija 24.22.1).
 
 ### Fase 5 — validada, 2 bugs reales encontrados y corregidos
 
@@ -238,13 +344,123 @@ nivel superior de un módulo). También se confirmó que `dist/modal.js` no expo
 
 ## Fase 6 — Adopción
 
-- ✅ `playground/index.html` — demo interactiva sin build.
+- ✅ `index.html` (raíz) — demo interactiva sin build.
 - ✅ `README.md` de recetas (un ejemplo de código real por módulo, no sólo referencia).
 - ✅ `CHANGELOG.md` — primera entrada (`0.1.0`) con todo lo construido hasta ahora. A partir de
   aquí, todo cambio real (no cosmético) debería sumar una entrada, no reescribir la anterior.
 - ❌ Criterio de terminado real de esta fase (según `ARQUITECTURA-UI-KIT.md`): *"un desarrollador
   ajeno al proyecto implementa un toast y un loader sin abrir el código fuente"* — nunca se
   probó con nadie fuera de esta sesión. El README nuevo apunta a eso, pero no está validado.
+
+27. **Entradas de usuario nunca son HTML por defecto; los bloqueos no dependen de que la UI siga en el DOM.**
+    (a) `attachTo({ contenido: string })` inserta texto; el HTML exige `html: true` (opción explícita, última).
+    (b) `Loader.screen` pone `inert` al resto del `<body>` salvo lo de la librería (clase `fdk-…`), porque el
+    overlay no puede ser hijo de un elemento `inert`; `Loader.target` ya lo hacía sobre su host.
+    (c) La cola del Modal detecta un modal huérfano (`!backdrop.isConnected`) y lo cierra antes de encolar otro,
+    y `cerrarModal()` permite cerrarlo por código. Se descartó una API de handle por modal: `confirmar`/`notificar`
+    devuelven promesas (ADR-006) y la cola sigue siendo interna.
+
+28. **Accesibilidad de Toast y Modal.** El auto-cierre del Toast se pausa con puntero o foco (dos banderas,
+    `sobre` y `foco`; `armar()` es idempotente para no duplicar temporizadores). El Modal siempre tiene nombre
+    accesible: `aria-labelledby` si hay título; si no, `aria-label` = texto o "Aviso". Alert **no** necesita su propio
+    `prefers-reduced-motion`: `alert.css` no define animaciones ni transiciones; el movimiento que aparece dentro de un
+    Alert/Toast es de Rumbo (`rumbo.css`: `.fdk-rumbo * { animation: none }`) y de las escenas (cada SVG trae su media
+    query), y la entrada/salida del Toast tiene la suya en `toast.css`. Añadir una regla vacía en `alert.css` sería ruido.
+
+29. **Validación en el borde público, una sola vez y antes de tocar nada.** `core/validar.ts`
+    (`exigirElemento`, `validarPosicion`, `validarMs`) y `validarEstado` (en `rumbo/estados.ts`, que es dueño de la
+    lista de estados) se llaman en la primera línea de cada función pública. Lanzan síncronamente —igual que
+    `lluvia/opciones.ts`—, no rechazan una promesa: es un error de programación, no un fallo de ejecución. Se
+    verifica el elemento con `nodeType === 1` y no con `instanceof HTMLElement` (un nodo de otro iframe no es
+    instancia de esta ventana). `Record<RumboEstado, true>` obliga al compilador a mantener la lista de los 8 al día.
+    No se valida más allá del borde (tamaños, textos): el costo de código no compensa lo que evita.
+30. **`package.json` sirve a los tres modos de resolución de TypeScript.** `exports` para node16/bundler;
+    `main`/`module`/`types` para la raíz y `typesVersions` para cada subruta en `node10`, que ignora `exports`.
+    Al agregar un subpath nuevo en `exports`, agrégalo también en `typesVersions` y en `tsup.config.ts`.
+
+31. **`package.json` lleva la versión del próximo release, no la del último.** Estaba en `0.1.0` mientras los tags
+    iban por `v1.1.1`. Ahora dice `1.2.0` (decisión del dueño del repo, aun con dos cambios de comportamiento: Attach
+    trata strings como texto y un `timer` negativo lanza). Pasos del release, siguiendo ADR-007: pasar `[Unreleased]`
+    del CHANGELOG a `[1.2.0] — fecha`, `npm run build`, `git add -f dist`, commit y tag `v1.2.0`. Hasta entonces
+    `dist/` conserva el de v1.1: se reconstruye sólo en ese commit.
+
+32. **Topes opcionales, globales y apagados por defecto; y la onda de Rumbo anima `transform`.** `configurarToast`
+    y `configurarModal` (mismo patrón que `configurarSonido`) existen porque sin tope la librería pinta todo lo que
+    le piden. Quedan apagados (sin límite) para no cambiar a quien ya la usa. Al exceder, el Toast espera en cola
+    (es informativo, no se pierde) y el Modal se descarta con `accionId: null` (un modal que llega tarde y fuera de
+    contexto es peor que ninguno; `confirmar` lo lee como "no confirmado"). El tope del Toast cuenta los que
+    están en pantalla, así que uno con `timer: 0` retiene su lugar. La onda de `escuchando` usa
+    `transform: scale` con `vector-effect: non-scaling-stroke` (antes animaba `r`); las escenas generadas del brand
+    kit, que animan `fill`, no se tocaron: regenerarlas depende de los assets de origen.
+
+33. **Los estilos se inyectan por hoja, no por componente; y lo que importa de Toast/Modal/Attach/Alert está
+    cubierto por tests.** `ensureStyles(...hojas)` guarda un id por hoja (los tokens se llaman `tokens`) y consulta el
+    `<head>` antes de inyectar. El orden de cascada se conserva: Toast inyecta `alert.css` antes de `toast.css`, así
+    que `toast.css` siempre va después. Los tests no reemplazan la verificación visual (el DOM falso no calcula
+    estilos): la confirmación de que los estilos y la animación se ven igual sigue siendo en el navegador.
+    `registroGlobal` es un objeto con la misma interfaz que delega en un registro creado al primer uso.
+
+34. **Qué se sube y qué no.** `playground/` va en `.gitignore` (decisión del dueño del repo; durante un tiempo estuvo
+    versionado y se revirtió). Lo único que se sube es `index.html` en la raíz: la demo sin build, copia exacta de
+    `playground/showcase.html`. No entra al paquete npm (`files: ["dist", "sonidos"]`). Sigue siendo un espejo sin build
+    del código de `src/`: al cambiar un comportamiento visible, se actualiza a mano (regla de trabajo, no automatizada).
+
+35. **Color del texto sobre un fondo 900/700: por contraste, no siempre blanco.** `colorTextoSobre(token)`
+    (`core/color.ts`) devuelve tinta `#1f2123` en naranja-900/700, turquesa-700 y gris-700, y blanco en el resto. Medido
+    (blanco/fondo): naranja-900 2.05, naranja-700 1.82, turquesa-700 2.82, gris-700 2.38 — todos bajo 4.5:1; con el
+    gris de marca sobre naranja tampoco se llega (~3.6), por eso es casi negro y no `--fdk-ink`. Decisión del dueño
+    del repo, aun cambiando el aspecto de `saludo`/`onboarding`. **Pendiente de diseño:** turquesa-900 queda en blanco
+    (3.71:1, sólo texto grande) — si se quiere AA para texto normal, también debería ir con tinta oscura (5.7:1).
+
+36. **Modal: tema oscuro automático y botones en columna.** `tema` es la última opción (apagada = `"auto"`, así que
+    no cambia a quien ya usa el modal en un sistema claro). Se resuelve al abrir y se sigue con `matchMedia('change')`
+    sólo si es `"auto"`; el oyente se quita al cerrar. Los tonos oscuros (`#1b1f22` de fondo, `#21262a` (botón secundario), `#373c41` (su borde), `#b8babd`)
+    salen de la imagen de referencia y **no están en la paleta de 18**: son neutros exclusivos de este tema.
+    La columna usa `flex-direction: column-reverse`: en el DOM sigue primero "cancelar" (el foco inicial cae en la
+    opción segura y el orden de Tab no cambia), pero visualmente la acción principal queda arriba. A cambio, el
+    orden de Tab es el inverso del visual (WCAG 2.4.3, mínimo): si se prefiere coherencia, se invierte el orden en
+    `confirmar.ts` y el foco inicial pasa a "confirmar". El gap del 18% que se había fijado a mano se reemplaza. Botón secundario claro: `#f4f5f6` / borde `#dcdee1` (texto `--fdk-ink` ≈ 6.7:1 sobre el relleno). Valores míos, derivados
+    de la lógica del tema oscuro, no de una imagen: ajustables. Tamaño del modal (valores del original, que reemplazan los márgenes responsivos de antes): `width: min(100%, 440px)`
+    border-box, `padding: 24px`, columna centrada con `gap: 14px`; el margen de 20px es padding del fondo para que el
+    ancho 100% no desborde. La sombra `0 30px 70px -20px #000000a6` es la misma en ambos temas (está en `.fdk-modal`, no en la
+    variante oscura). Tipografía del modal: título 20px/22px y descripción 15px/16px (móvil/≥600px), interlineado 1.75. Las reglas
+    `min-width: 600px` de tipografía van DESPUÉS de las base (misma especificidad: gana la última); un primer intento
+    las dejó antes y no se aplicaban. Los botones se asoman al padding con margen negativo (`btn-inset` = ~5% de la tarjeta, la referencia) para
+    ocupar ~90% del ancho sin quitarle margen al texto. Rumbo en el modal mide 78px (antes 110px), medido sobre la referencia: el cuerpo ocupa ~17% del ancho, no el
+    24% anterior; las escenas, con la misma reducción (150 → 106px). Los botones son píldora (`border-radius: 999px`) con borde
+    de 1px, también en tema claro, para que ambos temas compartan la forma de la referencia.
+
+37. **Mirada: opt-in, compartida y fuera de Alert y Lluvia.** `src/rumbo/mirada.ts` (`seguirMirada(raiz)`) copia las
+    constantes de `rumbo-en-movimiento.html`: tope 3.4 unidades del lienzo, suavidad 0.14 por cuadro, distancia 220px,
+    punto de mira al 72%/56% del SVG. Un solo oyente `pointermove` y un solo `requestAnimationFrame` para todos los
+    seguidores (el bucle se duerme al llegar), que busca `.fdk-rumbo__ojos` cada cuadro: sobrevive a que `actualizar()`
+    cambie el SVG. Para poder mover los ojos, Rumbo los envuelve en un grupo `fdk-rumbo__ojos` (sin cambio visual).
+    La opción es `mirada?: boolean` (apagada) y va **al final**, tras `sonido`/`tema`. **Excluidos por pedido:** Alert
+    (`01 · Persistente · Popup fijo`) y la lluvia (`06 · Efímero · Overlay a pantalla completa`), porque tocar los
+    ojos cambia los elementos visuales de Rumbo en ellos. Las escenas son `<img>`: sus ojos no son alcanzables.
+    En el playground se verificó con eventos sintéticos (el panel de prueba frena `requestAnimationFrame` si está
+    oculto): ±3.35 en cada sección y 0 seguidores al cerrar.
+
+38. **Las demos se validan sin navegador.** `tests/lluvia-demo.test.mjs` lee `index.html` (raíz) y, si existe, `playground/showcase.html` (se omite si no está: no se sube) y
+    comprueba que (a) cada `<script>` en línea compila (`vm.Script`) —un backtick en un comentario CSS copiado dentro
+    de una plantilla de JS dejó muerta la sección de lluvia sin avisar—, (b) la sección «06 · Efímero · Overlay a
+    pantalla completa» tiene sus 7 listas, (c) existen los 23 personajes (8 estados + 15 escenas) y los 7 efectos (6
+    base + «pulso» que registra la demo) que ofrecen, y (d) la librería acepta cada valor de las 5 listas numéricas
+    (20 valores; un `RangeError` los rechazaría). Verificado por mutación: cantidad 301 hace fallar el test.
+    Regla al copiar CSS a una plantilla de JS: nada de acentos graves ni `${` en los comentarios.
+
+39. **`index.html` (raíz) es una copia exacta de `playground/showcase.html`.** Antes era una versión anterior (sin
+    navegación ni secciones numeradas 01–06, y con el título «FÓNDIKA Alert · playground») y vivía en `playground/`. Al
+    cambiar uno hay que copiar el otro (`cp playground/showcase.html index.html`).
+
+40. **Node.js 24.22.1 como mínimo, sin versiones en fin de vida.** Se fija en tres sitios: `.nvmrc` (`24.22.1`),
+    `devEngines.runtime` de `package.json` (`>=24.22.1 <25`, `onFail: "error"`: npm se niega a trabajar con Node 20/22 o
+    con un 24.x anterior) y las imágenes `node:24.22.1-alpine` de los comandos de arriba. Es `devEngines` y no `engines`
+    a propósito: la librería corre en el navegador, y `engines` haría saltar avisos a quien la instala con otro Node.
+    Al subir de Node 20 a 24 cambió una cosa en el repo: `node --test tests/` ya no recorre el directorio (desde Node 22
+    el argumento es un archivo o patrón), así que el script `test` usa `node --test "tests/*.test.mjs"`. Verificado en
+    `node:24.22.1-alpine`: `tsc --noEmit`, 47/47 tests y `tsup` (build en un directorio temporal, `dist/` intacto).
+    Pendiente fuera del repo: CI/hosting (no hay workflows) y cualquier máquina de desarrollo con otro Node.
 
 ## Pendiente
 

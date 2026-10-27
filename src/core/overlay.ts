@@ -29,12 +29,26 @@ export function montarOverlay(host: HTMLElement, contenido: HTMLElement): Overla
     host.setAttribute("inert", "");
   }
 
+  // Pantalla completa: el overlay no puede ser hijo de un `inert`, así que se inerta el resto del <body> (menos
+  // lo que es de la librería: toasts, modales, otro loader) para que Tab/Enter no lleguen a la página bloqueada.
+  const inertados: Element[] = [];
+  if (esPantalla) {
+    for (const hijo of Array.from(document.body.children)) {
+      if (/(^|\s)fdk-/.test(hijo.className) || hijo.hasAttribute("inert")) continue;
+      hijo.setAttribute("inert", "");
+      inertados.push(hijo);
+    }
+    const activo = document.activeElement;
+    if (activo && inertados.some((n) => n.contains(activo))) (activo as HTMLElement).blur();
+  }
+
   host.appendChild(overlay);
 
   return {
     el: overlay,
     close() {
       overlay.remove();
+      inertados.forEach((n) => n.removeAttribute("inert"));
       if (!esPantalla) {
         host.removeAttribute("aria-busy");
         host.removeAttribute("inert");

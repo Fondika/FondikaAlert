@@ -1,9 +1,7 @@
 Brand_kit_Fondika/
 playground/
-
-# Salida de build — nunca en main. Sólo se agrega a la fuerza (git add -f dist)
-# en el commit de release que se etiqueta con un tag (ver DOCUMENTACION.md, ADR-007).
 dist/
 node_modules/
 tests/
 dist/
+scripts/

@@ -7,6 +7,8 @@ algo sube el número mayor (`MAJOR`), nunca un `minor` ni un `patch`.
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-10-27
+
 ### Added
 
 - **`mirada` — los ojos de Rumbo siguen al puntero** (opt-in, `false` por defecto, último argumento): Toast,

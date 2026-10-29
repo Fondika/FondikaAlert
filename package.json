@@ -1,6 +1,6 @@
 {
   "name": "@fondika/alert",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Librería de alertas, toasts y modales de FÓNDIKA con el personaje Rumbo. Vanilla, sin dependencias en runtime.",
   "type": "module",
   "sideEffects": ["*.css"],

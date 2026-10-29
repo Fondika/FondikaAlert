@@ -2,11 +2,10 @@ import { ensureStyles } from "../core/styles";
 import { getLayer } from "../core/layer";
 import { animar } from "../core/anim";
 import { rumboSvg } from "../rumbo/rumbo";
-import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
 import { fondoDeToken, esTonoOscuro, colorTextoSobre } from "../core/color";
 import type { RumboSuperficie } from "../rumbo/types";
 import type { RumboEstadoExtendido } from "../rumbo/estados";
-import { baseDe, escenaDe, superficiePorDefecto, validarEstado } from "../rumbo/estados";
+import { baseDe, escenaDe, validarEstado } from "../rumbo/estados";
 import { validarEntero, validarMs, validarPosicion } from "../core/validar";
 import { seguirMirada } from "../rumbo/mirada";
 import { pintarEscena } from "../escenas/pintar";
@@ -26,7 +25,6 @@ export interface ToastOptions {
   estado: RumboEstadoExtendido;
   titulo?: string;
   texto?: string;
-  vozId?: string;
   /** Por defecto `true`: un toast sin Rumbo es sólo un aviso genérico, y aquí sí hay espacio y tiempo para animarlo. */
   personaje?: boolean;
   /**
@@ -119,7 +117,7 @@ function pintarToast(options: ToastOptions): Promise<void> {
   el.setAttribute("role", nivel === "error" ? "alert" : "status");
   el.setAttribute("aria-live", nivel === "error" ? "assertive" : "polite");
 
-  const background = options.background ?? superficiePorDefecto(options.estado);
+  const background = options.background;
   const fondo = fondoDeToken(background);
   if (fondo) {
     el.style.background = fondo;
@@ -136,7 +134,7 @@ function pintarToast(options: ToastOptions): Promise<void> {
     media.className = "fdk-alert__rumbo";
     if (escena) {
       media.classList.add("fdk-alert__rumbo--escena");
-      pintarEscena(media, escena, 80);
+      pintarEscena(media, escena, 64.7, { luminoso: esTonoOscuro(background), mirada: options.mirada }); // 46.2 × 168/120: el cuerpo mide lo mismo que el de los demás estados
     } else media.innerHTML = rumboSvg({ estado: options.estado, superficie: background, size: 46.2 }); // 44px + 5%
   } else {
     media.className = "fdk-alert__icono";
@@ -162,18 +160,8 @@ function pintarToast(options: ToastOptions): Promise<void> {
   cerrarBtn.textContent = "×";
   el.appendChild(cerrarBtn);
 
-  const estado = options.estado;
-  const esCiclico = estado === "pensando" || estado === "cargando";
-  const sinTextoExplicito = !options.texto && !options.vozId;
-  let detenerCiclo: () => void = () => {};
-
-  if (esCiclico && sinTextoExplicito) {
-    detenerCiclo = iniciarCicloVoz(estado, (texto) => (p.textContent = texto));
-  } else {
-    const texto = resolverVozRumbo({ estado, texto: options.texto, vozId: options.vozId });
-    if (texto === null) p.remove();
-    else p.textContent = texto;
-  }
+  if (options.texto) p.textContent = options.texto;
+  else p.remove();
 
   layer.appendChild(el);
   sonarPara(options.sonido, options.estado);
@@ -201,7 +189,6 @@ function pintarToast(options: ToastOptions): Promise<void> {
     async function cerrar() {
       if (cerrado) return;
       cerrado = true;
-      detenerCiclo();
       detenerMirada();
       if (handle) clearTimeout(handle);
       await animar(el, "fdk-anim-out", 250);

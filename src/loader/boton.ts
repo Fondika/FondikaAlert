@@ -1,5 +1,6 @@
 import { ensureStyles } from "../core/styles";
 import { exigirElemento } from "../core/validar";
+import { esTonoOscuro } from "../core/color";
 import { seguirMirada } from "../rumbo/mirada";
 import { rumboSvg } from "../rumbo/rumbo";
 import type { RumboSuperficie } from "../rumbo/types";
@@ -15,6 +16,11 @@ export interface LoaderBotonOptions {
    * vea en blanco (luminoso) en vez de desaparecer sobre su propio color. Por defecto `blanco`.
    */
   superficie?: RumboSuperficie;
+  /**
+   * Texto junto a Rumbo mientras el botón carga (p. ej. «Guardando…»). Opcional: sin él, sólo Rumbo. Sobre una
+   * `superficie` luminosa (900/700) es blanco. Con texto, `keepWidth` fija el ancho MÍNIMO del botón, no el exacto.
+   */
+  texto?: string;
   /**
    * Los ojos de Rumbo siguen al puntero (como en `rumbo-en-movimiento.html`: hasta 3.4 unidades, suave, sin girar la
    * cabeza). Apagado por defecto; se desactiva solo con `prefers-reduced-motion`. No aplica a las escenas.
@@ -52,15 +58,22 @@ export function loaderBoton(boton: HTMLButtonElement, options: LoaderBotonOption
     const hijos = Array.from(boton.childNodes); // los MISMOS nodos: un framework puede tener referencias a ellos
     const disabledPrevio = boton.disabled;
     const anchoPrevio = boton.style.width;
+    const minAnchoPrevio = boton.style.minWidth;
 
-    if (keepWidth) boton.style.width = `${boton.getBoundingClientRect().width}px`;
+    if (keepWidth) boton.style[options.texto ? "minWidth" : "width"] = `${boton.getBoundingClientRect().width}px`;
     boton.disabled = true;
     boton.setAttribute("aria-busy", "true");
     const rumbo = document.createElement("span");
     rumbo.className = "fdk-loader-boton__rumbo";
     rumbo.setAttribute("aria-hidden", "true");
     rumbo.innerHTML = rumboSvg({ estado: "cargando", superficie: options.superficie, size: 28 });
-    boton.replaceChildren(rumbo);
+    if (options.texto) {
+      const texto = document.createElement("span");
+      texto.className = "fdk-loader-boton__texto";
+      texto.textContent = options.texto;
+      if (esTonoOscuro(options.superficie)) texto.style.color = "#fff";
+      boton.replaceChildren(rumbo, texto);
+    } else boton.replaceChildren(rumbo);
     const detenerMirada = options.mirada ? seguirMirada(rumbo) : () => {};
 
     entrada = {
@@ -70,7 +83,10 @@ export function loaderBoton(boton: HTMLButtonElement, options: LoaderBotonOption
         boton.replaceChildren(...hijos);
         boton.disabled = disabledPrevio;
         boton.removeAttribute("aria-busy");
-        if (keepWidth) boton.style.width = anchoPrevio;
+        if (keepWidth) {
+          boton.style.width = anchoPrevio;
+          boton.style.minWidth = minAnchoPrevio;
+        }
       },
     };
     activos.set(boton, entrada);

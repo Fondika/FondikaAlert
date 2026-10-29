@@ -3,7 +3,6 @@ import { bloquearScroll, desbloquearScroll } from "../core/scroll";
 import { atraparFoco } from "../core/focus";
 import { animar } from "../core/anim";
 import { rumboSvg } from "../rumbo/rumbo";
-import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
 import type { RumboEstadoExtendido } from "../rumbo/estados";
 import { escenaDe, validarEstado } from "../rumbo/estados";
 import { pintarEscena } from "../escenas/pintar";
@@ -28,7 +27,6 @@ export interface ModalOptions {
   texto?: string;
   /** Estado de Rumbo. Opcional en Modal (a diferencia de Alert/Toast): un modal puede ser contenido libre sin personaje. */
   estado?: RumboEstadoExtendido;
-  vozId?: string;
   acciones?: ModalAccion[];
   /** `wide` = 640px. Por defecto 420px. */
   ancho?: "default" | "wide";
@@ -149,13 +147,11 @@ function montar(options: ModalOptions, onCerrado: (r: ModalResultado) => void): 
   sistema?.addEventListener?.("change", aplicarTema);
   const detenerMirada = options.mirada ? seguirMirada(modal) : () => {};
 
-  let detenerCiclo: () => void = () => {};
   let cerrado = false;
 
   async function cerrar(accionId: string | null) {
     if (cerrado) return;
     cerrado = true;
-    detenerCiclo();
     soltarFoco();
     detenerMirada();
     sistema?.removeEventListener?.("change", aplicarTema);
@@ -179,7 +175,7 @@ function montar(options: ModalOptions, onCerrado: (r: ModalResultado) => void): 
     const media = document.createElement("div");
     media.className = "fdk-modal__media";
     const escena = escenaDe(options.estado);
-    if (escena) pintarEscena(media, escena, 106); // 150 × (78/110): misma reducción que Rumbo
+    if (escena) pintarEscena(media, escena, 109.2, { mirada: options.mirada }); // 78 × 168/120: el cuerpo mide lo mismo que el de Rumbo
     else media.innerHTML = rumboSvg({ estado: options.estado, size: 78 }); // proporción de la referencia: el cuerpo ocupa ~17% del ancho del modal
     modal.appendChild(media);
   }
@@ -196,22 +192,8 @@ function montar(options: ModalOptions, onCerrado: (r: ModalResultado) => void): 
   p.className = "fdk-modal__texto";
   modal.appendChild(p);
 
-  if (options.estado) {
-    const estado = options.estado;
-    const esCiclico = estado === "pensando" || estado === "cargando";
-    const sinTextoExplicito = !options.texto && !options.vozId;
-    if (esCiclico && sinTextoExplicito) {
-      detenerCiclo = iniciarCicloVoz(estado, (texto) => (p.textContent = texto));
-    } else {
-      const texto = resolverVozRumbo({ estado, texto: options.texto, vozId: options.vozId });
-      if (texto === null) p.remove();
-      else p.textContent = texto;
-    }
-  } else if (options.texto) {
-    p.textContent = options.texto;
-  } else {
-    p.remove();
-  }
+  if (options.texto) p.textContent = options.texto;
+  else p.remove();
 
   if (options.acciones?.length) {
     const row = document.createElement("div");

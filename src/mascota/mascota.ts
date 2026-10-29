@@ -4,7 +4,6 @@ import type { Position } from "../core/layer";
 import { zIndex } from "../core/zstack";
 import { animar } from "../core/anim";
 import { rumboSvg } from "../rumbo/rumbo";
-import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
 import type { RumboSuperficie } from "../rumbo/types";
 import type { RumboEstadoExtendido } from "../rumbo/estados";
 
@@ -12,6 +11,7 @@ import { escenaDe, validarEstado } from "../rumbo/estados";
 import { validarPosicion } from "../core/validar";
 import { seguirMirada } from "../rumbo/mirada";
 import { pintarEscena } from "../escenas/pintar";
+import { esTonoOscuro } from "../core/color";
 import { sonarPara } from "../sonido/sonido";
 import type { SonidoClave } from "../sonido/sonido";
 import mascotaCss from "./mascota.css";
@@ -21,14 +21,12 @@ import layerCss from "../core/layer.css";
 export interface MascotaOptions {
   /** Estado de Rumbo. Por defecto `"reposo"` — la mascota no está atada a ningún aviso en curso. */
   estado?: RumboEstadoExtendido;
-  /** Texto de la burbuja. Tiene prioridad sobre `vozId`. Si no hay ninguno, no hay burbuja. */
+  /** Texto de la burbuja. Si no hay, no hay burbuja (salvo el copy de espera de `pensando`/`cargando`). */
   texto?: string;
-  /** Id de una línea de la biblioteca de voz de Rumbo para el estado usado. */
-  vozId?: string;
   /** Posición en la grilla 3×3 (ADR-003). Por defecto `bottom-end`. */
   posicion?: Position;
   superficie?: RumboSuperficie;
-  /** Tamaño de Rumbo en px. Por defecto 80. */
+  /** Tamaño de Rumbo en px. Por defecto 80. Las escenas se escalan (×168/120) para que su cuerpo mida lo mismo. */
   size?: number;
   /** Handler de click sobre el propio personaje (ej. abrir un chat). Opcional. */
   onClick?: () => void;
@@ -80,21 +78,6 @@ function construirBurbuja(el: HTMLElement, texto: string | null): HTMLElement | 
   return burbuja;
 }
 
-function resolverTexto(
-  estado: RumboEstadoExtendido,
-  options: Pick<MascotaOptions, "texto" | "vozId">,
-  onTextoCiclo: (t: string) => void
-): () => void {
-  const esCiclico = estado === "pensando" || estado === "cargando";
-  const sinTextoExplicito = !options.texto && !options.vozId;
-  if (esCiclico && sinTextoExplicito) {
-    return iniciarCicloVoz(estado, onTextoCiclo);
-  }
-  const texto = resolverVozRumbo({ estado, texto: options.texto, vozId: options.vozId });
-  onTextoCiclo(texto ?? "__ninguno__");
-  return () => {};
-}
-
 /**
  * Mascota — presentador Floating persistente (ADR-002/§4.3): Rumbo suelto en la pantalla, fuera
  * de cualquier Alert/Toast/Modal, típicamente un widget de ayuda fijo en una esquina.
@@ -144,11 +127,12 @@ function aplicar(instancia: Instancia, options: MascotaOptions): void {
   instancia.opciones = { ...instancia.opciones, ...options };
   const { estado = "reposo", superficie, onClick } = instancia.opciones;
   const escena = escenaDe(estado);
-  const size = instancia.opciones.size ?? (escena ? 120 : 80);
+  const rumbo = instancia.opciones.size ?? 80;
+  const size = escena ? (rumbo * 168) / 120 : rumbo; // el lienzo de una escena es más ancho: así su cuerpo mide lo mismo que el de Rumbo
 
   const caja = instancia.personaje;
   caja.style.width = caja.style.height = escena ? `${size}px` : "";
-  if (escena) pintarEscena(caja, escena, size);
+  if (escena) pintarEscena(caja, escena, size, { luminoso: esTonoOscuro(superficie), mirada: instancia.opciones.mirada });
   else {
     delete caja.dataset.escena;
     caja.innerHTML = rumboSvg({ estado, superficie, size });
@@ -159,9 +143,7 @@ function aplicar(instancia: Instancia, options: MascotaOptions): void {
   if (instancia.opciones.mirada && !instancia.detenerMirada) instancia.detenerMirada = seguirMirada(instancia.personaje);
   else if (!instancia.opciones.mirada && instancia.detenerMirada) { instancia.detenerMirada(); instancia.detenerMirada = null; }
 
-  instancia.detenerCiclo = resolverTexto(estado, instancia.opciones, (texto) => {
-    instancia.burbuja = construirBurbuja(instancia.el, texto === "__ninguno__" ? null : texto);
-  });
+  instancia.burbuja = construirBurbuja(instancia.el, instancia.opciones.texto || null);
 }
 
 function construirHandle(

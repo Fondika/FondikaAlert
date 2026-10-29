@@ -1,8 +1,7 @@
 import { ensureStyles } from "../core/styles";
 import { getLayer } from "../core/layer";
 import { rumboSvg } from "../rumbo/rumbo";
-import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
-import type { RumboEstadoExtendido, EstadoSiempreLuminoso } from "../rumbo/estados";
+import type { RumboEstadoExtendido } from "../rumbo/estados";
 import { escenaDe, validarEstado } from "../rumbo/estados";
 import { pintarEscena } from "../escenas/pintar";
 import { nivelDeEstado } from "./nivel";
@@ -16,13 +15,11 @@ import layerCss from "../core/layer.css";
 export interface AlertOptions {
   /** Estado de Rumbo. Obligatorio: define la postura visual aunque no haya texto (regla del brief).
    * Sin `saludo` ni `onboarding`: son siempre Rumbo luminoso y necesitan un fondo de color, y Alert no tiene `background` configurable. */
-  estado: Exclude<RumboEstadoExtendido, EstadoSiempreLuminoso>;
+  estado: RumboEstadoExtendido;
   /** Título en bold. Opcional. */
   titulo?: string;
-  /** Texto libre. Tiene prioridad sobre `vozId`. */
+  /** El texto. Si falta, sólo se ve el tipo de alerta (en `pensando`/`cargando`, el copy de espera). */
   texto?: string;
-  /** Id de una línea de la biblioteca de voz de Rumbo (voz-rumbo.json). */
-  vozId?: string;
   /**
    * Si es `true`, Rumbo sustituye al icono outline (nunca coexisten, ver crítica de diseño).
    * Por defecto `false`: se usa el icono outline del nivel, más liviano para una alerta.
@@ -39,7 +36,7 @@ export interface AlertOptions {
 
 export interface AlertHandle {
   el: HTMLElement;
-  /** Detiene el ciclo de voz (pensando/cargando) si estaba activo y quita el elemento. */
+  /** Quita el elemento. */
   cerrar(): void;
 }
 
@@ -54,10 +51,9 @@ export interface AlertHandle {
  * Siempre flota fija en la esquina superior derecha (capa `top-end`, la misma grilla que Toast) —
  * nunca se inserta inline en el flujo de la página.
  *
- * Prioridad de texto: `texto` > `vozId` > ninguno (sólo se ve el tipo de alerta, sin copy).
- * En `pensando` y `cargando`, si no se da `texto` ni `vozId`, el copy avanza solo con el tiempo
- * de espera (ver rumbo/voz-rumbo.json) — es la única razón por la que esta función devuelve un
- * `AlertHandle` con `cerrar()` en vez de ser un fire-and-forget.
+ * El copy sale sólo de `texto`; sin él, sólo se ve el tipo de alerta.
+ *
+ * Devuelve un `AlertHandle` con `cerrar()`: el llamador decide cuándo cerrarla.
  */
 export function crearAlert(options: AlertOptions): AlertHandle {
   validarEstado(options?.estado, "crearAlert");
@@ -79,7 +75,7 @@ export function crearAlert(options: AlertOptions): AlertHandle {
     media.className = "fdk-alert__rumbo";
     if (escena) {
       media.classList.add("fdk-alert__rumbo--escena");
-      pintarEscena(media, escena, 80);
+      pintarEscena(media, escena, 64.7); // 46.2 × 168/120: el cuerpo mide lo mismo que el de los demás estados
     } else media.innerHTML = rumboSvg({ estado: options.estado, size: 46.2 }); // 44px + 5%
   } else {
     media.className = "fdk-alert__icono";
@@ -103,29 +99,8 @@ export function crearAlert(options: AlertOptions): AlertHandle {
   body.appendChild(p);
   el.appendChild(body);
 
-  const estado = options.estado;
-  const esCiclico = estado === "pensando" || estado === "cargando";
-  const sinTextoExplicito = !options.texto && !options.vozId;
-
-  let detenerCiclo: () => void = () => {};
-
-  if (esCiclico && sinTextoExplicito) {
-    p.style.display = ""; // hay copy: lo pone el ciclo
-    detenerCiclo = iniciarCicloVoz(estado, (texto) => {
-      p.textContent = texto;
-    });
-  } else {
-    const texto = resolverVozRumbo({
-      estado: options.estado,
-      texto: options.texto,
-      vozId: options.vozId,
-    });
-    if (texto === null) {
-      p.remove(); // regla: sin texto ni vozId, no se muestra copy — sólo el tipo de alerta
-    } else {
-      p.textContent = texto;
-    }
-  }
+  if (options.texto) p.textContent = options.texto;
+  else p.remove(); // sin texto no se muestra copy — sólo el tipo de alerta
 
   layer.appendChild(el);
   sonarPara(options.sonido, options.estado);
@@ -133,7 +108,6 @@ export function crearAlert(options: AlertOptions): AlertHandle {
   return {
     el,
     cerrar() {
-      detenerCiclo();
       el.remove();
     },
   };

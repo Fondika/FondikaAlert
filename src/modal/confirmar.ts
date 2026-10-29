@@ -7,7 +7,6 @@ export interface ConfirmarOptions {
   estado: RumboEstadoExtendido;
   titulo?: string;
   texto?: string;
-  vozId?: string;
   /** Si es `true`, el botón de confirmar usa la variante destructiva (rojo). Por defecto `false`. */
   danger?: boolean;
   confirmarTexto?: string;
@@ -43,7 +42,6 @@ export async function confirmar(options: ConfirmarOptions): Promise<ConfirmarRes
     estado: options.estado,
     titulo: options.titulo,
     texto: options.texto,
-    vozId: options.vozId,
     sonido: options.sonido,
     tema: options.tema,
     mirada: options.mirada,

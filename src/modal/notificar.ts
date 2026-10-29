@@ -7,7 +7,6 @@ export interface NotificarOptions {
   estado: RumboEstadoExtendido;
   titulo?: string;
   texto?: string;
-  vozId?: string;
   /** Texto del único botón. Por defecto `"OK"`. */
   okTexto?: string;
   /** Sonido + háptica: `true` = el del `estado`, o una clave (`"deposito"`…). Ver `ModalOptions.sonido`. */
@@ -37,7 +36,6 @@ export async function notificar(options: NotificarOptions): Promise<void> {
     estado: options.estado,
     titulo: options.titulo,
     texto: options.texto,
-    vozId: options.vozId,
     sonido: options.sonido,
     tema: options.tema,
     mirada: options.mirada,

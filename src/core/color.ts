@@ -28,25 +28,3 @@ const TONOS_CLAROS_PARA_TEXTO = ["naranja-900", "naranja-700", "turquesa-700", "
 export function colorTextoSobre(token?: RumboSuperficie): string {
   return token && TONOS_CLAROS_PARA_TEXTO.includes(token) ? "#1f2123" : "#ffffff";
 }
-
-/**
- * Fondo con un halo de luz localizado alrededor de Rumbo: dos capas, no una.
- *
- * La capa de encima es una ELIPSE horizontal (más ancha que alta, como una luz real, no un
- * círculo de UI) que va del color resaltado en el centro a TRANSPARENTE hacia afuera — se pierde
- * en la capa de abajo en vez de terminar en un borde duro. La capa de abajo es el color plano
- * del token, así que donde el degradado ya es transparente, lo que se ve es el fondo, sin
- * costura visible.
- *
- * Sólo tiene sentido con `esTonoOscuro(token)` — en tonos claros no se usa.
- */
-export function degradadoDeToken(token?: RumboSuperficie): string | undefined {
-  const fondo = fondoDeToken(token);
-  if (!fondo) return undefined;
-  return (
-    `radial-gradient(ellipse 68% 40% at 50% 38%, ` +
-    `color-mix(in srgb, ${fondo} 80%, white) 0%, ` +
-    `color-mix(in srgb, ${fondo} 40%, transparent) 55%, ` +
-    `transparent 100%), ${fondo}`
-  );
-}

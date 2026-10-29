@@ -10,7 +10,7 @@ de producto de FÓNDIKA, en vez de iconos genéricos. Vanilla TS, cero dependenc
 ## Instalación
 
 ```bash
-npm install "@fondika/alert@git+https://github.com/Fondika/FondikaAlert.git#semver:^1.1"
+npm install "@fondika/alert@git+https://github.com/Fondika/FondikaAlert.git#semver:^1.2.1"
 ```
 
 No hay que importar ningún CSS aparte: cada función inyecta sus propios estilos en el
@@ -20,12 +20,16 @@ No hay que importar ningún CSS aparte: cada función inyecta sus propios estilo
 
 - `attachTo({ contenido: "<b>hola</b>" })` ya **no interpreta HTML**: un string es texto. Para markup propio usa
   `html: true` o pasa un elemento.
+- **`vozId` y la biblioteca de voz desaparecieron**: el copy sale sólo de `titulo`/`texto`. Quien pasaba `vozId` (JS) se queda sin texto; en TypeScript es un error de tipos. Tampoco existen ya `resolverVozRumbo`, `iniciarCicloVoz` ni `RumboVozOptions`, y `pensando`/`cargando` ya no muestran copy de espera.
 - Los valores inválidos (un `estado` que no existe, `timer: -1`, un `host` que es `null`…) **lanzan** en vez de pintar
   algo roto. Para «sin autocierre» usa `timer: 0`.
 - Sobre un fondo naranja-900/700, turquesa-700 o gris-700 el texto es oscuro (antes blanco), por contraste AA: afecta a
-  `saludo` y `onboarding`, que usan naranja-900.
+  Rumbo sobre esos fondos (p. ej. `saludo` con `background: "naranja-900"`).
 - El modal sigue el tema del sistema (claro u oscuro), sus botones van en columna y mide hasta 440px.
   `tema: "claro"` lo deja siempre claro.
+- El Rumbo luminoso (cuerpo blanco sobre un tono 900/700) **ya no lleva el halo naranja** detrás. `saludo` y `onboarding`
+  son ahora Rumbo **normal** por defecto y **ya no ponen un fondo naranja-900 solos**: el luminoso se activa eligiendo un
+  fondo 900/700 (`background`/`superficie`). El modal, que no tiene fondo, siempre los dibuja normales.
 
 ## Lo único que hay que saber antes de empezar
 
@@ -37,8 +41,8 @@ No hay que importar ningún CSS aparte: cada función inyecta sus propios estilo
   forma síncrona, antes de tocar la pantalla): un `estado` que no existe, una `posicion` fuera de la grilla 3×3,
   un `timer` negativo o no numérico (`0` = sin autocierre), o un `host`/`boton` que no es un elemento (p. ej. un
   `querySelector` que devolvió `null`). Con `fireToast`, el error se lanza en la llamada, no como promesa rechazada.
-- **Prioridad de texto:** `texto` libre > `vozId` (biblioteca de voz de Rumbo) > nada. Sin
-  ninguno de los dos, sólo se ve el tipo de aviso, sin copy.
+- **El texto sale sólo de `titulo` y/o `texto`** (siempre opcionales). Sin ellos, sólo se ve el tipo de aviso, sin copy:
+  ni siquiera `pensando` y `cargando` traen uno. (`vozId` y la biblioteca de voz ya no existen.)
 - **`superficie`** (Toast, Loader, Attach, Mascota) es opcional y sólo importa si vas a montar el
   componente sobre un fondo oscuro/saturado propio (ej. un naranja-900) — Rumbo pasa a su
   variante blanca ("luminosa") automáticamente. Sin `superficie`, Rumbo se ve en su color normal.
@@ -77,8 +81,7 @@ handle.cerrar();
 |---|---|---|---|
 | `estado` | `RumboEstado` | — (obligatorio) | |
 | `titulo` | `string` | — | |
-| `texto` | `string` | — | prioridad sobre `vozId` |
-| `vozId` | `string` | — | línea de la biblioteca de voz para ese `estado` |
+| `texto` | `string` | — | opcional; si falta, sólo se ve el tipo de alerta |
 | `personaje` | `boolean` | `false` | `true` = Rumbo en vez del icono outline |
 | `host` | `HTMLElement` | `document.body` | dónde montar la capa flotante |
 | `sonido` | `boolean \| SonidoClave` | `false` | ver [Sonido y háptica](#sonido-y-háptica) |
@@ -114,7 +117,7 @@ límite. Un toast con `timer: 0` ocupa su lugar hasta que se cierre a mano.
 | Opción | Tipo | Default |
 |---|---|---|
 | `estado` | `RumboEstado` | — (obligatorio) |
-| `titulo` / `texto` / `vozId` | `string` | — |
+| `titulo` / `texto` | `string` | — |
 | `personaje` | `boolean` | `true` |
 | `background` | `RumboSuperficie` | blanco + sombra del nivel (gris por defecto en `sin-conexion`) |
 | `posicion` | `Position` | `"top-end"` |
@@ -189,6 +192,7 @@ await tabla.close();
 
 // dentro de un <button> — lo deshabilita y muestra a Rumbo cargando en vez del texto
 const boton = loaderBoton(miBoton, { keepWidth: true });
+// o con texto junto a Rumbo: loaderBoton(miBoton, { texto: "Guardando…" })
 await enviarFormulario();
 boton.close();
 ```
@@ -200,6 +204,10 @@ se está cerrando, se reanima el mismo overlay en vez de dejar la nueva petició
 `loaderScreen`/`loaderTarget` aceptan `estado` (default `"cargando"`) — puedes dejar un loader
 fijo mostrando `"error"` si algo se cae a medio camino, por ejemplo.
 
+Los tres aceptan un `texto` opcional (`loaderScreen`/`loaderTarget` lo ponen bajo Rumbo; `loaderBoton`, a su lado). Sobre un
+fondo luminoso (`superficie` 900/700) el texto es **blanco**. Con `texto`, `loaderBoton` fija el ancho *mínimo* del botón
+(`keepWidth`), no el exacto, porque el texto puede ser más largo que el original.
+
 ## Attach — fijar a Rumbo dentro de un elemento tuyo
 
 A diferencia de Loader, no cubre nada: se inyecta dentro de un elemento que ya existe (un botón,
@@ -210,7 +218,7 @@ import { attachTo } from "@fondika/alert";
 
 const handle = attachTo(document.querySelector("#badge-notificaciones")!, {
   estado: "exito",
-  size: 24,
+  size: 24,   // opcional: el tamaño del contenedor; sin él, Rumbo llena el contenedor (24px, o `--fdk-attach-size` por CSS)
 });
 
 handle.close(); // cuando ya no haga falta
@@ -355,6 +363,38 @@ registrarEfecto({
 - `duracionMs` es cuánto tiempo siguen **apareciendo** personajes; la lluvia termina cuando el último
   sale por abajo, así que dura un poco más.
 
+## Cómo se anima Rumbo
+
+Cada animación **tiene un final**; no hay opción para activarlo ni apagarlo, es la forma de animar de la librería (criterio
+de `04-personaje/assets/rumbo-en-movimiento.html`). Al terminar, Rumbo queda quieto y **sólo parpadea** (110 ms, a
+intervalos desiguales de 3 a 6.5 s, para que no parezca un reloj), salvo que sus ojos estén cerrados.
+
+Lo único que sigue moviéndose es lo que esa referencia deja en bucle (`rep: Infinity`):
+
+| Qué se queda en bucle | Dónde |
+|---|---|
+| los puntos de Vida que suben (1.6 s) | estado `cargando` |
+| el cuerpo y Vida (4.2 s) | escena `rendimiento` |
+| el cuerpo y Vida (5 s, respirando más lento) | escena `espera-larga` |
+| Vida (2.6 s) | escena `orden-manana` |
+| el cuerpo (4.2 s y 5.2 s) | escenas `mantenimiento` y `dormida` |
+
+Todo lo demás termina y se queda en su pose final:
+
+| Estado | Dura | Termina en |
+|---|---|---|
+| `reposo` | 6.8 s (respira y Vida flota, 2 veces) | quieto, parpadea |
+| `escuchando` | 2.9 s (dos ondas y un asentimiento) | quieto, parpadea |
+| `pensando` | 4.9 s (3 ciclos de puntos) | quieto, parpadea |
+| `exito` | 1.8 s (salta y Vida sube un escalón) | Vida arriba, ojos en arco (no parpadea) |
+| `error` | 0.5 s (sacudida, inclinación y Vida se aleja) | inclinado y Vida en rojo, parpadea |
+| `alerta` | 1.6 s (entra el signo y late una vez) | signo fijo, parpadea |
+| `sin-conexion` | sin movimiento | apagado, ojos cerrados |
+
+Las escenas siguen los tiempos de la referencia (de 0.8 s a 8.3 s). Terminan parpadeando, salvo `onboarding` (queda con los
+ojos en arco), `adios` (se va) y `dormida` (ojos cerrados). Con `prefers-reduced-motion` no hay recorrido: Rumbo aparece
+directamente en su pose final.
+
 ## Escenas como estados
 
 Además de los 8 estados base, `estado` acepta **15 escenas animadas** del brandkit
@@ -377,8 +417,8 @@ llaman por su nombre, sin etiqueta ni grupo aparte.
 
 ```ts
 notificar({ estado: "deposito", titulo: "Depósito acreditado", sonido: "deposito" });
-mostrarMascota({ estado: "saludo", texto: "Hola de nuevo." });   // size por defecto 120 con escena
-attachTo(host, { estado: "vacia", size: 160 });                   // size por defecto 120 con escena
+mostrarMascota({ estado: "saludo", texto: "Hola de nuevo." });   // size 80 por defecto; la escena se dibuja ×1.4 (112)
+attachTo(host, { estado: "vacia", size: 48 });                     // size 24 por defecto; la escena se dibuja ×1.4 (67.2)
 fireToast({ estado: "deposito" });                                // Toast y Alert también la dibujan (80 px)
 ```
 
@@ -387,16 +427,16 @@ fireToast({ estado: "deposito" });                                // Toast y Ale
   `personaje`). En **Loader** (spinner de 32–96 px) se dibuja el Rumbo de su estado base.
 - Quien ya usaba los 8 estados no cambia nada: el tipo `RumboEstado` sigue siendo esos 8, y la
   unión ampliada es `RumboEstadoExtendido`.
-- `saludo` y `onboarding` se dibujan siempre como Rumbo luminoso (cuerpo blanco con halo naranja)
-  y sin fondo propio. Si no pasas `background` (Toast) o `superficie` (Loader), su fondo por defecto
-  es `naranja-900`, un tono luminoso; si pasas otro, gana el tuyo.
+- `saludo` y `onboarding` se dibujan como **Rumbo normal** (cuerpo naranja, sin halo) y valen en todas partes, Alert
+  incluido. Su versión **luminosa** (cuerpo blanco) no es otro estado: se activa pasando un fondo 900/700 —`background`
+  en Toast, `superficie` en Attach y Mascota— y entonces la escena cambia sola a su versión blanca. Sin fondo propio
+  no se pinta ningún color por defecto. El **modal** no tiene fondo, así que sólo tiene la versión normal.
 - **Alert no admite `saludo` ni `onboarding`** (el tipo `AlertOptions` los excluye): son siempre Rumbo
   luminoso y necesitan un fondo de color, y el color de Alert no es configurable.
 - Las escenas no hacen ciclo de voz (`espera-larga` no rota textos aunque cuelgue de `cargando`) y
   `rendimiento` nunca suena: el brandkit prohíbe sonorizar el rendimiento.
 - El módulo de escenas (~90 KB) se carga con `import()` la primera vez que se usa una; quien no la
-  usa no paga ese peso. Las "de estado" (`dormida`, `mantenimiento`…) deberían quedarse en su
-  postura y las "de suceso" (`deposito`, `saludo`…) corren en bucle aquí.
+  usa no paga ese peso. Ninguna corre en bucle completo: cada una termina (ver [Cómo se anima Rumbo](#cómo-se-anima-rumbo)).
 - `rumboEscena(nombre, size?)` devuelve el `<img>` por si la quieres en tu propio HTML, y
   `escenasInfo` da nombre y descripción de cada una.
 
@@ -434,9 +474,7 @@ sonorizar rendimiento, y un sonido siempre acompaña algo ya visible.
 | `alerta` | Requiere atención, no es una falla ("ten en cuenta...") |
 | `sin-conexion` | No hay red |
 
-`pensando` y `cargando` son especiales: si no les das `texto` ni `vozId`, el copy avanza solo
-con el tiempo de espera (una línea inicial y dos más, a los ~4s y ~10s), tomado de la biblioteca
-de voz de Rumbo.
+Ningún estado trae copy propio: el texto es sólo el `titulo` y/o el `texto` que tú pases. Sin ellos, sólo se ve Rumbo y el tipo de aviso.
 
 ## Mirada — los ojos de Rumbo siguen al puntero
 
@@ -448,8 +486,10 @@ fireToast({ estado: "exito", texto: "Listo", mirada: true });
 ```
 
 Los ojos se desvían como máximo 3.4 unidades hacia el puntero (menos cuanto más cerca está), con un seguimiento suave;
-nunca gira la cabeza. Con `prefers-reduced-motion` no hace nada. No existe en Alert ni en la lluvia de personajes, ni
-afecta a las escenas (son imágenes). Para tus propios componentes: `const parar = seguirMirada(elemento)` y llama a
+nunca gira la cabeza. Con `prefers-reduced-motion` no hace nada. Funciona con **todos** los estados: los 8 de Rumbo
+(normal y luminoso) y las 15 escenas. Con `mirada: true` una escena se dibuja como SVG en línea (con su CSS acotado) en
+vez de `<img>`, porque los ojos de una imagen no se pueden mover; sin ella sigue siendo `<img>`. No existe en Alert ni
+en la lluvia de personajes. Para tus propios componentes: `const parar = seguirMirada(elemento)` y llama a
 `parar()` al cerrarlos.
 
 ## Piezas sueltas — para armar tu propio componente
@@ -458,22 +498,11 @@ Todo lo que usan Alert, Toast y Modal por dentro también se exporta, por si qui
 misma voz, el mismo color y el mismo personaje:
 
 ```ts
-import { rumboSvg, resolverVozRumbo, iniciarCicloVoz, nivelDeEstado } from "@fondika/alert";
+import { rumboSvg, nivelDeEstado } from "@fondika/alert";
 
 // Rumbo como string SVG, listo para `innerHTML` (tamaño en px, 44 por defecto; mínimo recomendado 28).
 // `superficie` sólo importa sobre un fondo 900/700: ahí Rumbo pasa a su variante luminosa.
 host.innerHTML = rumboSvg({ estado: "exito", size: 48 });
-
-// Qué texto mostrar, con la prioridad de siempre: `texto` > `vozId` > nada (devuelve `null`).
-resolverVozRumbo({ estado: "error", vozId: "sesion-vencida" });
-resolverVozRumbo({ estado: "error" });                              // null: sin texto ni vozId no hay copy
-resolverVozRumbo({ estado: "error", mostrarPorDefecto: true });      // la primera línea del estado
-
-// Para `pensando`/`cargando`: el copy que avanza con la espera. Devuelve la función que lo detiene —
-// llámala al cerrar tu componente, o los temporizadores siguen corriendo.
-const detener = iniciarCicloVoz("cargando", (texto) => (p.textContent = texto));
-// …al terminar:
-detener();
 
 // El nivel de color (`info` | `exito` | `alerta` | `error` | `neutro`) que le toca a un estado,
 // por si quieres teñir tu componente igual que Alert/Toast. Acepta también las escenas.

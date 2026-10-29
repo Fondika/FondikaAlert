@@ -38,12 +38,10 @@ redibujar a Rumbo ni reinventar el color cada vez.
    turquesa o gris, el cuerpo naranja de Rumbo es ilegible — se usa la variante `luminoso`
    (cuerpo blanco + capas de degradado naranja detrás). En tonos 500/300/100 y en blanco se usa
    la variante `color` normal. Lógica en `src/rumbo/variante.ts`.
-4. **Prioridad de texto en cualquier componente que use a Rumbo**: `texto` libre > `vozId` de la
-   biblioteca > nada (sólo se ve el tipo de alerta, sin copy). El **estado** de Rumbo siempre es
-   obligatorio — define la postura visual aunque no haya texto. Lógica en `src/rumbo/voz.ts`.
-5. **`pensando` y `cargando` son cíclicos**: si no se da texto ni vozId, el copy avanza solo con
-   el tiempo de espera (línea inicial + 2 subtipos, a los ~4s y ~10s) — biblioteca completa en
-   `src/rumbo/voz-rumbo.json`.
+4. **El texto de cualquier componente que use a Rumbo sale sólo de `texto`** (antes: `texto` > `vozId` de la
+   biblioteca > nada; `vozId` se eliminó, ver regla 45). Sin texto no hay copy (sólo se ve el tipo de alerta). El **estado** de Rumbo siempre es
+   obligatorio — define la postura visual aunque no haya texto. No hay biblioteca de voz (se eliminó con `vozId`, regla 48).
+5. **Ningún estado trae copy propio**: ni siquiera `pensando` y `cargando` (antes avanzaban solos con la biblioteca de voz; regla 48).
 6. **La barra izquierda de 4px es exclusiva de Alert** (`fdk-alert--barra` en `alert.css`). Toast
    nunca la lleva — es un aviso flotante limpio, sin ese acento.
 7. **`background` (sólo en Toast) tiñe el propio componente, nunca la capa que lo contiene.** Es
@@ -276,7 +274,7 @@ src/
 ├── core/       tokens.css (paleta de 18 colores), color.ts (token → background + contraste),
 │               zstack.ts, layer.ts/.css (grilla 3×3), anim.ts (animationend + timeout de
 │               respaldo), styles.ts (inyección en runtime)
-├── rumbo/      rumbo.ts (SVG por estado), variante.ts (color/luminoso), voz.ts + voz-rumbo.json
+├── rumbo/      rumbo.ts (SVG por estado), variante.ts (color/luminoso)
 ├── alert/      alert.ts (Floating, persistente, fija en top-end, con barra izquierda),
 │               nivel.ts (estado → nivel de alerta), iconos.ts
 ├── toast/      toast.ts (Floating, efímero: fire() → Promise<void>, timer + pausa en hover,
@@ -461,6 +459,95 @@ nivel superior de un módulo). También se confirmó que `dist/modal.js` no expo
     el argumento es un archivo o patrón), así que el script `test` usa `node --test "tests/*.test.mjs"`. Verificado en
     `node:24.22.1-alpine`: `tsc --noEmit`, 47/47 tests y `tsup` (build en un directorio temporal, `dist/` intacto).
     Pendiente fuera del repo: CI/hosting (no hay workflows) y cualquier máquina de desarrollo con otro Node.
+
+41. **Rumbo luminoso sin halo; Saludo/Onboarding normales por defecto.** Por pedido del usuario se quitó la «sombra» del
+    luminoso: el degradado radial naranja detrás del cuerpo blanco (`capasLuminoso` y el `<radialGradient>`+`<ellipse>`
+    de las escenas). Esto revierte la parte de la regla 24 que justificaba el halo. Un primer intento añadió dos
+    estados `saludo-no-luminoso`/`onboarding-no-luminoso`; se descartó: se pidió «un solo estado por defecto» en el modal.
+    Modelo final: `saludo` y `onboarding` son UN estado cada uno, Rumbo normal (cuerpo `#ff9f19`, ojos `#3f4245`); la versión
+    luminosa (`ESCENAS_LUMINOSAS` en `datos.ts`, cuerpo blanco) no es un estado sino una variante que se elige con un
+    fondo 900/700, igual que ya funcionaba `rumboSvg` con `superficie`. Por eso desaparecieron `superficiePorDefecto`
+    (el `naranja-900` automático) y `EstadoSiempreLuminoso` (Alert vuelve a admitirlos). El modal no tiene fondo → sólo
+    la versión normal. Mascota y Attach usan `superficie`; Toast, `background`; el Loader dibuja el Rumbo base. Como
+    `scripts/gen-escenas.py` ya no está en el repo, `datos.ts` se edita a mano. No se tocó el degradado del fondo del
+    Loader (`degradadoDeToken`): es el fondo del overlay, no el halo del personaje.
+42. **La mirada cubre todos los estados, incluidas las escenas.** Las escenas eran `<img>` y sus ojos son inalcanzables;
+    con `mirada` se dibujan como SVG en línea (`rumboEscena(..., { mirada: true })`). El problema de siempre de esa
+    opción (el `<style>` de cada escena usa `[data-p…]` globales y dos escenas se pisan) se resuelve prefijando cada
+    selector con una clase única por llamada (`fdk-escena-N`); los `@keyframes` ya llevan el nombre de su escena.
+    `seguirMirada` mueve `.fdk-rumbo__ojos` y `[data-p^="ojos-"]` (los tres grupos de ojos de la escena, juntos) y
+    calcula el punto de mira con el `viewBox`: ojos en (83.5, 62) de su lienzo. Verificado en navegador: 8 estados (normal y
+    luminoso) + 15 escenas + 2 luminosas, cuatro direcciones, y vuelta al centro. Hallazgo al verificar: un seguidor cuyo
+    componente se quitaba del DOM por fuera nunca se soltaba; ahora `paso()` lo suelta si `raiz.isConnected === false`.
+    Nota de método: con el panel de pruebas oculto los temporizadores se frenan y salen «fallos» que no lo son (el valor
+    es el de la dirección anterior); hay que traer la pestaña al frente y esperar a que converja.
+
+43. **Las animaciones terminan; sólo se repite lo que la referencia repite.** Criterio único: `rep: Infinity` en
+    `rumbo-en-movimiento.html`. Se extrajeron los pasos de sus 20 escenas (script puntual, no se conserva): sólo `procesando`
+    (≈`cargando`: Vida), `rendimiento` y `esperaLarga` (cuerpo y Vida), `ordenManana` (Vida), `dormida` y `mantenimiento`
+    (cuerpo) tienen elementos infinitos; `saludo`, `onboarding`, `adios`, `deposito`, `retiro`, `domiciliacion`, `vacia`,
+    `biometria`, `asesor` y `buscando` terminan (algunos repiten finito: `cuerpo×2`). Las escenas ya no usan una línea de
+    tiempo única en bucle: cada paso es una animación CSS con su `delay` (t), duración (d), repeticiones (rep+1) y relleno
+    (`fin`), como el `animate()` de la referencia; varias animaciones sobre el mismo elemento van en una lista
+    (la última gana). Diferencia asumida: WAAPI aplica el `easing` a toda la iteración y CSS entre cada par de
+    fotogramas; sólo importa en pasos de 3+ fotogramas y ya era así en las escenas originales.
+    **Parpadeo:** la referencia lo hace con `setTimeout` (2.8–7 s al azar, 110 ms). Aquí es CSS puro —un ciclo de ~16–22 s
+    con 4 parpadeos desiguales por escena— porque una escena es una `<img>` y ningún script llega a sus ojos; arranca cuando
+    termina lo finito y sólo si los ojos terminan abiertos y Rumbo a la vista (no en `onboarding`, `adios`, `dormida`). En
+    los estados base, cada Rumbo lleva `--fdk-fase` al azar (0–9 s) para no parpadear al unísono; las escenas, al ser
+    `<img>` estáticas, no pueden desfasarse. El parpadeo de los estados base aplasta los círculos de los ojos
+    (`scaleY(.08)`) en vez de cambiar a los trazos cerrados. Movimiento reducido: sin animación, y en las escenas la pose
+    final de `estadoFinal`. Estados base sin referencia directa (`reposo`, `pensando`, `exito`) usan sus duraciones de
+    siempre, finitas: `reposo` respira 2 veces como el `cuerpo×2` de la referencia.
+    Verificado en navegador (animaciones activas de cada estado y escena, y el cambio de ojos en pleno parpadeo) y con
+    `tests/animaciones.test.mjs`, que falla si se cuela un bucle (comprobado inyectando dos).
+
+44. **El modo luminoso no lleva ninguna sombra ni degradado.** La regla 41 quitó el halo de Rumbo y de las escenas pero dejó el
+    degradado radial del fondo del Loader (`degradadoDeToken`); el usuario señaló que seguía en la sección 4. Se eliminó la
+    función y `loaderScreen`/`loaderTarget` pintan el color plano del token; el demo de Attach (que teñía su host igual) también.
+    Revierte la regla 12 (halo de luz localizado en el Loader). Comparación hecha en navegador, por tono (naranja, turquesa,
+    gris y rojo, 900 y 700) y sección: Loader pantalla y contenedor, Toast, Mascota y Attach → color plano. Rumbo luminoso: sin
+    `radialGradient`, `ellipse`, `filter` ni `drop-shadow`. **No se tocó** la sombra de elevación de las tarjetas flotantes
+    (`.fdk-alert--flotante`, la burbuja y el botón de la Mascota): es común a todos los toasts y mascotas, luminosos o no, y
+    no es del modo luminoso; si se quiere un toast luminoso sin ella, es un cambio aparte. `tests/loader.test.mjs` vigila el
+    fondo plano y que no vuelva ningún `radial-gradient` a loader, color o Rumbo.
+
+45. **Sin `vozId`; texto opcional en los tres loaders, blanco sobre fondo luminoso.** `vozId` (el id de una línea de la
+    biblioteca de voz) se eliminó de todos los componentes, de `RumboVozOptions` y del playground: el copy sale sólo de
+    `texto`. `resolverVozRumbo` queda como `texto` o `null` (con `mostrarPorDefecto`, la primera línea del estado). **Se
+    conserva** el ciclo automático de `pensando`/`cargando` cuando no hay texto (es el copy de espera, no un id): la
+    biblioteca `voz-rumbo.json` sigue existiendo sólo para eso. Era una función obsoleta (TypeScript avisa; en JS el texto se
+    pierde en silencio).
+    **Loader:** `loaderBoton` gana `texto?` (Rumbo + texto en el botón; con texto, `keepWidth` fija `min-width` y no
+    `width`); `loaderScreen`/`loaderTarget` ya lo tenían. El bug real era CSS: `.fdk-overlay__texto` fijaba
+    `color: var(--fdk-ink)` y el overlay luminoso no podía teñirlo; ahora el texto hereda (`color: inherit`) y el overlay
+    pone `#fff` cuando `esTonoOscuro(superficie)`. **Esto revierte para el Loader** la regla 35 (`colorTextoSobre`: tinta
+    oscura sobre naranja, turquesa-700 y gris-700): por pedido, el texto del loader es siempre blanco sobre luminoso, aun
+    cuando blanco/naranja-900 es 2.05:1 (no llega a AA). Toast sigue con `colorTextoSobre`: la inconsistencia entre
+    Toast y Loader es consciente y queda para decidir. En el playground, un solo campo «Texto (opcional)» alimenta a los
+    tres loaders y actualiza en vivo los abiertos.
+
+46. **El tamaño del personaje en Toast y Alert se mide por el CUERPO, no por el SVG.** Rumbo tiene un lienzo de 120 y su cuerpo
+    ocupa 100 → a 46.2px de caja el cuerpo mide 38.5px (Pensando y los otros 7 estados base). Una escena tiene un lienzo de
+    168 con el mismo cuerpo de 100: a 80px (el tamaño de antes) el cuerpo medía 47.6px. Igualar el SVG no iguala al personaje;
+    hay que escalar por el lienzo: `tamaño_escena = 46.2 × 168/120 = 64.7px`. Verificado midiendo el `getBBox` del cuerpo en los
+    23 estados, Toast y Alert (38.49–38.50px), y con `tests/attach-alert.test.mjs`. Si cambia el 46.2 o el lienzo de las
+    escenas, hay que recalcular. Modal, Mascota y Attach tienen sus propios tamaños y no se tocaron.
+
+47. **Modal, Mascota y Attach: el cuerpo de una escena mide lo mismo que el de Rumbo (escala ×168/120)**, como la regla 46.
+    Modal: 78 → 109.2px; Mascota: `size` (80) × 1.4 = 112px; Attach: caja `size` × 1.4. **Attach cambia de significado:**
+    `size` ya no es el ancho/alto del SVG sino el del *contenedor* (`--fdk-attach-tam`), y Rumbo lo llena (`.fdk-attach > svg`
+    al 100%). Sin `size`, el contenedor mide 24px, ajustable por CSS con `--fdk-attach-size`. Las escenas usan
+    `.fdk-attach[data-escena]` con la caja ×1.4. Versión `1.2.1`. Pendiente verificar en navegador con la librería real (el
+    playground sí está verificado) y recompilar los tests (en esta máquina faltan los binarios de rollup para Windows).
+
+48. **Se elimina la biblioteca de voz.** `vozId` ya no existe (regla 45) y con él se borran `src/rumbo/voz.ts`,
+    `src/rumbo/voz-rumbo.json`, `resolverVozRumbo`, `iniciarCicloVoz` y `RumboVozOptions` (también de los exports). El copy de
+    todos los componentes sale sólo de `titulo` y/o `texto`; sin ellos no hay texto, tampoco en `pensando` y `cargando` (que
+    ya no tienen ciclo de espera). Alert, Toast, Modal, Loader y Mascota quedan sin temporizadores de copy, y el playground
+    pierde su mirror (`VOZ`, `iniciarCiclo`). Era una función **obsoleta**: el texto definido por quien llama es el nuevo estándar, no un cambio incompatible que pida subir de versión mayor (se queda en `1.2.1`). **Revierte** la parte de la regla 45 que conservaba el ciclo.
+    Verificado en el playground (`pensando` sin texto → sin copy; con texto → lo muestra) y con `tsc`; los tests no se pudieron
+    recompilar en esta máquina.
 
 ## Pendiente
 

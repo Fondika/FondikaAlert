@@ -11,6 +11,8 @@ export default defineConfig({
     alert: "src/alert/alert.ts",
     color: "src/core/color.ts",
     mirada: "src/rumbo/mirada.ts",
+    datos: "src/escenas/datos.ts",
+    escenas: "src/escenas/escenas.ts",
   },
   format: ["esm"],
   dts: false,

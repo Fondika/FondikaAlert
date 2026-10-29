@@ -1,4 +1,7 @@
-.fdk-attach { display: inline-block; }
+.fdk-attach { display: inline-block; --fdk-attach-tam: var(--fdk-attach-size, 24px); width: var(--fdk-attach-tam); height: var(--fdk-attach-tam); }
+/* El SVG llena el contenedor. El lienzo de una escena es más ancho (168 frente a 120): la caja crece ×1.4 para que su cuerpo mida lo mismo. */
+.fdk-attach[data-escena] { width: calc(var(--fdk-attach-tam) * 1.4); height: calc(var(--fdk-attach-tam) * 1.4); }
+.fdk-attach > svg { width: 100%; height: 100%; }
 
 @keyframes fdk-attach-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fdk-attach-fade-out { from { opacity: 1; } to { opacity: 0; } }

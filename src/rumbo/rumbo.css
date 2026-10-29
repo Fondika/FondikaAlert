@@ -1,5 +1,5 @@
 /**
- * Animaciones de Rumbo — verbatim de Brand_kit_Fondika/04-personaje/assets/rumbo.html.
+ * Animaciones de Rumbo (Brand_kit_Fondika/04-personaje/assets/rumbo.html y rumbo-en-movimiento.html).
  * Ningún estado se mueve más rápido que 1.4s salvo `cargando`. Reposo respira a 3.4s.
  */
 /*
@@ -11,34 +11,66 @@
  */
 .fdk-rumbo { display: block; overflow: visible; position: relative; z-index: 1; }
 
+/*
+ * Cada animación tiene FINAL (criterio de rumbo-en-movimiento.html): al terminar Rumbo queda quieto y sólo parpadea.
+ * Lo único que sigue moviéndose es lo que esa referencia deja en bucle (`rep: Infinity`): en los estados base, los
+ * puntos de Vida de `cargando` (el «procesando» de la referencia). El resto de bucles de la referencia (respiración lenta,
+ * Vida que espera…) viven en las escenas.
+ */
 @keyframes fdk-respira { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-2.5px) scaleY(1.02); } }
 @keyframes fdk-flota { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 /* transform, no la propiedad r: r no se compone en GPU y obliga a recalcular geometría en cada cuadro. El círculo mide r=16: 10/16 → 30/16. */
 @keyframes fdk-onda { 0% { transform: scale(.625); opacity: .55; } 100% { transform: scale(1.875); opacity: 0; } }
+@keyframes fdk-asiente { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(4deg); } }
+@keyframes fdk-vida-asiente { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-3px,3px); } }
 @keyframes fdk-piensa { 0%,100% { opacity: .25; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-3px); } }
 @keyframes fdk-sube-punto { 0% { opacity: .15; transform: translateY(6px); } 50% { opacity: 1; transform: translateY(0); } 100% { opacity: .15; transform: translateY(-4px); } }
 @keyframes fdk-salta { 0%,100% { transform: translateY(0) scale(1,1); } 22% { transform: translateY(0) scale(1.08,.9); } 45% { transform: translateY(-14px) scale(.96,1.06); } 70% { transform: translateY(0) scale(1.05,.95); } }
-@keyframes fdk-sube-vida { 0%,100% { transform: translateY(0); } 45% { transform: translateY(-12px); } }
-@keyframes fdk-cae { 0%,100% { transform: rotate(-4deg) translateY(4px); } 50% { transform: rotate(-6deg) translateY(6px); } }
-@keyframes fdk-aleja { 0%,100% { transform: translate(0,0); opacity: 1; } 50% { transform: translate(5px,4px); opacity: .75; } }
-@keyframes fdk-pulso { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes fdk-sube-vida { 0% { transform: translateY(0); } 45%,100% { transform: translateY(-12px); } }
+/* `translate` y `rotate` por separado (propiedades individuales) para que la sacudida y la inclinación del error no se pisen */
+@keyframes fdk-sacude { 0%,100% { translate: 0 0; } 25% { translate: -8px 0; } 55% { translate: 7px 0; } 80% { translate: -4px 0; } }
+@keyframes fdk-cae { from { transform: rotate(0deg) translateY(0); } to { transform: rotate(-4deg) translateY(4px); } }
+@keyframes fdk-aleja { from { translate: -11px -25px; fill: #0092a6; } to { translate: 0 0; fill: #ad332b; } }
+@keyframes fdk-signo-entra { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: scale(1); } }
+@keyframes fdk-pulso { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+/* Parpadeo: 110 ms, a intervalos desiguales (3.2–6.5 s) dentro de un ciclo largo, para que no parezca un reloj. */
+@keyframes fdk-parpadeo {
+  0%, 18.88%, 19.44%, 45.41%, 45.97%, 61.73%, 62.29%, 85.71%, 86.27%, 100% { transform: scaleY(1); }
+  19.16%, 45.69%, 62.01%, 85.99% { transform: scaleY(.08); }
+}
 
-.fdk-rumbo__respira { animation: fdk-respira 3.4s ease-in-out infinite; transform-origin: 60px 98px; }
-.fdk-rumbo__flota { animation: fdk-flota 3.4s ease-in-out infinite; }
-.fdk-rumbo__onda { animation: fdk-onda 2.2s ease-out infinite; transform-box: fill-box; transform-origin: center; vector-effect: non-scaling-stroke; }
-.fdk-rumbo__o2 { animation-delay: 1.1s; }
-.fdk-rumbo__p { animation: fdk-piensa 1.5s ease-in-out infinite; }
+.fdk-rumbo__respira { animation: fdk-respira 3.4s ease-in-out 2; transform-origin: 60px 98px; }
+.fdk-rumbo__flota { animation: fdk-flota 3.4s ease-in-out 2; }
+.fdk-rumbo__onda { animation: fdk-onda 2.2s ease-out 1; transform-box: fill-box; transform-origin: center; vector-effect: non-scaling-stroke; }
+.fdk-rumbo__o2 { animation-delay: .7s; }
+.s-escuchando .fdk-rumbo__cuerpo { animation: fdk-asiente 520ms cubic-bezier(.4,0,.2,1) 1.5s; transform-origin: 60px 98px; }
+.s-escuchando .fdk-rumbo__vida { animation: fdk-vida-asiente 520ms cubic-bezier(.4,0,.2,1) 1.56s; }
+.fdk-rumbo__p { animation: fdk-piensa 1.5s ease-in-out 3; }
 .fdk-rumbo__p2 { animation-delay: .2s; }
 .fdk-rumbo__p3 { animation-delay: .4s; }
 .fdk-rumbo__c { animation: fdk-sube-punto 1.6s ease-in-out infinite; }
 .fdk-rumbo__c2 { animation-delay: .15s; }
 .fdk-rumbo__c3 { animation-delay: .3s; }
 .fdk-rumbo__c4 { animation-delay: .45s; }
-.fdk-rumbo__salta { animation: fdk-salta 1.8s cubic-bezier(.3,0,.3,1) infinite; transform-origin: 60px 98px; }
-.fdk-rumbo__sube { animation: fdk-sube-vida 1.8s cubic-bezier(.3,0,.3,1) infinite; }
-.fdk-rumbo__cae { animation: fdk-cae 2.6s ease-in-out infinite; transform-origin: 60px 98px; }
-.fdk-rumbo__aleja { animation: fdk-aleja 2.6s ease-in-out infinite; }
-.fdk-rumbo__alerta-signo { animation: fdk-pulso 1.4s ease-in-out infinite; }
+.fdk-rumbo__salta { animation: fdk-salta 1.8s cubic-bezier(.3,0,.3,1) 1; transform-origin: 60px 98px; }
+.fdk-rumbo__sube { animation: fdk-sube-vida 1.8s cubic-bezier(.3,0,.3,1) 1 forwards; }
+.fdk-rumbo__cae { animation: fdk-sacude 340ms cubic-bezier(.4,0,.2,1), fdk-cae 340ms cubic-bezier(.2,0,0,1) forwards; transform-origin: 60px 98px; }
+.fdk-rumbo__aleja { animation: fdk-aleja 420ms cubic-bezier(.2,0,0,1) 120ms both; }
+.fdk-rumbo__alerta-signo { animation: fdk-signo-entra 320ms cubic-bezier(.2,0,0,1) 120ms both, fdk-pulso 900ms cubic-bezier(.4,0,.2,1) 700ms; transform-box: fill-box; transform-origin: center; }
+
+/* Cuando termina el movimiento propio de cada estado con ojos abiertos, empieza a parpadear (`--fdk-fin`); `--fdk-fase`
+   (al azar por Rumbo, ver rumbo.ts) desfasa a varios Rumbo en pantalla. Éxito y sin conexión tienen los ojos cerrados: no parpadean. */
+.s-reposo { --fdk-fin: 6.8s; }
+.s-escuchando { --fdk-fin: 2.9s; }
+.s-pensando { --fdk-fin: 4.9s; }
+.s-cargando { --fdk-fin: 0s; }
+.s-error { --fdk-fin: .54s; }
+.s-alerta { --fdk-fin: 1.6s; }
+:is(.s-reposo, .s-escuchando, .s-pensando, .s-cargando, .s-error, .s-alerta) .fdk-rumbo__ojos circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fdk-parpadeo 19.6s linear calc(var(--fdk-fin, 0s) + var(--fdk-fase, 0s)) infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .fdk-rumbo * { animation: none !important; }

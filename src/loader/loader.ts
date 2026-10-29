@@ -2,11 +2,10 @@ import { ensureStyles } from "../core/styles";
 import { montarOverlay } from "../core/overlay";
 import { animar } from "../core/anim";
 import { rumboSvg } from "../rumbo/rumbo";
-import { resolverVozRumbo, iniciarCicloVoz } from "../rumbo/voz";
-import { degradadoDeToken, esTonoOscuro, colorTextoSobre } from "../core/color";
+import { fondoDeToken, esTonoOscuro } from "../core/color";
 import type { RumboSuperficie } from "../rumbo/types";
 import type { RumboEstadoExtendido } from "../rumbo/estados";
-import { superficiePorDefecto, validarEstado } from "../rumbo/estados";
+import { validarEstado } from "../rumbo/estados";
 import { exigirElemento } from "../core/validar";
 import { seguirMirada } from "../rumbo/mirada";
 
@@ -16,16 +15,12 @@ import rumboCss from "../rumbo/rumbo.css";
 export interface LoaderOptions {
   /** Estado de Rumbo. Por defecto `"cargando"` — el uso más común, pero no el único (ej. dejar un `error` fijo cubriendo la pantalla). */
   estado?: RumboEstadoExtendido;
-  /** Texto libre. Tiene prioridad sobre `vozId`. */
+  /** Texto bajo Rumbo. Opcional: sin él no hay copy (en `pensando`/`cargando`, el de espera). Sobre un fondo luminoso es blanco. */
   texto?: string;
-  /** Id de una línea de la biblioteca de voz de Rumbo para el estado usado (voz-rumbo.json). */
-  vozId?: string;
   /**
-   * Superficie donde se monta el loader (por defecto `naranja-900` en `saludo`/`onboarding`, siempre luminosos), para resolver la variante de Rumbo (color/luminoso).
-   * Cuando el tono es oscuro/saturado (900/700), Rumbo pasa a blanco con su glow detrás y,
-   * además, el propio overlay se pinta con un degradado radial de ese color (más claro donde
-   * está Rumbo, más profundo hacia los bordes) — el glow no se lee sobre el overlay translúcido
-   * casi blanco por defecto ni sobre un relleno plano; necesita ese filtro de luz detrás.
+   * Superficie donde se monta el loader, para resolver la variante de Rumbo (color/luminoso).
+   * Cuando el tono es oscuro/saturado (900/700), Rumbo pasa a blanco y el propio overlay se pinta con ese color,
+   * plano (sin degradado ni halo detrás de Rumbo).
    */
   superficie?: RumboSuperficie;
   /**
@@ -52,27 +47,20 @@ function construirContenido(options: LoaderOptions, size: number) {
   p.className = "fdk-overlay__texto";
   el.appendChild(p);
 
-  const esCiclico = estado === "pensando" || estado === "cargando";
-  const sinTextoExplicito = !options.texto && !options.vozId;
-  let detenerCiclo: () => void = () => {};
-  if (esCiclico && sinTextoExplicito) {
-    detenerCiclo = iniciarCicloVoz(estado, (texto) => (p.textContent = texto));
-  } else {
-    const texto = resolverVozRumbo({ estado, texto: options.texto, vozId: options.vozId });
-    if (texto === null) p.remove();
-    else p.textContent = texto;
-  }
+  if (options.texto) p.textContent = options.texto;
+  else p.remove();
 
   const detenerMirada = options.mirada ? seguirMirada(el) : () => {};
-  return { el, detenerCiclo: () => { detenerCiclo(); detenerMirada(); } };
+  return { el, detenerCiclo: detenerMirada };
 }
 
 /** Aplica el color de `superficie` al propio overlay (nunca queda implícito en el CSS base). */
 function teñirOverlay(overlayEl: HTMLElement, superficie: RumboSuperficie | undefined) {
-  const degradado = degradadoDeToken(superficie);
-  if (!degradado) return;
-  overlayEl.style.background = degradado;
-  if (esTonoOscuro(superficie)) overlayEl.style.color = colorTextoSobre(superficie);
+  const fondo = fondoDeToken(superficie);
+  if (!fondo) return;
+  overlayEl.style.background = fondo;
+  // Texto blanco sobre cualquier fondo luminoso (900/700): es lo que se pidió para que el texto del loader se vea.
+  if (esTonoOscuro(superficie)) overlayEl.style.color = "#fff";
 }
 
 // ---- Loader.screen — refcount global: 3 llamadas paralelas, 1 sola pantalla, cierra hasta la 3ª close() ----
@@ -87,7 +75,6 @@ let cierrePantalla = 0;
 export function loaderScreen(options: LoaderOptions = {}): LoaderHandle {
   validarEstado(options.estado, "loaderScreen", true);
   ensureStyles(loaderCss, rumboCss);
-  options = { ...options, superficie: options.superficie ?? superficiePorDefecto(options.estado) };
   refsPantalla++;
   if (!overlayPantalla) {
     const { el, detenerCiclo } = construirContenido(options, 96);
@@ -134,7 +121,6 @@ export function loaderTarget(host: HTMLElement, options: LoaderOptions = {}): Lo
   exigirElemento(host, "loaderTarget");
   validarEstado(options.estado, "loaderTarget", true);
   ensureStyles(loaderCss, rumboCss);
-  options = { ...options, superficie: options.superficie ?? superficiePorDefecto(options.estado) };
   let entrada = targets.get(host);
   if (!entrada) {
     const { el, detenerCiclo } = construirContenido(options, 44);

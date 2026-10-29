@@ -8,6 +8,7 @@ import { escenaDe, validarEstado } from "../rumbo/estados";
 import { exigirElemento } from "../core/validar";
 import { seguirMirada } from "../rumbo/mirada";
 import { pintarEscena } from "../escenas/pintar";
+import { esTonoOscuro } from "../core/color";
 import { sonarPara } from "../sonido/sonido";
 import type { SonidoClave } from "../sonido/sonido";
 import attachCss from "./attach.css";
@@ -22,7 +23,7 @@ export interface AttachOptions {
   /** Atajo: monta a Rumbo directamente (icono de estado dentro de un botón, badge, etc.). */
   estado?: RumboEstadoExtendido;
   superficie?: RumboSuperficie;
-  /** Tamaño de Rumbo en px cuando se usa el atajo `estado`. Por defecto 24 (tamaño de icono). */
+  /** Tamaño de Rumbo en px cuando se usa el atajo `estado`. Si falta, Rumbo llena el contenedor de Attach, de 24px por defecto (o lo que fije `--fdk-attach-size` en CSS); las escenas se escalan ×168/120 para que su cuerpo mida lo mismo. */
   size?: number;
   anim?: "fade" | "slide";
   /**
@@ -63,6 +64,7 @@ export function attachTo(host: HTMLElement, options: AttachOptions = {}): Attach
   const anim = options.anim ?? "fade";
   const wrap = document.createElement("span");
   wrap.className = `fdk-attach fdk-attach--${anim} fdk-anim-in`;
+  if (options.size !== undefined) wrap.style.setProperty("--fdk-attach-tam", `${options.size}px`);
 
   if (typeof options.contenido === "string") {
     if (options.html) wrap.innerHTML = options.contenido;
@@ -71,9 +73,10 @@ export function attachTo(host: HTMLElement, options: AttachOptions = {}): Attach
     wrap.appendChild(options.contenido); // no `instanceof HTMLElement`: un elemento de otro iframe no lo cumple
   } else if (options.estado) {
     const escena = escenaDe(options.estado);
-    if (escena) pintarEscena(wrap, escena, options.size ?? 120);
+    if (escena) pintarEscena(wrap, escena, 0, // el tamaño lo da el CSS del contenedor
+      { luminoso: esTonoOscuro(options.superficie), mirada: options.mirada });
     else
-    wrap.innerHTML = rumboSvg({ estado: options.estado, superficie: options.superficie, size: options.size ?? 24 });
+    wrap.innerHTML = rumboSvg({ estado: options.estado, superficie: options.superficie, size: 24 });
   }
 
   host.appendChild(wrap);

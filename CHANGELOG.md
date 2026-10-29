@@ -7,6 +7,65 @@ algo sube el número mayor (`MAJOR`), nunca un `minor` ni un `patch`.
 
 ## [Unreleased]
 
+## [1.2.1] — 2026-10-29
+
+### Removed
+
+- **Se elimina la biblioteca de voz de Rumbo** (función obsoleta; nuevo estándar: el texto lo define quien llama): `src/rumbo/voz-rumbo.json`, `resolverVozRumbo`, `iniciarCicloVoz` y
+  `RumboVozOptions` ya no existen ni se exportan. El texto sale sólo de `titulo` y/o `texto`; `pensando` y `cargando` ya no
+  muestran copy de espera automático. Alert, Toast, Modal, Loader y Mascota quedan sin temporizadores de copy.
+
+### Added
+
+- **`loaderBoton` acepta `texto`** (opcional): Rumbo y el texto dentro del botón. Con texto, `keepWidth` fija el ancho
+  mínimo del botón, no el exacto. Sobre una `superficie` luminosa (900/700) el texto es blanco. En el playground, la
+  sección 04 tiene un campo «Texto (opcional)» para `loaderScreen`, `loaderBoton` y `loaderTarget`, con actualización en
+  vivo.
+- **`rumboEscena(nombre, size, { luminoso, mirada })`**: tercer argumento opcional. `luminoso` dibuja el cuerpo blanco de
+  `saludo`/`onboarding` (las únicas con esa versión); `mirada` la dibuja como SVG en línea, con su CSS acotado por una
+  clase única, para que `seguirMirada` pueda mover sus ojos.
+
+### Changed
+
+- **Attach: Rumbo llena su contenedor.** El tamaño lo da `size` (opcional) o, si falta, el del contenedor (24px, ajustable con `--fdk-attach-size`); las escenas escalan ×1.4 para que su cuerpo mida lo mismo.
+- **Modal, Mascota y Attach: las escenas tienen el mismo tamaño de cuerpo que Rumbo** (escala ×168/120 sobre el tamaño de Rumbo: Modal 109.2px, Mascota 112px con `size` 80, Attach 33.6px con `size` 24; antes 106/120/120). Mascota y Attach escalan también un `size` explícito.
+- **Toast y Alert: todos los estados de Rumbo tienen el mismo tamaño que Pensando.** Las escenas (`saludo`, `deposito`…)
+  se dibujaban a 80px y su cuerpo salía de 47.6px, un 24% mayor que el de los 8 estados base (38.5px). Su lienzo es más
+  ancho (168 frente a 120), así que ahora miden 64.7px (= 46.2 × 168/120) y el cuerpo mide 38.5px en los 23 estados. La
+  altura de la tarjeta es la misma para todos (72px). Medido en navegador, en Toast y en Alert.
+- **Se elimina `vozId`** (obsoleto): ya no se puede elegir una línea de la biblioteca de voz por su id. El copy sale sólo
+  de `texto` en Alert, Toast, `confirmar`, `notificar`, Loader y Mascota; `RumboVozOptions` y `resolverVozRumbo` pierden
+  el campo. En JavaScript, pasar `vozId` ya no muestra nada.
+- **Loader: el texto sobre un fondo luminoso es blanco** (antes seguía gris `--fdk-ink`, ilegible sobre naranja, turquesa o
+  rojo): `.fdk-overlay__texto` hereda el color y el overlay lo pone blanco con una `superficie` 900/700. Para el Loader,
+  esto sustituye la tinta oscura de `colorTextoSobre`; Toast no cambia.
+- **Las animaciones de Rumbo ya no están en bucle: cada una tiene un final** (sin opción, es la forma de animar). Al
+  terminar, Rumbo queda quieto y sólo parpadea (110 ms, a intervalos desiguales de 3–6.5 s; CSS puro, también dentro de las
+  escenas `<img>`) si tiene los ojos abiertos. Sigue en bucle únicamente lo que `rumbo-en-movimiento.html` marca
+  `rep: Infinity`: los puntos de Vida de `cargando`, y en las escenas el cuerpo y/o Vida de `rendimiento`, `espera-larga`,
+  `orden-manana`, `mantenimiento` y `dormida`. Antes todo corría en un ciclo infinito (los 8 estados y las 15 escenas).
+  Tiempos: `reposo` 6.8 s, `escuchando` 2.9 s, `pensando` 4.9 s, `exito` 1.8 s, `error` 0.5 s, `alerta` 1.6 s. Las escenas se
+  regeneraron a partir de los pasos de la referencia (retraso, duración, repeticiones, relleno). Con movimiento reducido
+  se muestra la pose final de la referencia (`estadoFinal`), no la inicial. **Cambia el aspecto**: lo que antes se movía
+  siempre ahora se detiene.
+- **`error` y `alerta` ahora se mueven como en la referencia**: `error` se sacude, se inclina 4° y Vida se aleja y pasa de
+  turquesa a rojo; en `alerta` Vida se convierte en el signo, que entra y late una vez. `escuchando` asiente tras las ondas.
+- **`saludo` y `onboarding` son Rumbo normal por defecto** (cuerpo naranja) y **ya no ponen un fondo `naranja-900` por
+  defecto** en Toast y Loader. La versión luminosa (cuerpo blanco) no es otro estado: aparece sola cuando el fondo es un
+  tono 900/700 (`background` en Toast, `superficie` en Attach y Mascota). El modal, sin fondo, siempre los dibuja
+  normales. Alert vuelve a admitirlos (antes los excluía por ser siempre luminosos). **Cambia el aspecto** de quien los
+  usaba sin fondo propio: ahora salen naranjas sobre el fondo normal.
+- **La mirada funciona en todos los estados**: se probó en el navegador con el Rumbo de los 8 estados (normal y
+  luminoso) y las 15 escenas (más las dos luminosas), en las cuatro direcciones y devolviendo los ojos al centro. Antes
+  las escenas no seguían al puntero porque son `<img>`. El punto de mira de una escena se calcula con su `viewBox`.
+- **Se quita todo halo/degradado del modo luminoso, en todas partes**: el degradado naranja que se dibujaba detrás del
+  cuerpo blanco (`capasLuminoso` en `rumboSvg`, y el `<radialGradient>`/`<ellipse>` de las escenas `saludo` y
+  `onboarding`) **y** el degradado radial que el Loader pintaba sobre el fondo luminoso (`degradadoDeToken`, también en
+  `loaderScreen` y `loaderTarget`). Ahora el overlay es el color plano del token. El cuerpo sigue siendo blanco. Comparado
+  en los 8 fondos 900/700 (naranja, turquesa, gris y rojo) en Loader pantalla, Loader contenedor, Toast, Mascota y el demo
+  de Attach: todos con `background-image: none`. Un toast con fondo luminoso conserva la sombra de elevación que tienen todos
+  los toasts y alertas flotantes (no es del modo luminoso).
+
 ## [1.2.0] — 2026-10-27
 
 ### Added
@@ -63,6 +122,8 @@ algo sube el número mayor (`MAJOR`), nunca un `minor` ni un `patch`.
 
 ### Fixed
 
+- **`seguirMirada` — fuga si el componente se quitaba del DOM sin cerrarlo** (cambio de ruta, `innerHTML` del body): el
+  seguidor y el oyente de `pointermove` se quedaban para siempre. Ahora se sueltan solos en el siguiente cuadro.
 - **Playground — la sección de lluvia no arrancaba** (desde el cambio de la onda de Rumbo): un comentario CSS con
   acentos graves (`` `r` ``), copiado dentro de una plantilla de JavaScript, cerraba el string y el `<script>` entero
   dejaba de compilar: las siete listas de «06 · Efímero · Overlay a pantalla completa» quedaban vacías en

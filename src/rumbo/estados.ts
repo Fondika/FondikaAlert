@@ -2,8 +2,11 @@ import type { RumboEstado } from "./types";
 
 /**
  * Las escenas animadas de 04-personaje también son valores de `estado`. Cada una cuelga de uno
- * de los 8 estados base (del que hereda nivel de color, voz y sonido) y, donde cabe una
+ * de los 8 estados base (del que hereda nivel de color y sonido) y, donde cabe una
  * ilustración (Modal, Mascota, Attach), se dibuja ella en vez del Rumbo de 8 estados.
+ *
+ * `saludo` y `onboarding` son Rumbo normal por defecto; su versión luminosa (cuerpo blanco) no es otro estado: se activa
+ * con un fondo de color 900/700 (`background`/`superficie`) en las secciones que lo tienen. El modal no tiene fondo: siempre normal.
  *
  * Las escenas `error`, `offline`, `procesando`, `perfilamiento` y `documento` NO están aquí: repiten estados que
  * ya existen (`error`, `sin-conexion`, `cargando`, `escuchando`, `alerta`) y gana el nombre existente. Mapeo propio, no del brandkit.
@@ -30,17 +33,6 @@ export type EscenaEstado = keyof typeof BASE_DE_ESCENA;
 
 /** Los 8 estados base más las escenas. Los 8 solos siguen siendo `RumboEstado` (no se rompe quien ya lo usa). */
 export type RumboEstadoExtendido = RumboEstado | EscenaEstado;
-
-/** Los dos estados que siempre son Rumbo luminoso: necesitan un fondo de color (ver `superficiePorDefecto`). */
-export type EstadoSiempreLuminoso = "saludo" | "onboarding";
-
-/**
- * `saludo` y `onboarding` son siempre Rumbo luminoso (cuerpo blanco): sin una superficie explícita,
- * su fondo por defecto es un tono clasificado como luminoso (900/700), no el fondo del nivel.
- */
-export function superficiePorDefecto(estado: RumboEstadoExtendido | undefined): "naranja-900" | undefined {
-  return estado === "saludo" || estado === "onboarding" ? "naranja-900" : undefined; // = EstadoSiempreLuminoso
-}
 
 const propio = (obj: object, clave: string) => Object.prototype.hasOwnProperty.call(obj, clave);
 
